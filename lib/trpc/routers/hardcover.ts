@@ -6,6 +6,7 @@ import { mapEditionFormat } from "@/lib/books/format-mapper";
 import { API } from "@/lib/constants";
 import { env } from "@/lib/env";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { normalizeAndValidateIsbn } from "@/lib/utils/isbn";
 import { TRPCError } from "@trpc/server";
 import { createHash } from "crypto";
 import z from "zod/v4";
@@ -164,6 +165,46 @@ query GetWorkEditions($bookId: Int!) {
   }
 }`;
 
+const SEARCH_BY_ISBN_QUERY = `
+query SearchByIsbn($isbn: String!) {
+  editions(
+    where: {
+      _or: [
+        { isbn_10: { _eq: $isbn } }
+        { isbn_13: { _eq: $isbn } }
+      ]
+    }
+    order_by: { users_count: desc }
+  ) {
+    id
+    title
+    subtitle
+    edition_format
+    audio_seconds
+    pages
+    release_date
+    release_year
+    isbn_10
+    isbn_13
+    publisher {
+      id
+      name
+    }
+    contributions {
+      author {
+        id
+        name
+      }
+    }
+    image {
+      url
+    }
+    book {
+      id
+    }
+  }
+}`;
+
 const EDITION_DETAILS_QUERY = `
 query GetEditionDetails($editionId: Int!) {
   editions(where: { id: { _eq: $editionId } }) {
@@ -264,6 +305,31 @@ async function hardcoverFetch<T>(query: string, variables: Record<string, unknow
   return payload as T;
 }
 
+type InternalHardcoverEditionRecord = InternalHardcoverWorkEditionsResponse["data"]["editions"][number];
+
+function mapHardcoverEdition(edition: InternalHardcoverEditionRecord): HardcoverEditionsResponse["results"][number] {
+  const releaseYear = edition.release_year || extractPublishedYear(edition.release_date) || undefined;
+  return {
+    id: edition.id,
+    title: edition.title,
+    subtitle: edition.subtitle,
+    bookType: mapEditionFormat(edition.edition_format),
+    format: edition.edition_format,
+    audioSeconds: edition.audio_seconds,
+    pages: edition.pages,
+    releaseYear,
+    isbn10: edition.isbn_10,
+    isbn13: edition.isbn_13,
+    publisher: edition.publisher ? { id: edition.publisher.id, name: edition.publisher.name } : undefined,
+    authors: edition.contributions.map((c) => ({
+      id: c.author.id,
+      name: c.author.name,
+    })),
+    image: edition.image,
+    workId: edition.book.id,
+  };
+}
+
 export const hardcoverRouter = router({
   search: protectedProcedure
     .input(
@@ -320,33 +386,41 @@ export const hardcoverRouter = router({
     });
 
     const mapped: HardcoverEditionsResponse = {
-      results: raw.data.editions.map((edition) => {
-        const releaseYear = edition.release_year || extractPublishedYear(edition.release_date) || undefined;
-        return {
-          id: edition.id,
-          title: edition.title,
-          subtitle: edition.subtitle,
-          bookType: mapEditionFormat(edition.edition_format),
-          format: edition.edition_format,
-          audioSeconds: edition.audio_seconds,
-          pages: edition.pages,
-          releaseYear,
-          isbn10: edition.isbn_10,
-          isbn13: edition.isbn_13,
-          publisher: edition.publisher ? { id: edition.publisher.id, name: edition.publisher.name } : undefined,
-          authors: edition.contributions.map((c) => ({
-            id: c.author.id,
-            name: c.author.name,
-          })),
-          image: edition.image,
-          workId: edition.book.id,
-        };
-      }),
+      results: raw.data.editions.map(mapHardcoverEdition),
     };
 
     externalAPICache?.set(cacheKey, mapped);
     return mapped;
   }),
+
+  searchByIsbn: protectedProcedure
+    .input(
+      z.object({
+        isbn: z.string().min(1).max(64),
+      }),
+    )
+    .query(async ({ input }) => {
+      const normalized = normalizeAndValidateIsbn(input.isbn);
+
+      if (!normalized) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "INVALID_ISBN" });
+      }
+
+      const cacheKey = getCacheKey("hardcover:searchByIsbn", { isbn: normalized.value });
+      const cached = externalAPICache?.get(cacheKey) as HardcoverEditionsResponse | undefined;
+      if (cached) return cached;
+
+      const raw = await hardcoverFetch<InternalHardcoverWorkEditionsResponse>(SEARCH_BY_ISBN_QUERY, {
+        isbn: normalized.value,
+      });
+
+      const mapped: HardcoverEditionsResponse = {
+        results: raw.data.editions.map(mapHardcoverEdition),
+      };
+
+      externalAPICache?.set(cacheKey, mapped);
+      return mapped;
+    }),
 
   editionDetails: protectedProcedure.input(z.object({ id: z.number().int() })).query(async ({ input }) => {
     const cacheKey = getCacheKey("hardcover:editionDetails", { id: input.id });

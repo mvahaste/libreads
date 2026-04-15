@@ -17,6 +17,22 @@ export function getTrpcErrorCode(error: unknown): string | undefined {
   return undefined;
 }
 
+interface ResolveMappedErrorMessageParams {
+  error: unknown;
+  map: Partial<Record<string, string>>;
+  fallback: string;
+}
+
+export function resolveMappedErrorMessage({ error, map, fallback }: ResolveMappedErrorMessageParams): string {
+  const errorCode = getTrpcErrorCode(error);
+
+  if (!errorCode) {
+    return fallback;
+  }
+
+  return map[errorCode] ?? fallback;
+}
+
 interface MappedFieldError<TFieldName extends string> {
   field: TFieldName;
   message: string;

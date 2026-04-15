@@ -6,7 +6,7 @@ services:
     container_name: libreads-dev
     user: 1000:1000
     environment:
-      - LIBREADS_BASE_URL=http://localhost:3000
+      - LIBREADS_BASE_URL=https://localhost:3000
       - LIBREADS_AUTH_SECRET=supersecretkeythatshouldbereplacedinproduction
     ports:
       - 3000:3000

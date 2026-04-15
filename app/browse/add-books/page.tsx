@@ -29,7 +29,11 @@ export default function ImportPage() {
           icon={<LucideScanBarcode className="text-primary size-5" />}
           title={t("scan.title")}
           description={t("scan.description")}
-          action={<Button variant="secondary">{t("scan.action")}</Button>}
+          action={
+            <Button asChild variant="secondary">
+              <Link href="/browse/add-books/scan">{t("scan.action")}</Link>
+            </Button>
+          }
         />
         <IconCard
           icon={<LucidePlus className="text-primary size-5" />}
