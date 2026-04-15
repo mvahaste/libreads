@@ -9,11 +9,11 @@ import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation"
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
 import { useTRPC } from "@/lib/trpc/client";
 import { formatDurationForDisplay } from "@/lib/utils/duration";
-import { getTrpcErrorCode } from "@/lib/utils/trpc-errors";
+import { resolveMappedErrorMessage } from "@/lib/utils/trpc-errors";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const HARDCOVER_PER_PAGE = 10;
@@ -75,18 +75,6 @@ export function HardcoverImportFlow() {
       HARDCOVER_API_INVALID_RESPONSE: t("api-error"),
     }),
     [t],
-  );
-
-  const resolveHardcoverErrorMessage = useCallback(
-    (error: unknown, fallback: string) => {
-      const errorCode = getTrpcErrorCode(error);
-      if (errorCode && errorCode in hardcoverErrorMessageByCode) {
-        return hardcoverErrorMessageByCode[errorCode as keyof typeof hardcoverErrorMessageByCode];
-      }
-
-      return fallback;
-    },
-    [hardcoverErrorMessageByCode],
   );
 
   const workSearchQuery = useQuery({
@@ -208,7 +196,13 @@ export function HardcoverImportFlow() {
 
           {workSearchQuery.error && (
             <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>{resolveHardcoverErrorMessage(workSearchQuery.error, t("api-error"))}</p>
+              <p>
+                {resolveMappedErrorMessage({
+                  error: workSearchQuery.error,
+                  map: hardcoverErrorMessageByCode,
+                  fallback: t("api-error"),
+                })}
+              </p>
               <div className="mt-2">
                 <Button type="button" variant="outline" onClick={() => workSearchQuery.refetch()}>
                   {t("retry")}
@@ -324,7 +318,13 @@ export function HardcoverImportFlow() {
 
           {workEditionsQuery.error && (
             <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>{resolveHardcoverErrorMessage(workEditionsQuery.error, t("api-error"))}</p>
+              <p>
+                {resolveMappedErrorMessage({
+                  error: workEditionsQuery.error,
+                  map: hardcoverErrorMessageByCode,
+                  fallback: t("api-error"),
+                })}
+              </p>
               <div className="mt-2 flex gap-2">
                 <Button type="button" variant="outline" onClick={() => workEditionsQuery.refetch()}>
                   {t("retry")}
@@ -427,7 +427,13 @@ export function HardcoverImportFlow() {
 
           {editionDetailsQuery.error && (
             <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>{resolveHardcoverErrorMessage(editionDetailsQuery.error, t("api-error"))}</p>
+              <p>
+                {resolveMappedErrorMessage({
+                  error: editionDetailsQuery.error,
+                  map: hardcoverErrorMessageByCode,
+                  fallback: t("api-error"),
+                })}
+              </p>
               <div className="mt-2 flex gap-2">
                 <Button type="button" variant="outline" onClick={() => editionDetailsQuery.refetch()}>
                   {t("retry")}

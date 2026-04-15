@@ -7,7 +7,7 @@
   "repository": "https://github.com/mvahaste/libreads",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "build": "prisma generate && next build",
     "start": "next start",
     "test": "vitest --run",
@@ -36,6 +36,7 @@
     "@trpc/client": "^11.11.0",
     "@trpc/server": "^11.11.0",
     "@trpc/tanstack-react-query": "^11.11.0",
+    "@zxing/browser": "^0.1.5",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.4.18",
     "class-variance-authority": "^0.7.1",
