@@ -1,0 +1,64 @@
+{
+  "states": {
+    "loading": "Loading...",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "results": {
+    "passwordChanged": "Password changed successfully."
+  },
+  "actions": {
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "back": "Back",
+    "view": "View",
+    "close": "Close",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "changePassword": "Change password"
+  },
+  "fields": {
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "email": "Email",
+    "emailPlaceholder": "john@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Re-enter new password",
+    "role": "Role"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "minLength": "Must be at least {min} characters.",
+    "maxLength": "Must be at most {max} characters.",
+    "passwordMismatch": "Passwords must match."
+  },
+  "command": {
+    "title": "Command Palette",
+    "description": "Search for a command to run..."
+  },
+  "entities": {
+    "books": "Books",
+    "authors": "Authors",
+    "series": "Series",
+    "genres": "Genres",
+    "tags": "Tags",
+    "publishers": "Publishers",
+    "users": "Users",
+    "works": "Works",
+    "editions": "Editions",
+    "system": "System"
+  }
+}

@@ -1,0 +1,237 @@
+enum BookType {
+  PHYSICAL
+  EBOOK
+  AUDIOBOOK
+}
+
+enum ReadingStatus {
+  WANT_TO_READ
+  READING
+  COMPLETED
+  PAUSED
+  ABANDONED
+}
+
+enum ReadThroughStatus {
+  READING
+  PAUSED
+  COMPLETED
+  ABANDONED
+}
+
+enum ProgressType {
+  PAGES
+  TIME
+  PERCENTAGE
+}
+
+model Book {
+  id          String @id @default(uuid())
+  hardcoverId Int?   @unique
+  slug        String @unique
+
+  title       String
+  subtitle    String?
+  description String?
+
+  isbn10 String? @unique
+  isbn13 String? @unique
+
+  publisherId String?
+  publisher   Publisher? @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+
+  publishYear Int?
+
+  type   BookType @default(PHYSICAL)
+  format String? // Paperback / Kindle etc
+
+  pageCount    Int?
+  audioSeconds Int?
+
+  coverId String?
+  cover   Image?  @relation(fields: [coverId], references: [id], onDelete: SetNull)
+
+  authors BookAuthor[]
+  genres  BookGenre[]
+  series  BookSeries[]
+
+  userBooks UserBook[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([publisherId])
+  @@index([coverId])
+  @@map("book")
+}
+
+model Series {
+  id          String  @id @default(uuid())
+  hardcoverId Int?    @unique
+  slug        String  @unique
+  name        String  @unique
+  description String?
+
+  books BookSeries[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("series")
+}
+
+model BookSeries {
+  bookId   String
+  seriesId String
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  series Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  position Float? // 1, 2, 2.5
+
+  @@id([bookId, seriesId])
+  @@index([seriesId])
+  @@map("book_series")
+}
+
+model Author {
+  id          String @id @default(uuid())
+  hardcoverId Int?   @unique
+  slug        String @unique
+  name        String
+
+  books BookAuthor[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("author")
+}
+
+model BookAuthor {
+  bookId   String
+  authorId String
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, authorId])
+  @@index([authorId])
+  @@map("book_author")
+}
+
+model Genre {
+  id          String @id @default(uuid())
+  hardcoverId Int?   @unique
+  slug        String @unique
+  name        String @unique
+
+  books BookGenre[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("genre")
+}
+
+model BookGenre {
+  bookId  String
+  genreId String
+
+  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, genreId])
+  @@index([genreId])
+  @@map("book_genre")
+}
+
+model Publisher {
+  id          String @id @default(uuid())
+  hardcoverId Int?   @unique
+  slug        String @unique
+  name        String @unique
+
+  books Book[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("publisher")
+}
+
+model UserBook {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  status      ReadingStatus?
+  wantsToRead Boolean        @default(false)
+
+  rating Float?
+  notes  String?
+
+  tags         TagBook[]
+  readThroughs ReadThrough[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, bookId])
+  @@index([bookId])
+  @@map("user_book")
+}
+
+model ReadThrough {
+  id String @id @default(uuid())
+
+  userBookId String
+  userBook   UserBook @relation(fields: [userBookId], references: [id], onDelete: Cascade)
+
+  status   ReadThroughStatus
+  progress Int               @default(0)
+
+  startedAt DateTime  @default(now())
+  stoppedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userBookId])
+  @@map("read_through")
+}
+
+model Tag {
+  id String @id @default(uuid())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name String
+
+  entries TagBook[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@map("tag")
+}
+
+model TagBook {
+  tagId      String
+  userBookId String
+
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  userBook UserBook @relation(fields: [userBookId], references: [id], onDelete: Cascade)
+
+  addedAt DateTime @default(now())
+
+  @@id([tagId, userBookId])
+  @@index([userBookId])
+  @@map("tag_book")
+}

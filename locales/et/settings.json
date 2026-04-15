@@ -1,0 +1,82 @@
+{
+  "title": "Seaded",
+  "description": "Halda oma konto ja rakenduse eelistusi.",
+
+  "groups": {
+    "account": "Konto",
+    "admin": "Admin"
+  },
+
+  "themes": {
+    "light": "Hele",
+    "dark": "Tume",
+    "system": "Süsteem"
+  },
+  "locales": {
+    "en": "English",
+    "et": "Eesti"
+  },
+
+  "preferences": {
+    "title": "Eelistused",
+    "description": "Halda oma profiili, teemat ja keelt.",
+    "theme": "Teema",
+    "locale": "Keel",
+    "profile": "Profiil",
+    "profileDescription": "Sinu konto informatsioon.",
+    "profilePhoto": "Profiilipilt",
+    "profilePhotoDescription": "JPG või PNG. Maksimaalselt 1MB.",
+    "avatarUploadSuccess": "Profiilipilt uuendatud.",
+    "profileUpdateSuccess": "Profiil edukalt uuendatud.",
+    "appearance": "Välimus",
+    "appearanceDescription": "Vali, kuidas rakendus sinu jaoks välja näeb.",
+    "languageAndRegion": "Keel & piirkond",
+    "languageAndRegionDescription": "Vali oma eelistatud keel ja piirkondlik vorming."
+  },
+
+  "security": {
+    "title": "Turvalisus",
+    "description": "Kaitse oma kontot.",
+    "passwordDescription": "Uuenda oma parooli, et hoida konto turvalisena."
+  },
+
+  "danger": {
+    "title": "Ohutsoon",
+    "description": "Pöördumatud ja hävitavad toimingud.",
+    "deleteAccountAndData": "Kustuta konto ja andmed",
+    "deleteAccountAndDataDescription": "Kustuta konto ja kõik sellega seotud andmed. Seda toimingut ei saa tagasi võtta.",
+    "deleteAccount": "Kustuta konto",
+    "deleteAccountConfirmation": "Kas oled kindel?",
+    "deleteAccountConfirmationDescription": "See kustutab jäädavalt sinu konto ja kõik sinu andmed. Seda toimingut ei saa tagasi võtta.",
+    "deleteAccountConfirmationInput": "Kinnitamiseks sisesta parool"
+  },
+
+  "system": {
+    "description": "Platvormi statistika ja andmete ülevaade.",
+    "overview": "Süsteemi ülevaade",
+    "overviewDescription": "Ülevaade platvormil salvestatud andmetest."
+  },
+
+  "users": {
+    "description": "Halda kasutajaid.",
+    "management": "Kasutajate haldamine",
+    "managementDescription": "Vaata, lisa ja eemalda kasutajaid platvormilt.",
+    "addUser": "Lisa kasutaja",
+    "addUserTitle": "Lisa uus kasutaja",
+    "addUserDescription": "Loo platvormile uus kasutajakonto.",
+    "searchPlaceholder": "Otsi kasutajaid...",
+    "noUsersFound": "Kasutajaid ei leitud.",
+    "tableJoined": "Liitunud",
+    "tableActions": "Tegevused",
+    "roles": {
+      "admin": "Admin",
+      "user": "Kasutaja"
+    },
+    "currentUser": "Mina",
+    "removeUser": "Eemalda kasutaja",
+    "removeUserConfirmation": "Kas oled kindel, et soovid eemaldada kasutaja {name}? See kustutab jäädavalt nende konto ja kõik seotud andmed.",
+    "addUserSuccess": "Kasutaja edukalt loodud.",
+    "removeUserSuccess": "Kasutaja edukalt eemaldatud.",
+    "joinedAt": "Liitunud {date}"
+  }
+}

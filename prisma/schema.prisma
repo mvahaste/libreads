@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  users User[]
+  books Book[]
+
+  @@map("image")
+}

@@ -1,0 +1,64 @@
+{
+  "states": {
+    "loading": "Laadimine...",
+    "enabled": "Sisse lülitatud",
+    "disabled": "Välja lülitatud"
+  },
+  "results": {
+    "passwordChanged": "Parool edukalt muudetud."
+  },
+  "actions": {
+    "signUp": "Registreeru",
+    "signIn": "Logi sisse",
+    "signOut": "Logi välja",
+    "back": "Tagasi",
+    "view": "Vaata",
+    "close": "Sulge",
+    "save": "Salvesta",
+    "saveChanges": "Salvesta muudatused",
+    "cancel": "Tühista",
+    "delete": "Kustuta",
+    "edit": "Muuda",
+    "changePassword": "Muuda parooli"
+  },
+  "fields": {
+    "name": "Nimi",
+    "namePlaceholder": "Mari Maasikas",
+    "email": "E-post",
+    "emailPlaceholder": "mari@example.com",
+    "password": "Parool",
+    "passwordPlaceholder": "Sisesta parool",
+    "confirmPassword": "Kinnita parool",
+    "confirmPasswordPlaceholder": "Sisesta parool uuesti",
+    "currentPassword": "Praegune parool",
+    "currentPasswordPlaceholder": "Sisesta praegune parool",
+    "newPassword": "Uus parool",
+    "newPasswordPlaceholder": "Sisesta uus parool",
+    "confirmNewPassword": "Kinnita uus parool",
+    "confirmNewPasswordPlaceholder": "Sisesta uus parool uuesti",
+    "role": "Roll"
+  },
+  "validation": {
+    "required": "See väli on kohustuslik.",
+    "invalidEmail": "Palun sisesta kehtiv e-posti aadress.",
+    "minLength": "Peab olema vähemalt {min} tähemärki.",
+    "maxLength": "Tohib olla kuni {max} tähemärki.",
+    "passwordMismatch": "Paroolid peavad ühtima."
+  },
+  "command": {
+    "title": "Käsupaneel",
+    "description": "Otsi käsku, mida käivitada..."
+  },
+  "entities": {
+    "books": "Raamatud",
+    "authors": "Autorid",
+    "series": "Sarjad",
+    "genres": "Žanrid",
+    "tags": "Sildid",
+    "publishers": "Kirjastused",
+    "users": "Kasutajad",
+    "works": "Teosed",
+    "editions": "Väljaanded",
+    "system": "Süsteem"
+  }
+}

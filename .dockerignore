@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build output
+.next
+
+# Environment
+.env*
+
+# IDE & OS
+.vscode
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+compose*.yml
+
+# Misc
+README.md
+.prettierrc
+eslint.config.mjs
+example.env
+components.json
+data/
+docs/

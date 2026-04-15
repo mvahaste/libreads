@@ -1,0 +1,82 @@
+{
+  "title": "Settings",
+  "description": "Manage your account and application preferences.",
+
+  "groups": {
+    "account": "Account",
+    "admin": "Admin"
+  },
+
+  "themes": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locales": {
+    "en": "English",
+    "et": "Eesti"
+  },
+
+  "preferences": {
+    "title": "Preferences",
+    "description": "Manage your profile, theme, and language.",
+    "theme": "Theme",
+    "locale": "Language",
+    "profile": "Profile",
+    "profileDescription": "Your personal account information.",
+    "profilePhoto": "Profile photo",
+    "profilePhotoDescription": "JPG or PNG. 1MB max.",
+    "avatarUploadSuccess": "Profile photo updated.",
+    "profileUpdateSuccess": "Profile updated successfully.",
+    "appearance": "Appearance",
+    "appearanceDescription": "Choose how the application looks to you.",
+    "languageAndRegion": "Language & Region",
+    "languageAndRegionDescription": "Choose your preferred language and regional format."
+  },
+
+  "security": {
+    "title": "Security",
+    "description": "Protect your account.",
+    "passwordDescription": "Update your password to keep your account secure."
+  },
+
+  "danger": {
+    "title": "Danger Zone",
+    "description": "Irreversible actions for your account.",
+    "deleteAccountAndData": "Delete account and data",
+    "deleteAccountAndDataDescription": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "deleteAccount": "Delete account",
+    "deleteAccountConfirmation": "Are you absolutely sure?",
+    "deleteAccountConfirmationDescription": "This will permanently delete your account and all of your data. This action cannot be undone.",
+    "deleteAccountConfirmationInput": "Confirm by entering your password"
+  },
+
+  "system": {
+    "description": "Platform-wide statistics and data overview.",
+    "overview": "System Overview",
+    "overviewDescription": "A snapshot of the data stored across the platform."
+  },
+
+  "users": {
+    "description": "Manage user accounts.",
+    "management": "User Management",
+    "managementDescription": "View, add, and remove users from the platform.",
+    "addUser": "Add user",
+    "addUserTitle": "Add new user",
+    "addUserDescription": "Create a new user account on the platform.",
+    "searchPlaceholder": "Search users...",
+    "noUsersFound": "No users found.",
+    "tableJoined": "Joined",
+    "tableActions": "Actions",
+    "roles": {
+      "admin": "Admin",
+      "user": "User"
+    },
+    "currentUser": "Me",
+    "removeUser": "Remove user",
+    "removeUserConfirmation": "Are you sure you want to remove {name}? This will permanently delete their account and all associated data.",
+    "addUserSuccess": "User created successfully.",
+    "removeUserSuccess": "User removed successfully.",
+    "joinedAt": "Joined {date}"
+  }
+}

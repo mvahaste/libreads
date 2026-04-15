@@ -1,0 +1,22 @@
+{
+  "unknown": "An unknown error occurred.",
+  "avatar": {
+    "invalidType": "Invalid file type. Please upload a JPG or PNG.",
+    "tooLarge": "File is too large. Maximum size is 1MB.",
+    "uploadFailed": "Failed to upload profile photo."
+  },
+  "auth": {
+    "SIGN_UP_DISABLED": "Sign-up is disabled.",
+    "EMAIL_ALREADY_IN_USE": "This email is already in use.",
+
+    "ACCOUNT_NOT_FOUND": "Account not found.",
+    "USER_NOT_FOUND": "User not found.",
+    "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password.",
+    "INVALID_EMAIL": "Invalid email address.",
+    "INVALID_PASSWORD": "Invalid password.",
+    "PASSWORD_TOO_LONG": "Password must be at most {max} characters.",
+    "PASSWORD_TOO_SHORT": "Password must be at least {min} characters.",
+    "USER_ALREADY_EXISTS": "User already exists.",
+    "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "User already exists, use another email."
+  }
+}

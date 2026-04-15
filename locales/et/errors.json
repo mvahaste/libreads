@@ -1,0 +1,22 @@
+{
+  "unknown": "Midagi läks valesti.",
+  "avatar": {
+    "invalidType": "Vigane failitüüp. Palun laadi üles JPG või PNG.",
+    "tooLarge": "Fail on liiga suur. Maksimaalne suurus on 1MB.",
+    "uploadFailed": "Profiili pildi üleslaadimine ebaõnnestus."
+  },
+  "auth": {
+    "SIGN_UP_DISABLED": "Registreerimine on keelatud.",
+    "EMAIL_ALREADY_IN_USE": "See e-posti aadress on juba kasutusel.",
+
+    "ACCOUNT_NOT_FOUND": "Kontot ei leitud.",
+    "USER_NOT_FOUND": "Kasutajat ei leitud.",
+    "INVALID_EMAIL_OR_PASSWORD": "Vigane e-post või parool.",
+    "INVALID_EMAIL": "Vigane e-posti aadress.",
+    "INVALID_PASSWORD": "Vigane parool.",
+    "PASSWORD_TOO_LONG": "Parool tohib olla kuni {max} tähemärki.",
+    "PASSWORD_TOO_SHORT": "Parool peab olema vähemalt {min} tähemärki.",
+    "USER_ALREADY_EXISTS": "Kasutaja on juba olemas.",
+    "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Kasutaja on juba olemas, kasuta teist e-posti aadressi."
+  }
+}

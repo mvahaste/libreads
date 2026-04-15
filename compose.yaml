@@ -1,0 +1,13 @@
+services:
+  libreads:
+    image: ghcr.io/mvahaste/libreads:latest
+    container_name: libreads
+    user: 1000:1000
+    environment:
+      - LIBREADS_BASE_URL=https://libreads.example.com
+      - LIBREADS_AUTH_SECRET=supersecretkeythatshouldbereplacedinproduction # generate with `openssl rand -base64 32`
+    ports:
+      - 3000:3000
+    volumes:
+      - <persistent-data-location>:/data
+    restart: unless-stopped

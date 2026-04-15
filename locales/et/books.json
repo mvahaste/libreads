@@ -1,0 +1,19 @@
+{
+  "title": "Raamatud",
+  "description": "Halda oma raamatuid, sirvi Libreadsi või impordi raamatuid Hardcover'ist.",
+
+  "my-books": {
+    "title": "Minu raamatud",
+    "description": "Vaata ja halda oma raamatuid."
+  },
+
+  "libreads-library": {
+    "title": "Libreadsi raamatukogu",
+    "description": "Sirvi Libreadsi raamatukogu ja avasta uusi raamatuid. Sisaldab kõiki raamatuid, mida kasutajad on Libreadsi raamatukokku lisanud."
+  },
+
+  "hardcover-import": {
+    "title": "Impordi Hardcoverist",
+    "description": "Impordi raamatuid Hardcoverist Libreadsi raamatukokku."
+  }
+}

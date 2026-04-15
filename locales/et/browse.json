@@ -1,0 +1,297 @@
+{
+  "title": "Sirvi",
+  "description": "Avasta oma raamatukogu, leia raamatuid ja halda oma kollektsiooni.",
+
+  "groups": {
+    "my-library": "Minu kogu",
+    "catalog": "Kataloog",
+    "add-books": "Lisa raamatuid"
+  },
+
+  "my-books": {
+    "title": "Minu raamatud",
+    "description": "Vaata ja halda oma raamatuid."
+  },
+
+  "books": {
+    "description": "Sirvi kõiki raamatuid Libreads kataloogis."
+  },
+
+  "authors": {
+    "description": "Sirvi kõiki autoreid."
+  },
+
+  "series": {
+    "description": "Sirvi kõiki sarju."
+  },
+
+  "genres": {
+    "description": "Sirvi kõiki žanreid."
+  },
+
+  "publishers": {
+    "description": "Sirvi kõiki kirjastusi."
+  },
+
+  "tags": {
+    "description": "Halda oma silte ja sirvi sildistatud raamatuid.",
+    "manage": "Halda silte",
+    "edit": "Muuda silti",
+    "delete": "Kustuta silt",
+    "delete-confirmation": "Kas oled kindel, et soovid sildi \"{name}\" kustutada?",
+    "name": "Nimi",
+    "name-placeholder": "nt Lemmikud",
+    "update-success": "Silt uuendatud.",
+    "delete-success": "Silt kustutatud.",
+    "save-failed": "Sildi salvestamine ebaõnnestus.",
+    "delete-failed": "Sildi kustutamine ebaõnnestus.",
+    "duplicate": "Sama nimega silt on juba olemas.",
+    "dialog-title": "Halda silte",
+    "dialog-description": "Muuda siltide nimesid, et raamatud püsiksid korrastatuna.",
+    "none": "Silte veel pole, kirjuta, et luua.",
+    "create-option": "Loo \"{value}\"",
+    "pick-tags": "Vali selle raamatu sildid",
+    "save-selection": "Salvesta sildid",
+    "save-selection-success": "Sildid uuendatud.",
+    "save-selection-error": "Siltide uuendamine ebaõnnestus.",
+    "book-not-in-library": "Lisa see raamat enne oma kogusse, et seda sildistada."
+  },
+
+  "entity-actions": {
+    "manage": "Halda: {entity}",
+    "coming-soon": "Peagi"
+  },
+
+  "add-books": {
+    "title": "Lisa raamatuid",
+    "description": "Impordi raamatuid Hardcoverist, skanneeri, või lisa käsitsi.",
+    "import": {
+      "title": "Impordi",
+      "description": "Impordi raamat Hardcoverist.",
+      "action": "Impordi"
+    },
+    "scan": {
+      "title": "Skanneeri",
+      "description": "Lisa raamat tagakaanel olevat ISBN-koodi skaneerides.",
+      "action": "Skanneeri"
+    },
+    "manual": {
+      "title": "Manuaalne",
+      "description": "Lisa raamat seda käsitsi luues.",
+      "action": "Manuaalne"
+    }
+  },
+
+  "search": {
+    "placeholder": "Otsi...",
+    "placeholder-books": "Otsi raamatuid...",
+    "placeholder-authors": "Otsi autoreid...",
+    "placeholder-series": "Otsi sarjasid...",
+    "placeholder-genres": "Otsi žanreid...",
+    "placeholder-publishers": "Otsi kirjastusi...",
+    "placeholder-tags": "Otsi silte...",
+    "placeholder-my-books": "Otsi oma raamatuid..."
+  },
+
+  "sort": {
+    "label": "Sorteeri",
+    "title-asc": "Pealkiri A–Z",
+    "title-desc": "Pealkiri Z–A",
+    "year-desc": "Uuemad enne",
+    "year-asc": "Vanemad enne",
+    "name-asc": "Nimi A–Z",
+    "name-desc": "Nimi Z–A",
+    "works-desc": "Enim teoseid",
+    "editions-desc": "Enim väljaandeid"
+  },
+
+  "filter": {
+    "label": "Filtrid",
+    "genre": "Žanr",
+    "author": "Autor",
+    "publisher": "Kirjastus",
+    "series": "Sari",
+    "status": "Staatus",
+    "tag": "Silt",
+    "format": "Formaat",
+    "clear": "Tühjenda",
+    "clear-all": "Tühjenda kõik filtrid"
+  },
+
+  "reading-status": {
+    "WANT_TO_READ": "Soovin lugeda",
+    "READING": "Loen",
+    "COMPLETED": "Loetud",
+    "PAUSED": "Peatatud",
+    "ABANDONED": "Pooleli jäetud"
+  },
+
+  "display": {
+    "label": "Kuvamine",
+    "default": "Vaikimisi",
+    "list": "Loetelu",
+    "compact": "Kompaktne",
+    "cover": "Kaanepilt"
+  },
+
+  "pagination": {
+    "page": "Lehekülg",
+    "of": "/",
+    "next": "Järgmine",
+    "previous": "Eelmine",
+    "showing": "Kuvatakse {from}–{to} / {total}"
+  },
+
+  "empty": {
+    "no-results": "Tulemusi ei leitud.",
+    "no-books": "Sinu kogus pole veel raamatuid.",
+    "try-different": "Proovi otsingu- või filtritingimusi muuta."
+  },
+
+  "count": {
+    "work": "{count, plural, one {# teos} other {# teost}}",
+    "edition": "{count, plural, one {# väljaanne} other {# väljaannet}}"
+  },
+
+  "detail": {
+    "go-back": "Tagasi",
+    "description": "Kirjeldus",
+    "first-published": "Esmaavaldamine",
+    "editions": "Väljaanded",
+    "works": "Teosed",
+    "work": "Teos",
+    "year": "Aasta",
+    "publisher": "Kirjastus",
+    "pages": "Lehekülge",
+    "duration": "Kestus",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "format": "Formaat",
+    "genres": "Žanrid",
+    "series": "Sari",
+    "type": "Tüüp",
+    "subtitle": "Alapealkiri",
+    "title": "Pealkiri",
+    "slug": "Püsilink",
+    "hardcover-id": "Hardcover ID",
+    "hardcover-id-placeholder": "nt 1234567",
+    "audio-duration": "Pikkus",
+    "create-book": "Lisa raamat",
+    "create-book-description": "Loo uus raamat käsitsi.",
+    "create-book-action": "Loo raamat",
+    "create-book-success": "Raamat loodud.",
+    "create-book-error": "Raamatu loomine ebaõnnestus.",
+    "edit-book": "Muuda raamatut",
+    "edit-book-description": "Uuenda raamatu metaandmeid.",
+    "edit-book-success": "Raamatu andmed on uuendatud.",
+    "edit-book-error": "Raamatu andmete uuendamine ebaõnnestus.",
+    "title-placeholder": "Raamatu pealkiri",
+    "subtitle-placeholder": "Alapealkiri (valikuline)",
+    "description-placeholder": "Raamatu kirjeldus (valikuline)",
+    "year-placeholder": "nt 2024",
+    "format-placeholder": "nt Pehmekaaneline",
+    "pages-placeholder": "Lehekülgede arv",
+    "duration-placeholder": "HH:MM:SS",
+    "rating": "Hinnang",
+    "rating-placeholder": "3.5",
+    "clear-rating": "Eemalda hinnang",
+    "rate-book-title": "Hinda raamatut",
+    "rate-book-description": "Hinda raamatut vahemikus 0.5 kuni 5 tärni, poolikud tärnid on lubatud.",
+    "all-editions-for-entry": "Kõik selle kirje väljaanded",
+    "all-editions-for-entry-description": "Selles sarja kirjes on mitu väljaannet.",
+    "star": "{count, plural, one {# tärn} other {# tärni}}",
+    "activity": "Minu tegevus",
+    "update-progress": "Uuenda edenemist",
+    "tags": "Sildid",
+    "add-tag": "Lisa silt",
+    "remove-tag": "Eemalda {name}",
+    "notes": "Märkmed",
+    "notes-placeholder": "Lisa isiklikud märkmed selle raamatu kohta...",
+    "add-note": "Lisa märge",
+    "edit-note": "Muuda märkmeid",
+    "book-notes-title": "Raamatu märkmed",
+    "book-notes-description": "Hoia selle raamatu kohta isiklikke märkmeid.",
+    "book-notes-placeholder": "Kirjuta oma märkmed siia...",
+    "clear-notes": "Eemalda märkmed",
+    "save-notes-success": "Märkmed salvestatud.",
+    "save-notes-error": "Märkmete salvestamine ebaõnnestus.",
+    "progress": "Edenemine",
+    "progress-placeholder": "0–100",
+    "read-again": "Loe uuesti",
+    "progress-pages": "Lehekülg {current} / {total}",
+    "progress-time": "{current} / {total}",
+    "progress-percentage": "{current}%",
+    "progress-time-label": "Aeg",
+    "progress-time-placeholder": "HH:MM:SS",
+    "progress-percentage-label": "Protsent",
+    "update-progress-title": "Uuenda lugemise edenemist",
+    "update-progress-description": "Uuenda selle raamatu hetke edenemist.",
+    "update-progress-success": "Edenemine uuendatud.",
+    "update-progress-error": "Edenemise uuendamine ebaõnnestus.",
+    "update-progress-completed": "Õnnitleme! Sa lõpetasid raamatu!",
+    "in-progress": "Pooleli",
+    "status": "Staatus",
+    "started": "Alustatud",
+    "stopped": "Katkestatud",
+    "finished": "Lõpetatud",
+    "read-throughs": "Lugemiskorrad",
+    "read-through-label": "Lugemiskord #{count}",
+    "delete-read-through": "Kustuta lugemiskord",
+    "delete-read-through-description": "Kas oled kindel, et soovid selle lugemiskorra kustutada? Seda tegevust ei saa tagasi võtta.",
+    "delete-read-through-success": "Lugemiskord kustutatud.",
+    "delete-read-through-error": "Lugemiskorra kustutamine ebaõnnestus.",
+    "remove-data-warning": "See kustutab {tags, plural, one {# sildi} other {# silti}} ja sinu isiklikud märkmed.",
+    "physical": "Füüsiline",
+    "ebook": "E-raamat",
+    "audiobook": "Audioraamat",
+    "duration-format-error": "Kestus peab olema formaadis HH:MM:SS.",
+    "book-slug-exists": "See püsilink on juba kasutusel.",
+    "book-hardcover-id-exists": "See Hardcover ID on juba kasutusel.",
+    "book-isbn10-exists": "See ISBN-10 on juba kasutusel.",
+    "book-isbn13-exists": "See ISBN-13 on juba kasutusel.",
+    "cover": "Kaas",
+    "upload-cover": "Laadi kaas üles",
+    "replace-cover": "Asenda kaas",
+    "clear-cover": "Eemalda kaas",
+    "cover-upload-success": "Kaas üles laaditud.",
+    "cover-upload-error": "Kaane üleslaadimine ebaõnnestus.",
+    "cover-invalid-type": "Vigane kaane failitüüp. Laadi üles JPG, PNG või WebP.",
+    "cover-too-large": "Kaane fail on liiga suur. Maksimaalne suurus on 5MB.",
+    "relations": "Seosed",
+    "create-option": "Loo \"{value}\"",
+    "none": "Puudub",
+    "publisher-select-placeholder": "Vali kirjastus",
+    "publisher-new": "Loo kirjastus",
+    "publisher-new-placeholder": "Uue kirjastuse nimi",
+    "publisher-duplicate-name": "See kirjastus on juba olemas. Duplikaadi loomise asemel vali olemasolev.",
+    "authors-existing": "Autorid",
+    "authors-existing-placeholder": "Vali autorid",
+    "authors-new": "Loo autorid",
+    "authors-new-placeholder": "Komaga eraldatud nimed, nt Ursula K. Le Guin, Octavia Butler",
+    "authors-new-duplicate": "Need autorid on juba olemas: {names}. Vali olemasolevad autorid.",
+    "genres-existing": "Žanrid",
+    "genres-existing-placeholder": "Vali žanrid",
+    "genres-new": "Loo žanrid",
+    "genres-new-placeholder": "Komaga eraldatud nimed, nt Fantaasia, Ilukirjandus",
+    "genres-new-duplicate": "Need žanrid on juba olemas: {names}. Vali olemasolevad žanrid.",
+    "add-series-entry": "Lisa sarja kirje",
+    "no-series-entries": "Sarja kirjeid pole.",
+    "series-existing": "Sari",
+    "series-existing-placeholder": "Vali sari",
+    "series-new": "Loo sari",
+    "series-new-placeholder": "Uue sarja nimi",
+    "series-new-duplicate-name": "Sari '{name}' on juba olemas. Vali olemasolev sari.",
+    "series-entry-choose-one": "Vali kas olemasolev sari või uus sarja nimi.",
+    "series-duplicate-entry": "See sarja kirje on vormis duplikaat.",
+    "series-position": "Positsioon",
+    "series-position-placeholder": "nt 2 või 2.5",
+    "remove-series-entry": "Eemalda kirje",
+    "series-position-error": "Sarja positsioon peab olema positiivne number.",
+    "title-required": "Pealkiri on kohustuslik",
+    "remove-from-library": "Eemalda kogust",
+    "remove-from-library-description": "Kas oled kindel, et soovid selle raamatu oma kogust eemaldada? See kustutab sinu staatuse, edenemise, märkmed, hinnangu ja sildid.",
+    "remove-from-library-success": "Raamat eemaldatud kogust.",
+    "set-status-error": "Staatuse uuendamine ebaõnnestus.",
+    "unknown-title": "Tundmatu pealkiri"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Books",
+  "description": "Manage your library, browse Libreads or import books from Hardcover.",
+
+  "my-books": {
+    "title": "My Books",
+    "description": "View and manage the books in your library."
+  },
+
+  "libreads-library": {
+    "title": "Libreads Library",
+    "description": "Browse the Libreads library and discover new books. Includes all books that users have added to the Libreads library."
+  },
+
+  "hardcover-import": {
+    "title": "Import from Hardcover",
+    "description": "Import books from Hardcover into the Libreads library."
+  }
+}

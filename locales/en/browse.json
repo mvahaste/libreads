@@ -1,0 +1,297 @@
+{
+  "title": "Browse",
+  "description": "Explore your library, discover books, and manage your collection.",
+
+  "groups": {
+    "my-library": "My Library",
+    "catalog": "Catalog",
+    "add-books": "Add Books"
+  },
+
+  "my-books": {
+    "title": "My Books",
+    "description": "View and manage the books in your library."
+  },
+
+  "books": {
+    "description": "Browse all books in the Libreads catalog."
+  },
+
+  "authors": {
+    "description": "Browse all authors."
+  },
+
+  "series": {
+    "description": "Browse all series."
+  },
+
+  "genres": {
+    "description": "Browse all genres."
+  },
+
+  "publishers": {
+    "description": "Browse all publishers."
+  },
+
+  "tags": {
+    "description": "Manage your personal tags and browse tagged books.",
+    "manage": "Manage tags",
+    "edit": "Edit tag",
+    "delete": "Delete tag",
+    "delete-confirmation": "Are you sure you want to delete \"{name}\"?",
+    "name": "Name",
+    "name-placeholder": "e.g. Favorites",
+    "update-success": "Tag updated.",
+    "delete-success": "Tag deleted.",
+    "save-failed": "Failed to save tag.",
+    "delete-failed": "Failed to delete tag.",
+    "duplicate": "A tag with this name already exists.",
+    "dialog-title": "Manage tags",
+    "dialog-description": "Update tag names to keep your books organized.",
+    "none": "No tags yet, type to create.",
+    "create-option": "Create \"{value}\"",
+    "pick-tags": "Pick tags for this book",
+    "save-selection": "Save tags",
+    "save-selection-success": "Tags updated.",
+    "save-selection-error": "Failed to update tags.",
+    "book-not-in-library": "Add this book to your library before tagging it."
+  },
+
+  "entity-actions": {
+    "manage": "Manage {entity}",
+    "coming-soon": "Coming soon"
+  },
+
+  "add-books": {
+    "title": "Add Books",
+    "description": "Import books from Hardcover, scan, or add them manually.",
+    "import": {
+      "title": "Import",
+      "description": "Import a book from Hardcover.",
+      "action": "Import"
+    },
+    "scan": {
+      "title": "Scan",
+      "description": "Add a book by scanning the ISBN code on the back.",
+      "action": "Scan"
+    },
+    "manual": {
+      "title": "Manual",
+      "description": "Add a book by creating it manually.",
+      "action": "Manual"
+    }
+  },
+
+  "search": {
+    "placeholder": "Search...",
+    "placeholder-books": "Search books...",
+    "placeholder-authors": "Search authors...",
+    "placeholder-series": "Search series...",
+    "placeholder-genres": "Search genres...",
+    "placeholder-publishers": "Search publishers...",
+    "placeholder-tags": "Search tags...",
+    "placeholder-my-books": "Search your books..."
+  },
+
+  "sort": {
+    "label": "Sort",
+    "title-asc": "Title A–Z",
+    "title-desc": "Title Z–A",
+    "year-desc": "Newest first",
+    "year-asc": "Oldest first",
+    "name-asc": "Name A–Z",
+    "name-desc": "Name Z–A",
+    "works-desc": "Most works",
+    "editions-desc": "Most editions"
+  },
+
+  "filter": {
+    "label": "Filters",
+    "genre": "Genre",
+    "author": "Author",
+    "publisher": "Publisher",
+    "series": "Series",
+    "status": "Status",
+    "tag": "Tag",
+    "format": "Format",
+    "clear": "Clear",
+    "clear-all": "Clear all filters"
+  },
+
+  "reading-status": {
+    "WANT_TO_READ": "Want to Read",
+    "READING": "Reading",
+    "COMPLETED": "Completed",
+    "PAUSED": "Paused",
+    "ABANDONED": "Abandoned"
+  },
+
+  "display": {
+    "label": "Display",
+    "default": "Default",
+    "list": "List",
+    "compact": "Compact",
+    "cover": "Cover"
+  },
+
+  "pagination": {
+    "page": "Page",
+    "of": "of",
+    "next": "Next",
+    "previous": "Previous",
+    "showing": "Showing {from}–{to} of {total}"
+  },
+
+  "empty": {
+    "no-results": "No results found.",
+    "no-books": "No books in your library yet.",
+    "try-different": "Try adjusting your search or filters."
+  },
+
+  "count": {
+    "work": "{count, plural, one {# work} other {# works}}",
+    "edition": "{count, plural, one {# edition} other {# editions}}"
+  },
+
+  "detail": {
+    "go-back": "Go Back",
+    "description": "Description",
+    "first-published": "First published",
+    "editions": "Editions",
+    "works": "Works",
+    "work": "Work",
+    "year": "Year",
+    "publisher": "Publisher",
+    "pages": "Pages",
+    "duration": "Duration",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "format": "Format",
+    "genres": "Genres",
+    "series": "Series",
+    "type": "Type",
+    "subtitle": "Subtitle",
+    "title": "Title",
+    "slug": "Slug",
+    "hardcover-id": "Hardcover ID",
+    "hardcover-id-placeholder": "e.g. 1234567",
+    "audio-duration": "Length",
+    "create-book": "Add book",
+    "create-book-description": "Create a new book manually.",
+    "create-book-action": "Create book",
+    "create-book-success": "Book created.",
+    "create-book-error": "Failed to create book.",
+    "edit-book": "Edit Book",
+    "edit-book-description": "Update the book's metadata.",
+    "edit-book-success": "Book details updated.",
+    "edit-book-error": "Failed to update book details.",
+    "title-placeholder": "Book title",
+    "subtitle-placeholder": "Subtitle (optional)",
+    "description-placeholder": "Book description (optional)",
+    "year-placeholder": "e.g. 2024",
+    "format-placeholder": "e.g. Paperback",
+    "pages-placeholder": "Page count",
+    "duration-placeholder": "HH:MM:SS",
+    "rating": "Rating",
+    "rating-placeholder": "3.5",
+    "clear-rating": "Clear rating",
+    "rate-book-title": "Rate book",
+    "rate-book-description": "Rate the book from 0.5 to 5 stars, half stars are allowed.",
+    "all-editions-for-entry": "All editions for entry",
+    "all-editions-for-entry-description": "There are multiple editions for this entry in the series.",
+    "star": "{count, plural, one {# star} other {# stars}}",
+    "activity": "My Activity",
+    "update-progress": "Update progress",
+    "tags": "Tags",
+    "add-tag": "Add tag",
+    "remove-tag": "Remove {name}",
+    "notes": "Notes",
+    "notes-placeholder": "Add personal notes about this book...",
+    "add-note": "Add note",
+    "edit-note": "Edit note",
+    "book-notes-title": "Book notes",
+    "book-notes-description": "Keep personal notes for this book.",
+    "book-notes-placeholder": "Write your notes here...",
+    "clear-notes": "Clear notes",
+    "save-notes-success": "Notes saved.",
+    "save-notes-error": "Failed to save notes.",
+    "progress": "Progress",
+    "progress-placeholder": "0–100",
+    "read-again": "Read Again",
+    "progress-pages": "Page {current} of {total}",
+    "progress-time": "{current} of {total}",
+    "progress-percentage": "{current}%",
+    "progress-time-label": "Time",
+    "progress-time-placeholder": "HH:MM:SS",
+    "progress-percentage-label": "Percentage",
+    "update-progress-title": "Update Reading Progress",
+    "update-progress-description": "Update your current progress for this book.",
+    "update-progress-success": "Progress updated.",
+    "update-progress-error": "Failed to update progress.",
+    "update-progress-completed": "Congratulations! You finished the book!",
+    "in-progress": "In progress",
+    "status": "Status",
+    "started": "Started",
+    "stopped": "Stopped",
+    "finished": "Finished",
+    "read-throughs": "Read-throughs",
+    "read-through-label": "Read-through #{count}",
+    "delete-read-through": "Delete read-through",
+    "delete-read-through-description": "Are you sure you want to delete this read-through? This action cannot be undone.",
+    "delete-read-through-success": "Read-through deleted.",
+    "delete-read-through-error": "Failed to delete read-through.",
+    "remove-data-warning": "This will delete {tags, plural, one {# tag} other {# tags}} and your personal notes.",
+    "physical": "Physical",
+    "ebook": "Ebook",
+    "audiobook": "Audiobook",
+    "duration-format-error": "Duration must be in HH:MM:SS format.",
+    "book-slug-exists": "That slug is already in use.",
+    "book-hardcover-id-exists": "That Hardcover ID is already in use.",
+    "book-isbn10-exists": "That ISBN-10 is already in use.",
+    "book-isbn13-exists": "That ISBN-13 is already in use.",
+    "cover": "Cover",
+    "upload-cover": "Upload cover",
+    "replace-cover": "Replace cover",
+    "clear-cover": "Clear cover",
+    "cover-upload-success": "Cover uploaded.",
+    "cover-upload-error": "Failed to upload cover.",
+    "cover-invalid-type": "Invalid cover type. Please upload JPG, PNG, or WebP.",
+    "cover-too-large": "Cover file is too large. Maximum size is 5MB.",
+    "relations": "Relations",
+    "create-option": "Create \"{value}\"",
+    "none": "None",
+    "publisher-select-placeholder": "Select a publisher",
+    "publisher-new": "Create publisher",
+    "publisher-new-placeholder": "New publisher name",
+    "publisher-duplicate-name": "This publisher already exists. Select it instead of creating a duplicate.",
+    "authors-existing": "Authors",
+    "authors-existing-placeholder": "Select authors",
+    "authors-new": "Create authors",
+    "authors-new-placeholder": "Comma-separated names, e.g. Ursula K. Le Guin, Octavia Butler",
+    "authors-new-duplicate": "These authors already exist: {names}. Select existing authors instead.",
+    "genres-existing": "Genres",
+    "genres-existing-placeholder": "Select genres",
+    "genres-new": "Create genres",
+    "genres-new-placeholder": "Comma-separated names, e.g. Fantasy, Fiction",
+    "genres-new-duplicate": "These genres already exist: {names}. Select existing genres instead.",
+    "add-series-entry": "Add series entry",
+    "no-series-entries": "No series entries.",
+    "series-existing": "Series",
+    "series-existing-placeholder": "Select a series",
+    "series-new": "Create series",
+    "series-new-placeholder": "New series name",
+    "series-new-duplicate-name": "Series '{name}' already exists. Select the existing series instead.",
+    "series-entry-choose-one": "Choose either an existing series or a new series name.",
+    "series-duplicate-entry": "This series entry is duplicated in the form.",
+    "series-position": "Position",
+    "series-position-placeholder": "e.g. 2 or 2.5",
+    "remove-series-entry": "Remove entry",
+    "series-position-error": "Series position must be a positive number.",
+    "title-required": "Title is required",
+    "remove-from-library": "Remove from library",
+    "remove-from-library-description": "Are you sure you want to remove this book from your library? This will delete your status, progress, notes, rating, and tags.",
+    "remove-from-library-success": "Book removed from library.",
+    "set-status-error": "Failed to update status.",
+    "unknown-title": "Unknown Title"
+  }
+}
