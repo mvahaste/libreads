@@ -69,4 +69,24 @@ describe("books import mutation", () => {
       message: "EDITION_NOT_FOUND",
     });
   });
+
+  test("preserves duplicate import conflict for existing Hardcover edition", async () => {
+    editionDetailsMock.mockResolvedValue({
+      id: 123,
+      title: "Example Edition",
+      authors: [],
+      genres: [],
+      series: [],
+    });
+    prismaMock.prisma.book.findUnique.mockResolvedValueOnce({ id: "book-1" });
+
+    await expect(
+      createCaller().import({
+        editionId: 123,
+      }),
+    ).rejects.toMatchObject({
+      code: "CONFLICT",
+      message: "BOOK_ALREADY_EXISTS",
+    });
+  });
 });
