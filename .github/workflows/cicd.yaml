@@ -18,6 +18,7 @@ env:
 
 jobs:
   check-code:
+    if: github.event_name != 'pull_request' || (github.head_ref != 'main' && github.head_ref != 'dev')
     runs-on: ubuntu-latest
     permissions:
       contents: read
