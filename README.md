@@ -26,7 +26,8 @@ Environment variables:
 
 ```env
 # The base URL for the application, it must match the URL used to access the app in the browser.
-LIBREADS_BASE_URL=http://localhost:3000
+# Needs to use HTTPS for ISBN scanning to work (required for camera access).
+LIBREADS_BASE_URL=https://localhost:3000
 
 # Where to store the SQLite database and images.
 # SQLite database will be at `${LIBREADS_DATA_LOCATION}/libreads.db`
