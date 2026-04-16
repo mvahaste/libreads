@@ -75,7 +75,11 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
   const [genreQuery, setGenreQuery] = useState("");
   const [seriesQueryByFieldId, setSeriesQueryByFieldId] = useState<Record<string, string>>({});
 
-  const editBookSchema = createEditBookSchema(t("title-required"));
+  const editBookSchema = createEditBookSchema({
+    titleRequired: t("title-required"),
+    isbn10Invalid: t("book-isbn10-invalid"),
+    isbn13Invalid: t("book-isbn13-invalid"),
+  });
 
   const defaultValues = useMemo(() => {
     if (isEditMode && editBook) {

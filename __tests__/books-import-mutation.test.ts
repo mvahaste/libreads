@@ -89,4 +89,45 @@ describe("books import mutation", () => {
       message: "BOOK_ALREADY_EXISTS",
     });
   });
+
+  test("rejects import when imported edition contains invalid ISBN data", async () => {
+    editionDetailsMock.mockResolvedValue({
+      id: 123,
+      isbn10: "0306406153",
+    });
+
+    await expect(
+      createCaller().import({
+        editionId: 123,
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "IMPORTED_ISBN_INVALID",
+    });
+
+    expect(prismaMock.prisma.book.findUnique).not.toHaveBeenCalled();
+    expect(prismaMock.prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  test("treats blank imported ISBN values as missing", async () => {
+    editionDetailsMock.mockResolvedValue({
+      id: 123,
+      title: "Example Edition",
+      isbn10: "   ",
+      authors: [],
+      genres: [],
+      series: [],
+    });
+    prismaMock.prisma.$transaction.mockResolvedValue({ id: "book-1", slug: "book-1" });
+
+    await expect(
+      createCaller().import({
+        editionId: 123,
+      }),
+    ).resolves.toEqual({ id: "book-1", slug: "book-1" });
+
+    expect(prismaMock.prisma.book.findUnique).toHaveBeenCalledWith({
+      where: { hardcoverId: 123 },
+    });
+  });
 });

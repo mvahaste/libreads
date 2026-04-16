@@ -1,5 +1,6 @@
 import type { BookDetailsOutput } from "@/lib/trpc/routers/books";
 import { formatDurationForInput, parseDurationInputToSeconds } from "@/lib/utils/duration";
+import { normalizeAndValidateIsbn10, normalizeAndValidateIsbn13 } from "@/lib/utils/isbn";
 import z from "zod/v4";
 
 import {
@@ -32,9 +33,26 @@ export type UniqueConflictInput = {
   isbn13: string | null;
 };
 
-export function createEditBookSchema(titleRequired: string) {
+function createOptionalIsbnField(normalize: (input: string) => string | null, invalidMessage: string) {
+  return z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        const trimmed = value?.trim() ?? "";
+        return trimmed.length === 0 || normalize(trimmed) !== null;
+      },
+      { message: invalidMessage },
+    );
+}
+
+export function createEditBookSchema(messages: {
+  titleRequired: string;
+  isbn10Invalid: string;
+  isbn13Invalid: string;
+}) {
   return z.object({
-    title: z.string().trim().min(1, titleRequired).max(512),
+    title: z.string().trim().min(1, messages.titleRequired).max(512),
     subtitle: z.string().optional(),
     description: z.string().optional(),
     publishYear: z.string().optional(),
@@ -47,8 +65,8 @@ export function createEditBookSchema(titleRequired: string) {
       .regex(/^\d+:[0-5]\d:[0-5]\d$/, "Duration must be in HH:MM:SS format")
       .or(z.literal(""))
       .optional(),
-    isbn10: z.string().optional(),
-    isbn13: z.string().optional(),
+    isbn10: createOptionalIsbnField(normalizeAndValidateIsbn10, messages.isbn10Invalid),
+    isbn13: createOptionalIsbnField(normalizeAndValidateIsbn13, messages.isbn13Invalid),
     coverId: z.string().nullable(),
     publisherRef: z.string().optional(),
     authorRefs: z.array(z.string()),
@@ -67,6 +85,16 @@ export type EditBookFormValues = z.infer<ReturnType<typeof createEditBookSchema>
 export function toNullableText(value: string): string | null {
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function normalizeNullableIsbn(value: string, normalize: (input: string) => string | null): string | null {
+  const trimmed = value.trim();
+
+  if (trimmed.length === 0) {
+    return null;
+  }
+
+  return normalize(trimmed) ?? trimmed;
 }
 
 export function parseNullableInteger(value: string): number | null {
@@ -126,8 +154,8 @@ export function buildUniqueConflictInput(values: {
 }): UniqueConflictInput {
   return {
     hardcoverId: parseNullableInteger(values.hardcoverId),
-    isbn10: toNullableText(values.isbn10),
-    isbn13: toNullableText(values.isbn13),
+    isbn10: normalizeNullableIsbn(values.isbn10, normalizeAndValidateIsbn10),
+    isbn13: normalizeNullableIsbn(values.isbn13, normalizeAndValidateIsbn13),
   };
 }
 
@@ -394,8 +422,8 @@ function buildBookMutationInput({
       format: toNullableText(values.format ?? ""),
       pageCount: parsedPageCount,
       audioSeconds: parsedAudioSeconds,
-      isbn10: toNullableText(values.isbn10 ?? ""),
-      isbn13: toNullableText(values.isbn13 ?? ""),
+      isbn10: normalizeNullableIsbn(values.isbn10 ?? "", normalizeAndValidateIsbn10),
+      isbn13: normalizeNullableIsbn(values.isbn13 ?? "", normalizeAndValidateIsbn13),
       publisher,
       authors: authorRefs,
       genres: genreRefs,

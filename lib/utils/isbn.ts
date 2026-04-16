@@ -64,3 +64,21 @@ export function normalizeAndValidateIsbn(value: string): NormalizedIsbn | null {
 
   return null;
 }
+
+export function normalizeAndValidateIsbnForType(value: string, type: IsbnType): string | null {
+  const normalized = normalizeAndValidateIsbn(value);
+
+  if (!normalized || normalized.type !== type) {
+    return null;
+  }
+
+  return normalized.value;
+}
+
+export function normalizeAndValidateIsbn10(value: string): string | null {
+  return normalizeAndValidateIsbnForType(value, "ISBN10");
+}
+
+export function normalizeAndValidateIsbn13(value: string): string | null {
+  return normalizeAndValidateIsbnForType(value, "ISBN13");
+}

@@ -2,6 +2,7 @@ import {
   type EditBookFormValues,
   buildCreateBookMutationInput,
   buildUpdateBookMutationInput,
+  createEditBookSchema,
   dedupeRelationRefValues,
   encodeExistingRelationRef,
   getCreateDefaultValues,
@@ -21,6 +22,12 @@ function makeValues(overrides: Partial<EditBookFormValues> = {}): EditBookFormVa
 const messages = {
   durationFormatError: "Invalid duration",
   seriesPositionError: "Invalid series position",
+};
+
+const schemaMessages = {
+  titleRequired: "Title is required",
+  isbn10Invalid: "ISBN-10 is invalid",
+  isbn13Invalid: "ISBN-13 is invalid",
 };
 
 describe("parseRelationRef", () => {
@@ -49,6 +56,47 @@ describe("dedupeRelationRefValues", () => {
 });
 
 describe("book mutation input builders", () => {
+  test("createEditBookSchema validates ISBN format and checksum", () => {
+    const schema = createEditBookSchema(schemaMessages);
+
+    const validResult = schema.safeParse(
+      makeValues({
+        isbn10: "0-8044-2957-x",
+        isbn13: "ISBN 978-0-306-40615-7",
+      }),
+    );
+
+    expect(validResult.success).toBe(true);
+
+    const invalidIsbn10Result = schema.safeParse(
+      makeValues({
+        isbn10: "0306406153",
+      }),
+    );
+
+    expect(invalidIsbn10Result.success).toBe(false);
+
+    if (invalidIsbn10Result.success) {
+      throw new Error("Expected invalid ISBN-10 validation failure");
+    }
+
+    expect(invalidIsbn10Result.error.issues[0]?.message).toBe("ISBN-10 is invalid");
+
+    const invalidIsbn13Result = schema.safeParse(
+      makeValues({
+        isbn13: "9780306406158",
+      }),
+    );
+
+    expect(invalidIsbn13Result.success).toBe(false);
+
+    if (invalidIsbn13Result.success) {
+      throw new Error("Expected invalid ISBN-13 validation failure");
+    }
+
+    expect(invalidIsbn13Result.error.issues[0]?.message).toBe("ISBN-13 is invalid");
+  });
+
   test("buildCreateBookMutationInput trims fields and converts relation refs", () => {
     const existingAuthorRef = encodeExistingRelationRef("author-1");
     const existingGenreRef = encodeExistingRelationRef("genre-1");
@@ -57,6 +105,8 @@ describe("book mutation input builders", () => {
       values: makeValues({
         title: "  My Book  ",
         subtitle: "  Subtitle  ",
+        isbn10: "0-8044-2957-x",
+        isbn13: "ISBN 978-0-306-40615-7",
         publisherRef: "create:My Publisher",
         authorRefs: ["create:Alice", existingAuthorRef],
         genreRefs: [existingGenreRef],
@@ -73,6 +123,8 @@ describe("book mutation input builders", () => {
 
     expect(result.input.title).toBe("My Book");
     expect(result.input.subtitle).toBe("Subtitle");
+    expect(result.input.isbn10).toBe("080442957X");
+    expect(result.input.isbn13).toBe("9780306406157");
     expect(result.input.publisher).toEqual({ mode: "create", name: "My Publisher" });
     expect(result.input.authors).toEqual([{ mode: "existing", id: "author-1" }]);
     expect(result.input.genres).toEqual([{ mode: "existing", id: "genre-1" }]);

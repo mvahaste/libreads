@@ -1,6 +1,7 @@
 import z from "zod/v4";
 
 import { AUTH } from "./constants";
+import { normalizeAndValidateIsbn10, normalizeAndValidateIsbn13 } from "./utils/isbn";
 
 export const createUserSchema = z.object({
   name: z
@@ -43,6 +44,28 @@ const nullableTrimmedString = (maxLength: number) =>
     .transform((value) => value.trim())
     .nullable();
 
+function createNullableIsbnString(normalize: (value: string) => string | null, invalidMessage: string, maxLength = 64) {
+  return z
+    .string()
+    .max(maxLength)
+    .transform((value) => value.trim())
+    .nullable()
+    .refine((value) => value === null || value.length === 0 || normalize(value) !== null, {
+      message: invalidMessage,
+    })
+    .transform((value) => {
+      if (value === null || value.length === 0) {
+        return null;
+      }
+
+      return normalize(value);
+    });
+}
+
+const nullableIsbn10String = createNullableIsbnString(normalizeAndValidateIsbn10, "Invalid ISBN-10 format or checksum");
+
+const nullableIsbn13String = createNullableIsbnString(normalizeAndValidateIsbn13, "Invalid ISBN-13 format or checksum");
+
 const bookTypeSchema = z.enum(["PHYSICAL", "EBOOK", "AUDIOBOOK"]);
 
 const bookWriteSchema = z.object({
@@ -54,8 +77,8 @@ const bookWriteSchema = z.object({
   format: nullableTrimmedString(120),
   pageCount: z.int().min(1).max(100_000).nullable(),
   audioSeconds: z.int().min(0).max(31_557_600).nullable(),
-  isbn10: nullableTrimmedString(32),
-  isbn13: nullableTrimmedString(32),
+  isbn10: nullableIsbn10String,
+  isbn13: nullableIsbn13String,
   hardcoverId: z.int().nonnegative().nullable(),
   publisher: relationRefSchema.nullable().optional(),
   authors: z.array(relationRefSchema).optional(),
