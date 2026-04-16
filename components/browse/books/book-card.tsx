@@ -34,7 +34,7 @@ function useDerivedBookFields(book: BookCardData) {
       book.authors && book.authors.length ? book.authors.map((a) => a.name).join(", ") : "Unknown author";
 
     const seriesLabel = book.series
-      ? `${book.series.name}${book.series.position ? ` #${book.series.position}` : ""}`
+      ? `${book.series.name}${book.series.position != null ? ` #${book.series.position}` : ""}`
       : null;
 
     const metaParts = [
