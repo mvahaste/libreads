@@ -1,6 +1,7 @@
 "use client";
 
 import { BrowseSearchInput } from "@/components/browse/browse-search-input";
+import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CoverImage from "@/components/ui/cover-image";
@@ -11,8 +12,10 @@ import { useTRPC } from "@/lib/trpc/client";
 import { formatDurationForDisplay } from "@/lib/utils/duration";
 import { resolveMappedErrorMessage } from "@/lib/utils/trpc-errors";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -173,6 +176,35 @@ export function HardcoverImportFlow() {
     return t("unknown");
   }
 
+  function renderErrorAlert({
+    title,
+    description,
+    actions,
+    inlineActions = false,
+  }: {
+    title: string;
+    description: string;
+    actions?: ReactNode;
+    inlineActions?: boolean;
+  }) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircleIcon />
+        <AlertTitle>{title}</AlertTitle>
+        <AlertDescription>{description}</AlertDescription>
+        {actions ? (
+          <AlertAction
+            className={
+              inlineActions ? "static mt-3 flex flex-wrap gap-2 group-has-[>svg]/alert:col-start-2" : undefined
+            }
+          >
+            {actions}
+          </AlertAction>
+        ) : null}
+      </Alert>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <Badge variant="secondary">{activeStepLabel}</Badge>
@@ -194,22 +226,20 @@ export function HardcoverImportFlow() {
             <p className="text-muted-foreground text-sm">{t("loading-works")}</p>
           )}
 
-          {workSearchQuery.error && (
-            <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>
-                {resolveMappedErrorMessage({
-                  error: workSearchQuery.error,
-                  map: hardcoverErrorMessageByCode,
-                  fallback: t("api-error"),
-                })}
-              </p>
-              <div className="mt-2">
+          {workSearchQuery.error &&
+            renderErrorAlert({
+              title: t("alert-work-search-title"),
+              description: resolveMappedErrorMessage({
+                error: workSearchQuery.error,
+                map: hardcoverErrorMessageByCode,
+                fallback: t("api-error"),
+              }),
+              actions: (
                 <Button type="button" variant="outline" onClick={() => workSearchQuery.refetch()}>
                   {t("retry")}
                 </Button>
-              </div>
-            </div>
-          )}
+              ),
+            })}
 
           {!workSearchQuery.error && normalizedWorkQuery.length > 0 && !isWorkSearchLoading && (
             <>
@@ -316,25 +346,26 @@ export function HardcoverImportFlow() {
 
           {isEditionsLoading && <p className="text-muted-foreground text-sm">{t("loading-editions")}</p>}
 
-          {workEditionsQuery.error && (
-            <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>
-                {resolveMappedErrorMessage({
-                  error: workEditionsQuery.error,
-                  map: hardcoverErrorMessageByCode,
-                  fallback: t("api-error"),
-                })}
-              </p>
-              <div className="mt-2 flex gap-2">
-                <Button type="button" variant="outline" onClick={() => workEditionsQuery.refetch()}>
-                  {t("retry")}
-                </Button>
-                <Button type="button" variant="outline" onClick={resetFromWorkSelection}>
-                  {t("back-to-search")}
-                </Button>
-              </div>
-            </div>
-          )}
+          {workEditionsQuery.error &&
+            renderErrorAlert({
+              title: t("alert-editions-title"),
+              description: resolveMappedErrorMessage({
+                error: workEditionsQuery.error,
+                map: hardcoverErrorMessageByCode,
+                fallback: t("api-error"),
+              }),
+              actions: (
+                <>
+                  <Button type="button" variant="outline" onClick={() => workEditionsQuery.refetch()}>
+                    {t("retry")}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={resetFromWorkSelection}>
+                    {t("back-to-search")}
+                  </Button>
+                </>
+              ),
+              inlineActions: true,
+            })}
 
           {!workEditionsQuery.error && !isEditionsLoading && (
             <>
@@ -425,25 +456,26 @@ export function HardcoverImportFlow() {
 
           {isDetailsLoading && <p className="text-muted-foreground text-sm">{t("loading-details")}</p>}
 
-          {editionDetailsQuery.error && (
-            <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-              <p>
-                {resolveMappedErrorMessage({
-                  error: editionDetailsQuery.error,
-                  map: hardcoverErrorMessageByCode,
-                  fallback: t("api-error"),
-                })}
-              </p>
-              <div className="mt-2 flex gap-2">
-                <Button type="button" variant="outline" onClick={() => editionDetailsQuery.refetch()}>
-                  {t("retry")}
-                </Button>
-                <Button type="button" variant="outline" onClick={resetFromEditionSelection}>
-                  {t("back-to-editions")}
-                </Button>
-              </div>
-            </div>
-          )}
+          {editionDetailsQuery.error &&
+            renderErrorAlert({
+              title: t("alert-details-title"),
+              description: resolveMappedErrorMessage({
+                error: editionDetailsQuery.error,
+                map: hardcoverErrorMessageByCode,
+                fallback: t("api-error"),
+              }),
+              actions: (
+                <>
+                  <Button type="button" variant="outline" onClick={() => editionDetailsQuery.refetch()}>
+                    {t("retry")}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={resetFromEditionSelection}>
+                    {t("back-to-editions")}
+                  </Button>
+                </>
+              ),
+              inlineActions: true,
+            })}
 
           {!editionDetailsQuery.error && editionDetailsQuery.data && (
             <>
