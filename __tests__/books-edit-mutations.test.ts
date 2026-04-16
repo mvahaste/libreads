@@ -266,8 +266,8 @@ describe("books router updateBook mutation", () => {
       publishYear: 2024,
       format: "Paperback",
       pageCount: 320,
-      isbn10: "1234567890",
-      isbn13: "1234567890123",
+      isbn10: "0306406152",
+      isbn13: "9780306406157",
       hardcoverId: 123,
     });
 
@@ -283,14 +283,28 @@ describe("books router updateBook mutation", () => {
           type: "PHYSICAL",
           format: "Paperback",
           pageCount: 320,
-          isbn10: "1234567890",
-          isbn13: "1234567890123",
+          isbn10: "0306406152",
+          isbn13: "9780306406157",
           hardcoverId: 123,
         }),
       }),
     );
 
     expect(result).toEqual({ id: "book-1", slug: "new-title" });
+  });
+
+  test("rejects invalid ISBN payload for update", async () => {
+    await expect(
+      createCaller(true).updateBook({
+        ...baseInput,
+        isbn10: "0306406153",
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+
+    expect(prismaMock.prisma.$transaction).not.toHaveBeenCalled();
+    expect(prismaMock.tx.book.update).not.toHaveBeenCalled();
   });
 
   test("appends suffix when regenerated slug collides on update", async () => {
@@ -555,8 +569,8 @@ describe("books router bookEditConflicts query", () => {
       createCaller(false).bookEditConflicts({
         bookId: "book-1",
         hardcoverId: 42,
-        isbn10: "1234567890",
-        isbn13: "1234567890123",
+        isbn10: "0306406152",
+        isbn13: "9780306406157",
       }),
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
@@ -639,6 +653,20 @@ describe("books router createBook mutation", () => {
       }),
     );
     expect(result).toEqual({ id: "book-created", slug: "created-book" });
+  });
+
+  test("rejects invalid ISBN payload for create", async () => {
+    await expect(
+      createCaller(false).createBook({
+        ...baseCreateInput,
+        isbn13: "9780306406158",
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+
+    expect(prismaMock.prisma.$transaction).not.toHaveBeenCalled();
+    expect(prismaMock.tx.book.create).not.toHaveBeenCalled();
   });
 
   test("appends suffix when generated slug collides on create", async () => {

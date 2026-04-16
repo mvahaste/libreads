@@ -4,6 +4,9 @@ import {
   isValidIsbn10Checksum,
   isValidIsbn13Checksum,
   normalizeAndValidateIsbn,
+  normalizeAndValidateIsbn10,
+  normalizeAndValidateIsbn13,
+  normalizeAndValidateIsbnForType,
   sanitizeIsbnInput,
 } from "@/lib/utils/isbn";
 import { describe, expect, test } from "vitest";
@@ -61,5 +64,22 @@ describe("normalizeAndValidateIsbn", () => {
     expect(normalizeAndValidateIsbn("9780306406158")).toBeNull();
     expect(normalizeAndValidateIsbn("not-an-isbn")).toBeNull();
     expect(normalizeAndValidateIsbn("123456789")).toBeNull();
+  });
+});
+
+describe("typed normalization helpers", () => {
+  test("normalizes only when ISBN type matches", () => {
+    expect(normalizeAndValidateIsbnForType("0-8044-2957-x", "ISBN10")).toBe("080442957X");
+    expect(normalizeAndValidateIsbnForType("ISBN 978-0-306-40615-7", "ISBN13")).toBe("9780306406157");
+  });
+
+  test("rejects ISBN values when type does not match", () => {
+    expect(normalizeAndValidateIsbnForType("9780306406157", "ISBN10")).toBeNull();
+    expect(normalizeAndValidateIsbnForType("0306406152", "ISBN13")).toBeNull();
+  });
+
+  test("normalizes via typed convenience helpers", () => {
+    expect(normalizeAndValidateIsbn10("0-8044-2957-x")).toBe("080442957X");
+    expect(normalizeAndValidateIsbn13("ISBN 978-0-306-40615-7")).toBe("9780306406157");
   });
 });

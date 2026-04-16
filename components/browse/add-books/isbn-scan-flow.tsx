@@ -177,6 +177,7 @@ export function IsbnScanFlow() {
     errorMessageByCode: {
       BOOK_ALREADY_EXISTS: t("already-exists"),
       EDITION_NOT_FOUND: t("edition-not-found"),
+      IMPORTED_ISBN_INVALID: t("import-invalid-isbn"),
       HARDCOVER_API_TOKEN_NOT_CONFIGURED: t("api-token-missing"),
       HARDCOVER_API_REQUEST_FAILED: t("api-error"),
       HARDCOVER_API_INVALID_RESPONSE: t("api-error"),

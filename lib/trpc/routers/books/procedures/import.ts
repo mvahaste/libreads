@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { protectedProcedure } from "@/lib/trpc/init";
 import { hardcoverRouter } from "@/lib/trpc/routers/hardcover";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { normalizeAndValidateIsbn10, normalizeAndValidateIsbn13 } from "@/lib/utils/isbn";
 import { generateUniqueSlug } from "@/lib/utils/slug";
 import { importBookSchema } from "@/lib/validations";
 import { TRPCError } from "@trpc/server";
@@ -62,6 +63,25 @@ async function readResponseBufferWithLimit(response: Response, maxBytes: number)
   return Buffer.concat(chunks) as Buffer<ArrayBuffer>;
 }
 
+function normalizeImportedIsbn(
+  value: string | null | undefined,
+  normalize: (input: string) => string | null,
+): string | undefined {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  const normalized = normalize(trimmed);
+
+  if (!normalized) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: "IMPORTED_ISBN_INVALID" });
+  }
+
+  return normalized;
+}
+
 /**
  * Import a Hardcover edition into the local database as a book.
  */
@@ -77,6 +97,9 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
       if (!editionData) {
         throw new TRPCError({ code: "NOT_FOUND", message: "EDITION_NOT_FOUND" });
       }
+
+      const normalizedIsbn10 = normalizeImportedIsbn(editionData.isbn10, normalizeAndValidateIsbn10);
+      const normalizedIsbn13 = normalizeImportedIsbn(editionData.isbn13, normalizeAndValidateIsbn13);
 
       // Ensure the book does not already exist in the database
       const existingBook = await prisma.book.findUnique({
@@ -238,8 +261,8 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
             title: editionData.title,
             subtitle: editionData.subtitle,
             description: editionData.description,
-            isbn10: editionData.isbn10,
-            isbn13: editionData.isbn13,
+            isbn10: normalizedIsbn10,
+            isbn13: normalizedIsbn13,
             publishYear: editionData.releaseYear,
             type: editionData.type,
             format: editionData.format,
