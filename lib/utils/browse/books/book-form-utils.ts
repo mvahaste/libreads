@@ -390,7 +390,7 @@ function buildBookMutationInput({
     if (positionRaw.length > 0) {
       const parsed = Number(positionRaw);
 
-      if (!Number.isFinite(parsed) || parsed <= 0) {
+      if (!Number.isFinite(parsed) || parsed < 0) {
         return {
           error: {
             field: `seriesEntries.${index}.position`,

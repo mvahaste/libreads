@@ -3,6 +3,7 @@ import { READING_STATUS_VALUES } from "@/lib/books/reading-status";
 import { inferProgressType, isReadThroughActive } from "@/lib/books/status-transitions";
 import { prisma } from "@/lib/prisma";
 import { protectedProcedure } from "@/lib/trpc/init";
+import { groupSeriesBooks } from "@/lib/utils/browse/series/group-series-books";
 import { TRPCError } from "@trpc/server";
 import z from "zod/v4";
 
@@ -674,52 +675,30 @@ export const seriesDetailsProcedure = protectedProcedure
         throw new TRPCError({ code: "NOT_FOUND", message: "SERIES_NOT_FOUND" });
       }
 
-      // Books are actually editions, so there can be multiple entries for the same work if it has multiple editions in the series.
-      // Count unique works by position to get accurate work count.
-      const uniqueEntries = new Set(series.books.map((bs) => bs.position));
-      const entryCount = uniqueEntries.size;
+      const groupedBooks = groupSeriesBooks(
+        series.books.map((bs) => ({
+          position: bs.position,
+          book: {
+            id: bs.book.id,
+            slug: bs.book.slug,
+            title: bs.book.title,
+            subtitle: bs.book.subtitle,
+            coverId: bs.book.coverId,
+            publishYear: bs.book.publishYear,
+            authors: bs.book.authors.map((a) => a.author.name),
+          },
+        })),
+      );
 
-      // Group books by position to display multiple editions of the same entry together
-      type SeriesBook = {
-        id: string;
-        slug: string;
-        title: string;
-        subtitle: string | null;
-        coverId: string | null;
-        publishYear: number | null;
-        authors: string[];
-      };
-
-      const map = new Map<number, SeriesBook[]>();
-
-      for (const bs of series.books) {
-        const pos = bs.position ?? -1;
-
-        if (!map.has(pos)) map.set(pos, []);
-
-        map.get(pos)!.push({
-          id: bs.book.id,
-          slug: bs.book.slug,
-          title: bs.book.title,
-          subtitle: bs.book.subtitle,
-          coverId: bs.book.coverId,
-          publishYear: bs.book.publishYear,
-          authors: bs.book.authors.map((a) => a.author.name),
-        });
-      }
-
-      const groupedBooks = [...map.entries()].map(([position, books]) => ({
-        position,
-        books,
-      }));
+      const entryCount = groupedBooks.length;
 
       return {
-        id: series?.id,
-        slug: series?.slug,
-        name: series?.name,
-        description: series?.description,
-        entryCount: entryCount,
-        groupedBooks: groupedBooks,
+        id: series.id,
+        slug: series.slug,
+        name: series.name,
+        description: series.description,
+        entryCount,
+        groupedBooks,
       };
     } catch (error) {
       if (error instanceof TRPCError && error.code === "NOT_FOUND") throw error;

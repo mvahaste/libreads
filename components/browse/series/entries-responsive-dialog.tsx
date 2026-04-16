@@ -25,7 +25,7 @@ export function SeriesEntriesResponsiveDialog({ group }: { group: SeriesDetailsO
           className={`${group.books.length >= 3 ? "mb-8" : group.books.length >= 2 ? "mb-5" : ""} border-border bg-card group relative flex w-full cursor-pointer items-center gap-4 rounded-lg border p-3`}
         >
           <div className="text-muted-foreground w-8 shrink-0 text-center text-sm font-bold">
-            {group.position ? `#${group.position}` : "-"}
+            {group.position != null ? `#${group.position}` : "-"}
           </div>
           {group.books[0].coverId && (
             <CoverImage
@@ -73,7 +73,7 @@ export function SeriesEntryCard({
   position,
 }: {
   book: SeriesDetailsOutput["groupedBooks"][number]["books"][number];
-  position: number;
+  position: number | null;
 }) {
   return (
     <Link
@@ -82,7 +82,7 @@ export function SeriesEntryCard({
       className="border-border bg-card group relative flex cursor-pointer items-center gap-4 rounded-lg border p-3"
     >
       <div className="text-muted-foreground w-8 shrink-0 text-center text-sm font-bold">
-        {position ? `#${position}` : "-"}
+        {position != null ? `#${position}` : "-"}
       </div>
       {book.coverId && (
         <CoverImage

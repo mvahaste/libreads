@@ -34,9 +34,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <div className="space-y-2">
           {series.groupedBooks.map((group) => {
             if (group.books.length > 1) {
-              return <SeriesEntriesResponsiveDialog key={group.position} group={group} />;
+              return <SeriesEntriesResponsiveDialog key={group.groupKey} group={group} />;
             } else {
-              return <SeriesEntryCard key={group.position} book={group.books[0]} position={group.position} />;
+              return <SeriesEntryCard key={group.groupKey} book={group.books[0]} position={group.position} />;
             }
           })}
         </div>

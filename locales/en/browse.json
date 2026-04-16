@@ -389,7 +389,7 @@
     "series-position": "Position",
     "series-position-placeholder": "e.g. 2 or 2.5",
     "remove-series-entry": "Remove entry",
-    "series-position-error": "Series position must be a positive number.",
+    "series-position-error": "Series position must be a non-negative number.",
     "title-required": "Title is required",
     "remove-from-library": "Remove from library",
     "remove-from-library-description": "Are you sure you want to remove this book from your library? This will delete your status, progress, notes, rating, and tags.",

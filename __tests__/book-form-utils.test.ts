@@ -150,10 +150,27 @@ describe("book mutation input builders", () => {
     });
   });
 
-  test("buildCreateBookMutationInput validates series position", () => {
+  test("buildCreateBookMutationInput accepts zero series position", () => {
     const result = buildCreateBookMutationInput({
       values: makeValues({
         seriesEntries: [{ seriesRef: "create:Series", position: "0" }],
+      }),
+      authorsById: new Map(),
+      genresById: new Map(),
+      messages,
+    });
+
+    if ("error" in result) {
+      throw new Error("Expected zero position to be accepted");
+    }
+
+    expect(result.input.series).toEqual([{ series: { mode: "create", name: "Series" }, position: 0 }]);
+  });
+
+  test("buildCreateBookMutationInput rejects negative series position", () => {
+    const result = buildCreateBookMutationInput({
+      values: makeValues({
+        seriesEntries: [{ seriesRef: "create:Series", position: "-0.5" }],
       }),
       authorsById: new Map(),
       genresById: new Map(),

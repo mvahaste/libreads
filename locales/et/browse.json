@@ -389,7 +389,7 @@
     "series-position": "Positsioon",
     "series-position-placeholder": "nt 2 või 2.5",
     "remove-series-entry": "Eemalda kirje",
-    "series-position-error": "Sarja positsioon peab olema positiivne number.",
+    "series-position-error": "Sarja positsioon peab olema mittenegatiivne number.",
     "title-required": "Pealkiri on kohustuslik",
     "remove-from-library": "Eemalda kogust",
     "remove-from-library-description": "Kas oled kindel, et soovid selle raamatu oma kogust eemaldada? See kustutab sinu staatuse, edenemise, märkmed, hinnangu ja sildid.",

@@ -567,7 +567,7 @@ export function HardcoverImportFlow() {
                           {editionDetailsQuery.data.series.map((series) => (
                             <li key={series.id}>
                               {series.name}
-                              {series.position > 0 ? ` #${series.position}` : ""}
+                              {series.position != null ? ` #${series.position}` : ""}
                             </li>
                           ))}
                         </ul>

@@ -87,7 +87,7 @@ const bookWriteSchema = z.object({
     .array(
       z.object({
         series: relationRefSchema,
-        position: z.number().positive().max(10_000).nullable(),
+        position: z.number().nonnegative().max(10_000).nullable(),
       }),
     )
     .optional(),
