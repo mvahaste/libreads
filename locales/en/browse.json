@@ -356,7 +356,6 @@
     "upload-cover": "Upload cover",
     "replace-cover": "Replace cover",
     "clear-cover": "Clear cover",
-    "cover-upload-success": "Cover uploaded.",
     "cover-upload-error": "Failed to upload cover.",
     "cover-invalid-type": "Invalid cover type. Please upload JPG, PNG, or WebP.",
     "cover-too-large": "Cover file is too large. Maximum size is 5MB.",

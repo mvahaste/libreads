@@ -9,11 +9,11 @@ import {
 } from "@/lib/utils/api/route-helpers";
 import { NextRequest, NextResponse } from "next/server";
 
-export type TemporaryBookCoverPostResponse = {
+export type BookCoverPostResponse = {
   imageId: string;
 };
 
-type TemporaryBookCoverErrorCode =
+type BookCoverErrorCode =
   | "UNAUTHORIZED"
   | "INVALID_FORM_DATA"
   | "INVALID_IMAGE_ID"
@@ -54,13 +54,13 @@ export async function POST(req: NextRequest) {
       select: { id: true },
     });
 
-    const result: TemporaryBookCoverPostResponse = {
+    const result: BookCoverPostResponse = {
       imageId: image.id,
     };
 
     return NextResponse.json(result, { status: 201 });
   } catch {
-    return apiErrorResponse<TemporaryBookCoverErrorCode>("UPLOAD_FAILED", 500);
+    return apiErrorResponse<BookCoverErrorCode>("UPLOAD_FAILED", 500);
   }
 }
 
@@ -86,6 +86,6 @@ export async function DELETE(req: NextRequest) {
 
     return new NextResponse(null, { status: 204 });
   } catch {
-    return apiErrorResponse<TemporaryBookCoverErrorCode>("DELETE_FAILED", 500);
+    return apiErrorResponse<BookCoverErrorCode>("DELETE_FAILED", 500);
   }
 }
