@@ -8,12 +8,14 @@ import { getAvatarFallback } from "@/lib/utils/avatar";
 import { uploadFileAsFormData, validateUploadFile } from "@/lib/utils/file-upload-client";
 import { getImageUrl } from "@/lib/utils/image-utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LucideCamera } from "lucide-react";
+import { LucideUpload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Button } from "../../ui/button";
+import { LoadingSwap } from "../../ui/loading-swap";
 
 interface AvatarUploadProps {
   name: string;
@@ -121,15 +123,22 @@ export default function AvatarUpload({ name, label, description }: AvatarUploadP
           <AvatarImage src={getImageUrl(session?.user.avatarId)} />
           <AvatarFallback className="text-xl">{getAvatarFallback(name)}</AvatarFallback>
         </Avatar>
-        <button
-          type="button"
-          disabled={isUploadingAvatar}
-          aria-label={label}
-          className="bg-foreground/50 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={() => avatarInputRef.current?.click()}
-        >
-          <LucideCamera className="text-background" />
-        </button>
+        <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/55 p-1 opacity-100 transition-opacity md:pointer-events-none md:opacity-0 md:group-focus-within:pointer-events-auto md:group-focus-within:opacity-100 md:group-hover:pointer-events-auto md:group-hover:opacity-100">
+          <Button
+            type="button"
+            size="icon-lg"
+            variant="outline"
+            className="rounded-full backdrop-blur"
+            disabled={isUploadingAvatar}
+            aria-label={label}
+            title={label}
+            onClick={() => avatarInputRef.current?.click()}
+          >
+            <LoadingSwap isLoading={isUploadingAvatar}>
+              <LucideUpload />
+            </LoadingSwap>
+          </Button>
+        </div>
         <input
           type="file"
           className="hidden"

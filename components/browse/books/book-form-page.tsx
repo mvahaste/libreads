@@ -94,37 +94,20 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
     defaultValues,
   });
 
-  const coverUploadScope = useMemo(
-    () => (editBook ? ({ mode: "book", bookId: editBook.id } as const) : ({ mode: "temporary" } as const)),
-    [editBook],
-  );
-
   const {
     coverInputRef,
     handleCoverFileChange,
     handleClearCover,
-    cleanupAllTemporaryCovers,
-    clearTemporaryCoverTracking,
+    uploadSelectedCoverOnSubmit,
+    cleanupUploadedCover,
+    clearSelectedCoverSelection,
+    hasSelectedCoverFile,
+    selectedCoverPreviewUrl,
     isUploadingCover,
   } = useBookCoverUpload({
-    scope: coverUploadScope,
     form,
     t,
   });
-
-  const cleanupTemporaryCoversOnUnmountRef = useRef(cleanupAllTemporaryCovers);
-
-  useEffect(() => {
-    cleanupTemporaryCoversOnUnmountRef.current = cleanupAllTemporaryCovers;
-  }, [cleanupAllTemporaryCovers]);
-
-  useEffect(() => {
-    return () => {
-      if (!isEditMode) {
-        cleanupTemporaryCoversOnUnmountRef.current();
-      }
-    };
-  }, [isEditMode]);
 
   const {
     fields: seriesFields,
@@ -274,7 +257,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
   async function handleSuccessfulSubmit(result: { id: string; slug: string }) {
     await invalidateFormAndBrowse();
     toast.success(isEditMode ? t("edit-book-success") : t("create-book-success"));
-    clearTemporaryCoverTracking();
+    clearSelectedCoverSelection();
     form.reset(defaultValues);
     resetTransientState();
     await onSuccess?.(result);
@@ -403,6 +386,34 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
     return parts;
   }, [t, watchedAudioSecondsInput, watchedFormat, watchedPageCount, watchedPublishYear, watchedType]);
 
+  async function submitBookWithCover<TInput extends { coverId: string | null }>(
+    input: TInput,
+    submit: (nextInput: TInput) => Promise<{ id: string; slug: string } | null>,
+  ) {
+    let uploadedCoverId: string | null = null;
+
+    try {
+      uploadedCoverId = await uploadSelectedCoverOnSubmit();
+    } catch {
+      return;
+    }
+
+    const nextInput = uploadedCoverId ? ({ ...input, coverId: uploadedCoverId } as TInput) : input;
+    try {
+      const result = await submit(nextInput);
+
+      if (!result && uploadedCoverId) {
+        await cleanupUploadedCover(uploadedCoverId);
+      }
+    } catch (error) {
+      if (uploadedCoverId) {
+        await cleanupUploadedCover(uploadedCoverId);
+      }
+
+      throw error;
+    }
+  }
+
   async function handleSubmit(values: EditBookFormValues) {
     const buildArgs = {
       values,
@@ -429,7 +440,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
         return;
       }
 
-      await submitUpdateBook(result.input);
+      await submitBookWithCover(result.input, submitUpdateBook);
       return;
     }
 
@@ -444,7 +455,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
       return;
     }
 
-    await submitCreateBook(result.input);
+    await submitBookWithCover(result.input, submitCreateBook);
   }
 
   return (
@@ -458,22 +469,6 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
         <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start">
           <aside className="space-y-4 lg:sticky lg:top-6">
             <div className="space-y-3 rounded-lg border p-4">
-              <CoverImage
-                width={256}
-                height={384}
-                localCoverId={selectedCoverId ?? undefined}
-                title={previewTitle}
-                subtitle={previewSubtitle}
-                className="mx-auto h-56"
-              />
-              <div className="space-y-1 text-sm">
-                <p className="text-foreground text-base leading-tight font-semibold">{previewTitle}</p>
-                {previewSubtitle && <p className="text-muted-foreground leading-snug">{previewSubtitle}</p>}
-                {previewMetaParts.length > 0 && <p className="text-muted-foreground">{previewMetaParts.join(" · ")}</p>}
-              </div>
-            </div>
-
-            <div className="space-y-3 rounded-lg border p-4">
               <h3 className="text-muted-foreground text-sm font-semibold">{t("cover")}</h3>
               <input
                 type="file"
@@ -482,16 +477,50 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
                 accept={BOOK_COVER.ACCEPTED_EXTENSIONS}
                 onChange={handleCoverFileChange}
               />
-              <Button type="button" variant="outline" disabled={isBusy} onClick={() => coverInputRef.current?.click()}>
-                <LucideUpload />
-                <LoadingSwap isLoading={isUploadingCover}>
-                  {selectedCoverId ? t("replace-cover") : t("upload-cover")}
-                </LoadingSwap>
-              </Button>
-              <Button type="button" variant="outline" disabled={isBusy || !selectedCoverId} onClick={handleClearCover}>
-                <LucideX />
-                {t("clear-cover")}
-              </Button>
+              <div className="group relative mx-auto w-fit">
+                <CoverImage
+                  width={256}
+                  height={384}
+                  imageUrl={selectedCoverPreviewUrl ?? undefined}
+                  localCoverId={selectedCoverId ?? undefined}
+                  title={previewTitle}
+                  subtitle={previewSubtitle}
+                  className="mx-auto block h-56"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-md bg-black/55 p-3 opacity-100 transition-opacity md:pointer-events-none md:opacity-0 md:group-focus-within:pointer-events-auto md:group-focus-within:opacity-100 md:group-hover:pointer-events-auto md:group-hover:opacity-100">
+                  <Button
+                    type="button"
+                    size="icon-lg"
+                    variant="outline"
+                    className="backdrop-blur"
+                    aria-label={hasSelectedCoverFile || selectedCoverId ? t("replace-cover") : t("upload-cover")}
+                    title={hasSelectedCoverFile || selectedCoverId ? t("replace-cover") : t("upload-cover")}
+                    disabled={isBusy}
+                    onClick={() => coverInputRef.current?.click()}
+                  >
+                    <LoadingSwap isLoading={isUploadingCover}>
+                      <LucideUpload />
+                    </LoadingSwap>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="icon-lg"
+                    variant="outline"
+                    className="backdrop-blur"
+                    aria-label={t("clear-cover")}
+                    title={t("clear-cover")}
+                    disabled={isBusy || (!selectedCoverId && !hasSelectedCoverFile)}
+                    onClick={handleClearCover}
+                  >
+                    <LucideX />
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-1 text-sm">
+                <p className="text-foreground text-base leading-tight font-semibold">{previewTitle}</p>
+                {previewSubtitle && <p className="text-muted-foreground leading-snug">{previewSubtitle}</p>}
+                {previewMetaParts.length > 0 && <p className="text-muted-foreground">{previewMetaParts.join(" · ")}</p>}
+              </div>
             </div>
           </aside>
 

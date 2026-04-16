@@ -1,7 +1,5 @@
 export type BookCoverUploadErrorCode =
   | "UNAUTHORIZED"
-  | "FORBIDDEN"
-  | "BOOK_NOT_FOUND"
   | "INVALID_FORM_DATA"
   | "NO_FILE_UPLOADED"
   | "INVALID_FILE_TYPE"
@@ -25,8 +23,6 @@ export function mapBookCoverUploadError(code: BookCoverUploadErrorCode | undefin
     case "FILE_TOO_LARGE":
       return t("cover-too-large");
     case "UNAUTHORIZED":
-    case "FORBIDDEN":
-    case "BOOK_NOT_FOUND":
     case "INVALID_FORM_DATA":
     case "NO_FILE_UPLOADED":
     case "UPLOAD_FAILED":

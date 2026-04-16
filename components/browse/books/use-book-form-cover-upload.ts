@@ -1,4 +1,3 @@
-import { useSubmitMutation } from "@/hooks/use-submit-mutation";
 import { BOOK_COVER } from "@/lib/constants";
 import {
   type BookCoverUploadErrorCode,
@@ -10,104 +9,78 @@ import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { uploadFileAsFormData, validateUploadFile } from "@/lib/utils/file-upload-client";
 import { useMutation } from "@tanstack/react-query";
 import type { ChangeEvent } from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-export type BookCoverUploadScope =
-  | {
-      mode: "book";
-      bookId: string;
-    }
-  | {
-      mode: "temporary";
-    };
-
 interface UseBookCoverUploadParams {
-  scope: BookCoverUploadScope;
   form: UseFormReturn<EditBookFormValues>;
   t: ReturnType<typeof import("next-intl").useTranslations>;
 }
 
-function getCoverUploadUrl(scope: BookCoverUploadScope): string {
-  if (scope.mode === "book") {
-    return `/api/books/${scope.bookId}/cover`;
-  }
+const COVER_UPLOAD_URL = "/api/books/cover";
 
-  return "/api/books/cover-temp";
-}
-
-function getCoverCleanupUrl(scope: BookCoverUploadScope, imageId: string): string {
+function getCoverCleanupUrl(imageId: string): string {
   const query = `?imageId=${encodeURIComponent(imageId)}`;
-
-  if (scope.mode === "book") {
-    return `/api/books/${scope.bookId}/cover${query}`;
-  }
-
-  return `/api/books/cover-temp${query}`;
+  return `${COVER_UPLOAD_URL}${query}`;
 }
 
-export function useBookCoverUpload({ scope, form, t }: UseBookCoverUploadParams) {
+export function useBookCoverUpload({ form, t }: UseBookCoverUploadParams) {
   const coverInputRef = useRef<HTMLInputElement>(null);
-  const [temporaryCoverIds, setTemporaryCoverIds] = useState<string[]>([]);
+  const [selectedCoverFile, setSelectedCoverFile] = useState<File | null>(null);
+  const [selectedCoverPreviewUrl, setSelectedCoverPreviewUrl] = useState<string | null>(null);
 
-  const cleanupTemporaryCover = useCallback(
-    async (imageId: string): Promise<void> => {
-      try {
-        await fetchWithTimeout(getCoverCleanupUrl(scope, imageId), { method: "DELETE" }, 8000);
-      } catch {
-        // Ignore cleanup errors to avoid interrupting form interactions.
+  useEffect(() => {
+    return () => {
+      if (selectedCoverPreviewUrl) {
+        URL.revokeObjectURL(selectedCoverPreviewUrl);
       }
-    },
-    [scope],
-  );
+    };
+  }, [selectedCoverPreviewUrl]);
 
-  const cleanupAllTemporaryCovers = useCallback(() => {
-    const pendingTemporaryCoverIds = [...temporaryCoverIds];
-    setTemporaryCoverIds([]);
-
-    for (const imageId of pendingTemporaryCoverIds) {
-      void cleanupTemporaryCover(imageId);
+  const cleanupUploadedCover = useCallback(async (imageId: string): Promise<void> => {
+    try {
+      await fetchWithTimeout(getCoverCleanupUrl(imageId), { method: "DELETE" }, 8000);
+    } catch {
+      // Ignore cleanup errors to avoid interrupting form submission retries.
     }
-  }, [cleanupTemporaryCover, temporaryCoverIds]);
+  }, []);
 
-  const clearTemporaryCoverTracking = useCallback(() => {
-    setTemporaryCoverIds([]);
+  const clearSelectedCoverSelection = useCallback(() => {
+    setSelectedCoverFile(null);
+    setSelectedCoverPreviewUrl(null);
+
+    if (coverInputRef.current) {
+      coverInputRef.current.value = "";
+    }
   }, []);
 
   const uploadBookCover = useMutation({
     mutationFn: (file: File) =>
-      uploadFileAsFormData<BookCoverUploadSuccessResponse, BookCoverUploadErrorCode>(getCoverUploadUrl(scope), file, {
+      uploadFileAsFormData<BookCoverUploadSuccessResponse, BookCoverUploadErrorCode>(COVER_UPLOAD_URL, file, {
         timeoutMs: 12000,
         mapError: (code) => mapBookCoverUploadError(code, t),
       }),
   });
 
-  const { submit: submitCoverUpload, isPending: isUploadingCover } = useSubmitMutation({
-    mutation: uploadBookCover,
-    defaultErrorMessage: t("cover-upload-error"),
-    onSuccess: (payload) => {
-      const previousCoverId = form.getValues("coverId");
+  const uploadSelectedCoverOnSubmit = useCallback(async (): Promise<string | null> => {
+    if (!selectedCoverFile) {
+      return null;
+    }
 
-      if (previousCoverId && temporaryCoverIds.includes(previousCoverId)) {
-        setTemporaryCoverIds((prev) => prev.filter((id) => id !== previousCoverId));
-        void cleanupTemporaryCover(previousCoverId);
-      }
-
-      setTemporaryCoverIds((prev) => (prev.includes(payload.imageId) ? prev : [...prev, payload.imageId]));
-      form.setValue("coverId", payload.imageId, { shouldDirty: true });
-      toast.success(t("cover-upload-success"));
-    },
-    onError: (error) => {
+    try {
+      const payload = await uploadBookCover.mutateAsync(selectedCoverFile);
+      return payload.imageId;
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message || t("cover-upload-error"));
       } else {
         toast.error(t("cover-upload-error"));
       }
 
-      return true;
-    },
-  });
+      throw error;
+    }
+  }, [selectedCoverFile, t, uploadBookCover]);
 
   function handleCoverFileChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -127,18 +100,13 @@ export function useBookCoverUpload({ scope, form, t }: UseBookCoverUploadParams)
       return;
     }
 
-    void submitCoverUpload(file);
+    setSelectedCoverFile(file);
+    setSelectedCoverPreviewUrl(URL.createObjectURL(file));
     e.target.value = "";
   }
 
   function handleClearCover() {
-    const currentCoverId = form.getValues("coverId");
-
-    if (currentCoverId && temporaryCoverIds.includes(currentCoverId)) {
-      setTemporaryCoverIds((prev) => prev.filter((id) => id !== currentCoverId));
-      void cleanupTemporaryCover(currentCoverId);
-    }
-
+    clearSelectedCoverSelection();
     form.setValue("coverId", null, { shouldDirty: true });
   }
 
@@ -146,8 +114,11 @@ export function useBookCoverUpload({ scope, form, t }: UseBookCoverUploadParams)
     coverInputRef,
     handleCoverFileChange,
     handleClearCover,
-    cleanupAllTemporaryCovers,
-    clearTemporaryCoverTracking,
-    isUploadingCover,
+    uploadSelectedCoverOnSubmit,
+    cleanupUploadedCover,
+    clearSelectedCoverSelection,
+    hasSelectedCoverFile: selectedCoverFile !== null,
+    selectedCoverPreviewUrl,
+    isUploadingCover: uploadBookCover.isPending,
   };
 }

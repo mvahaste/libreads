@@ -356,7 +356,6 @@
     "upload-cover": "Laadi kaas üles",
     "replace-cover": "Asenda kaas",
     "clear-cover": "Eemalda kaas",
-    "cover-upload-success": "Kaas üles laaditud.",
     "cover-upload-error": "Kaane üleslaadimine ebaõnnestus.",
     "cover-invalid-type": "Vigane kaane failitüüp. Laadi üles JPG, PNG või WebP.",
     "cover-too-large": "Kaane fail on liiga suur. Maksimaalne suurus on 5MB.",
