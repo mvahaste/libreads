@@ -1,0 +1,4 @@
+libreads.local {
+	tls internal
+	reverse_proxy libreads:3000
+}

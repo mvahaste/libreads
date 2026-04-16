@@ -55,8 +55,7 @@ LIBREADS_EXTERNAL_API_CACHE_TTL=3600000
 1. Copy `example.env` to `.env` and fill in the required environment variables.
 2. Install required dependencies: `npm install`
 3. Start the development server: `npm run dev`
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-5. Optionally, run the application in a Docker container: `docker compose -f compose.dev.yaml up`
+4. Open [https://localhost:3000](https://localhost:3000) in your browser.
 
 ## Stack
 
