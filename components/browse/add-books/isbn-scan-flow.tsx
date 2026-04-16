@@ -11,7 +11,6 @@ import { useTRPC } from "@/lib/trpc/client";
 import { formatDurationForDisplay } from "@/lib/utils/duration";
 import { normalizeAndValidateIsbn } from "@/lib/utils/isbn";
 import { resolveMappedErrorMessage } from "@/lib/utils/trpc-errors";
-import { isExpectedZxingDecodeError } from "@/lib/utils/zxing";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BarcodeFormat, BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
 import { AlertCircleIcon } from "lucide-react";
@@ -121,7 +120,7 @@ export function IsbnScanFlow() {
             return;
           }
 
-          if (error && !isExpectedZxingDecodeError(error)) {
+          if (error && (error as { name?: string }).name !== "NotFoundException") {
             console.error("Scanner decode error:", error);
             activeControls.stop();
             setCameraErrorMessage(t("camera-read-failed"));
