@@ -7,6 +7,7 @@ type MockTx = {
     findFirst: ReturnType<typeof vi.fn>;
     create: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
   };
   image: {
     findUnique: ReturnType<typeof vi.fn>;
@@ -54,6 +55,7 @@ const prismaMock = vi.hoisted(() => {
       findFirst: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
+      delete: vi.fn(),
     },
     image: {
       findUnique: vi.fn(),
@@ -99,6 +101,7 @@ const prismaMock = vi.hoisted(() => {
     prisma: {
       $transaction: vi.fn(async (callback: (tx: MockTx) => Promise<unknown>) => callback(tx)),
       book: {
+        findUnique: vi.fn(),
         findFirst: vi.fn(),
       },
       author: {
@@ -178,10 +181,12 @@ beforeEach(() => {
   for (const mock of [
     prismaMock.prisma.$transaction,
     prismaMock.prisma.book.findFirst,
+    prismaMock.prisma.book.findUnique,
     prismaMock.tx.book.findUnique,
     prismaMock.tx.book.findFirst,
     prismaMock.tx.book.create,
     prismaMock.tx.book.update,
+    prismaMock.tx.book.delete,
     prismaMock.prisma.author.findMany,
     prismaMock.prisma.genre.findMany,
     prismaMock.prisma.publisher.findMany,
@@ -216,7 +221,9 @@ beforeEach(() => {
   );
 
   prismaMock.prisma.book.findFirst.mockResolvedValue(null);
+  prismaMock.prisma.book.findUnique.mockResolvedValue(null);
   prismaMock.tx.book.findFirst.mockResolvedValue(null);
+  prismaMock.tx.book.delete.mockResolvedValue({ id: "book-1" });
 
   prismaMock.tx.book.findUnique.mockResolvedValue({
     id: "book-1",
@@ -687,6 +694,188 @@ describe("books router createBook mutation", () => {
         }),
       }),
     );
+  });
+});
+
+describe("books router deleteBook mutation", () => {
+  test("requires admin privileges", async () => {
+    await expect(createCaller(false).deleteBook({ bookId: "book-1" })).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "FORBIDDEN",
+    });
+  });
+
+  test("deletes the book", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: null,
+      authors: [],
+      genres: [],
+      series: [],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.book.delete).toHaveBeenCalledWith({
+      where: { id: "book-1" },
+    });
+  });
+
+  test("throws NOT_FOUND when book does not exist", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue(null);
+
+    await expect(createCaller(true).deleteBook({ bookId: "nonexistent" })).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "BOOK_NOT_FOUND",
+    });
+
+    expect(prismaMock.tx.book.delete).not.toHaveBeenCalled();
+  });
+
+  test("cleans up orphaned authors when book is deleted", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: null,
+      authors: [{ authorId: "author-1" }],
+      genres: [],
+      series: [],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.author.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["author-1"] },
+        books: { none: {} },
+      },
+    });
+  });
+
+  test("cleans up orphaned genres when book is deleted", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: null,
+      authors: [],
+      genres: [{ genreId: "genre-1" }],
+      series: [],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.genre.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["genre-1"] },
+        books: { none: {} },
+      },
+    });
+  });
+
+  test("cleans up orphaned series when book is deleted", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: null,
+      authors: [],
+      genres: [],
+      series: [{ seriesId: "series-1" }],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.series.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["series-1"] },
+        books: { none: {} },
+      },
+    });
+  });
+
+  test("cleans up orphaned publisher when book is deleted", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: "publisher-1",
+      authors: [],
+      genres: [],
+      series: [],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.publisher.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: "publisher-1",
+        books: { none: {} },
+      },
+    });
+  });
+
+  test("cleans up orphaned cover when book is deleted", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: "cover-1",
+      publisherId: null,
+      authors: [],
+      genres: [],
+      series: [],
+    });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.image.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: "cover-1",
+        books: { none: {} },
+        users: { none: {} },
+      },
+    });
+  });
+
+  test("does not delete entities with remaining books", async () => {
+    prismaMock.prisma.book.findUnique.mockResolvedValue({
+      id: "book-1",
+      coverId: null,
+      publisherId: "publisher-share",
+      authors: [{ authorId: "author-share" }],
+      genres: [{ genreId: "genre-share" }],
+      series: [{ seriesId: "series-share" }],
+    });
+
+    prismaMock.tx.author.deleteMany.mockResolvedValue({ count: 0 });
+    prismaMock.tx.genre.deleteMany.mockResolvedValue({ count: 0 });
+    prismaMock.tx.series.deleteMany.mockResolvedValue({ count: 0 });
+    prismaMock.tx.publisher.deleteMany.mockResolvedValue({ count: 0 });
+
+    await createCaller(true).deleteBook({ bookId: "book-1" });
+
+    expect(prismaMock.tx.author.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["author-share"] },
+        books: { none: {} },
+      },
+    });
+    expect(prismaMock.tx.genre.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["genre-share"] },
+        books: { none: {} },
+      },
+    });
+    expect(prismaMock.tx.series.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["series-share"] },
+        books: { none: {} },
+      },
+    });
+    expect(prismaMock.tx.publisher.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: "publisher-share",
+        books: { none: {} },
+      },
+    });
+    expect(prismaMock.tx.image.deleteMany).not.toHaveBeenCalled();
   });
 });
 
