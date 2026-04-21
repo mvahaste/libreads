@@ -202,7 +202,6 @@
     "year-asc": "Vanemad enne",
     "name-asc": "Nimi A–Z",
     "name-desc": "Nimi Z–A",
-    "works-desc": "Enim teoseid",
     "editions-desc": "Enim väljaandeid"
   },
 
@@ -251,7 +250,8 @@
 
   "count": {
     "work": "{count, plural, one {# teos} other {# teost}}",
-    "edition": "{count, plural, one {# väljaanne} other {# väljaannet}}"
+    "edition": "{count, plural, one {# väljaanne} other {# väljaannet}}",
+    "entry": "{count, plural, one {# osa} other {# osa}}"
   },
 
   "detail": {

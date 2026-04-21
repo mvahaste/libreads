@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <div>
           <h1 className="text-lg font-bold">{series.name}</h1>
           {series.description && <p className="text-muted-foreground mt-1 text-sm">{series.description}</p>}
-          <p className="text-muted-foreground mt-1 text-sm">{tCount("work", { count: series.entryCount })}</p>
+          <p className="text-muted-foreground mt-1 text-sm">{tCount("entry", { count: series.entryCount })}</p>
         </div>
 
         <Separator />

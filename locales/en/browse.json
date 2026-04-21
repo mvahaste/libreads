@@ -202,7 +202,6 @@
     "year-asc": "Oldest first",
     "name-asc": "Name A–Z",
     "name-desc": "Name Z–A",
-    "works-desc": "Most works",
     "editions-desc": "Most editions"
   },
 
@@ -251,7 +250,8 @@
 
   "count": {
     "work": "{count, plural, one {# work} other {# works}}",
-    "edition": "{count, plural, one {# edition} other {# editions}}"
+    "edition": "{count, plural, one {# edition} other {# editions}}",
+    "entry": "{count, plural, one {# entry} other {# entries}}"
   },
 
   "detail": {
