@@ -7,6 +7,7 @@ on:
     branches: ["prod", "dev"]
     paths-ignore:
       - "**/*.md"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,7 +19,8 @@ env:
 
 jobs:
   check-code:
-    if: github.event_name != 'pull_request' || (github.head_ref != 'prod' && github.head_ref != 'dev')
+    if: github.event_name != 'pull_request' || (github.head_ref != 'prod' &&
+      github.head_ref != 'dev')
     runs-on: ubuntu-latest
     permissions:
       contents: read
