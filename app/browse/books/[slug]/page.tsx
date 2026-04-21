@@ -104,6 +104,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 currentProgress={book.userProgress}
                 pageCount={book.pageCount}
                 audioSeconds={book.audioSeconds}
+                showProgressLabel={book.userStatus === "READING" || book.userStatus === "PAUSED"}
               />
             )}
             {canManageTags && <BookTagsCombobox bookId={book.id} initialTags={book.userTags} />}

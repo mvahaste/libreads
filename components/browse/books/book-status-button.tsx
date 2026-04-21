@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/responsive-dialog";
 import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation";
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
+import { READING_STATUS_COLORS } from "@/lib/books/status-colors";
 import { useTRPC } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils/cn";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -66,19 +67,6 @@ const STATUS_ICONS: Record<ReadingStatus, LucideIcon> = {
   [ReadingStatus.COMPLETED]: LucideBookCheck,
   [ReadingStatus.PAUSED]: LucidePause,
   [ReadingStatus.ABANDONED]: LucideCircleX,
-};
-
-const STATUS_COLORS: Record<ReadingStatus, string> = {
-  [ReadingStatus.WANT_TO_READ]:
-    "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:text-amber-400 dark:hover:bg-amber-500/30",
-  [ReadingStatus.READING]:
-    "bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30",
-  [ReadingStatus.COMPLETED]:
-    "bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/25 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30",
-  [ReadingStatus.PAUSED]:
-    "bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 dark:bg-orange-500/20 dark:text-orange-400 dark:hover:bg-orange-500/30",
-  [ReadingStatus.ABANDONED]:
-    "bg-red-500/15 text-red-700 hover:bg-red-500/25 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30",
 };
 
 interface BookStatusButtonProps {
@@ -172,7 +160,7 @@ export default function BookStatusButton({ bookId, initialStatus }: BookStatusBu
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={cn(buttonVariants({ size: "default" }), STATUS_COLORS[status])}
+              className={cn(buttonVariants({ size: "default" }), READING_STATUS_COLORS[status])}
               disabled={isActionPending}
             >
               {CurrentIcon && <CurrentIcon />}

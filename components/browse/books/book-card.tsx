@@ -2,9 +2,12 @@
 
 import { Badge } from "@/components/ui/badge";
 import CoverImage from "@/components/ui/cover-image";
+import type { ReadingStatus } from "@/generated/prisma/enums";
 import type { DisplayMode } from "@/hooks/use-display-preferences";
+import { READING_STATUS_COLORS } from "@/lib/books/status-colors";
 import { cn } from "@/lib/utils/cn";
 import { secondsToHoursMinutesSeconds } from "@/lib/utils/duration";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -21,6 +24,8 @@ export interface BookCardData {
   publisher?: { id: string; name: string } | null;
   authors: { id: string; name: string }[];
   series?: { id: string; name: string; position: number | null } | null;
+  userStatus?: ReadingStatus | null;
+  userProgressPercent?: number | null;
 }
 
 interface BookCardProps {
@@ -54,7 +59,10 @@ function SeriesBadge({ label, className }: { label: string; className?: string }
   return (
     <Badge
       variant="secondary"
-      className={cn("text-shadow-2xs supports-backdrop-filter:backdrop-blur-xl", className)}
+      className={cn(
+        "text-shadow-2xs supports-backdrop-filter:backdrop-blur-xl supports-backdrop-filter:backdrop-brightness-75",
+        className,
+      )}
       aria-hidden={false}
     >
       {label}
@@ -88,6 +96,32 @@ function BookCover({
   );
 }
 
+function BookStatusBadge({
+  status,
+  progressPercent,
+  className,
+}: {
+  status: ReadingStatus;
+  progressPercent?: number | null;
+  className?: string;
+}) {
+  const tStatus = useTranslations("browse.reading-status");
+
+  const label = status === "READING" ? `${tStatus(status)} ${progressPercent ?? 0}%` : tStatus(status);
+
+  return (
+    <Badge
+      className={cn(
+        "text-shadow-2xs supports-backdrop-filter:backdrop-blur-xl supports-backdrop-filter:backdrop-brightness-300 dark:supports-backdrop-filter:backdrop-brightness-25",
+        READING_STATUS_COLORS[status],
+        className,
+      )}
+    >
+      {label}
+    </Badge>
+  );
+}
+
 function CompactCard({
   book,
   href,
@@ -115,11 +149,12 @@ function CompactCard({
         className="h-auto w-full"
       />
 
-      {derived.seriesLabel && (
-        <div className="absolute top-2 right-2 hidden sm:block">
+      <div className="absolute inset-2 flex flex-col items-end gap-2">
+        {derived.seriesLabel && (
           <SeriesBadge label={derived.seriesLabel} className="supports-backdrop-filter:bg-card/50 text-xs" />
-        </div>
-      )}
+        )}
+        {book.userStatus && <BookStatusBadge status={book.userStatus} progressPercent={book.userProgressPercent} />}
+      </div>
 
       <div className="from-background/95 via-background/80 absolute right-0 bottom-0 left-0 h-fit bg-linear-to-t to-transparent p-2 pt-16">
         <p className="text-foreground line-clamp-2 text-sm font-medium text-ellipsis whitespace-pre-wrap text-shadow-2xs">
@@ -183,6 +218,11 @@ function ListCard({
       <div className="min-w-0 flex-1">
         <p className="text-foreground line-clamp-1 text-sm font-medium">{title}</p>
         <p className="text-muted-foreground line-clamp-1 text-xs">{derived.authorNames}</p>
+        {book.userStatus && (
+          <div className="mt-1">
+            <BookStatusBadge status={book.userStatus} progressPercent={book.userProgressPercent} />
+          </div>
+        )}
       </div>
 
       {derived.seriesLabel && (
@@ -226,6 +266,12 @@ function GridCard({
         {derived.seriesLabel && (
           <div className="mb-1">
             <SeriesBadge label={derived.seriesLabel} />
+          </div>
+        )}
+
+        {book.userStatus && (
+          <div className="mb-1">
+            <BookStatusBadge status={book.userStatus} progressPercent={book.userProgressPercent} />
           </div>
         )}
 
