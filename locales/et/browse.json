@@ -2,6 +2,11 @@
   "title": "Sirvi",
   "description": "Avasta oma raamatukogu, leia raamatuid ja halda oma kollektsiooni.",
 
+  "description-toggle": {
+    "show-more": "Näita rohkem",
+    "show-less": "Näita vähem"
+  },
+
   "groups": {
     "my-library": "Minu kogu",
     "catalog": "Kataloog",
