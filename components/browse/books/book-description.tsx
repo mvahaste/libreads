@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 export function BookDescription({
@@ -10,6 +11,7 @@ export function BookDescription({
   description: string | undefined | null;
   className?: string;
 }) {
+  const t = useTranslations("browse.description-toggle");
   const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
@@ -38,7 +40,7 @@ export function BookDescription({
           onClick={() => setExpanded(true)}
           className="text-muted-foreground hover:text-foreground mt-1 cursor-pointer text-sm"
         >
-          Show more
+          {t("show-more")}
         </button>
       )}
       {expanded && (
@@ -46,7 +48,7 @@ export function BookDescription({
           onClick={() => setExpanded(false)}
           className="text-muted-foreground hover:text-foreground mt-1 cursor-pointer text-sm"
         >
-          Show less
+          {t("show-less")}
         </button>
       )}
     </div>

@@ -2,6 +2,11 @@
   "title": "Browse",
   "description": "Explore your library, discover books, and manage your collection.",
 
+  "description-toggle": {
+    "show-more": "Show more",
+    "show-less": "Show less"
+  },
+
   "groups": {
     "my-library": "My Library",
     "catalog": "Catalog",
