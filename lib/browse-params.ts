@@ -64,20 +64,17 @@ export const workSortOptions: SortOption[] = [
   { value: "title-desc", labelKey: "sort.title-desc" },
   { value: "year-desc", labelKey: "sort.year-desc" },
   { value: "year-asc", labelKey: "sort.year-asc" },
-  { value: "editions-desc", labelKey: "sort.editions-desc" },
 ];
 
-/** Shared sort options for entities sorted by name with a "most works" option (authors, series, genres) */
+/** Shared sort options for entities sorted by name (authors, series, genres) */
 export const entityNameSortOptions: SortOption[] = [
   { value: "name-asc", labelKey: "sort.name-asc" },
   { value: "name-desc", labelKey: "sort.name-desc" },
-  { value: "works-desc", labelKey: "sort.works-desc" },
 ];
 
 export const publisherSortOptions: SortOption[] = [
   { value: "name-asc", labelKey: "sort.name-asc" },
   { value: "name-desc", labelKey: "sort.name-desc" },
-  { value: "editions-desc", labelKey: "sort.editions-desc" },
 ];
 
 export const tagSortOptions: SortOption[] = [
