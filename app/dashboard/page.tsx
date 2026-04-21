@@ -7,5 +7,5 @@ export default async function Page() {
 
   if (!session) redirect("/auth/sign-in");
 
-  return <p>Goals</p>;
+  return <p>Dashboard</p>;
 }
