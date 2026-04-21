@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import {
@@ -14,7 +15,9 @@ import {
 import { ReadThroughStatus } from "@/generated/prisma/enums";
 import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation";
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
+import { READ_THROUGH_STATUS_COLORS } from "@/lib/books/status-colors";
 import { useTRPC } from "@/lib/trpc/client";
+import { cn } from "@/lib/utils/cn";
 import { useMutation } from "@tanstack/react-query";
 import { LucideTrash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -117,7 +120,10 @@ export default function BookReadThroughHistory({ readThroughs }: BookReadThrough
                 </p>
               )}
               <p className="text-sm">
-                <span className="text-muted-foreground">{t("status")}:</span> {tStatus(readThrough.status)}
+                <span className="text-muted-foreground">{t("status")}:</span>{" "}
+                <Badge className={cn("text-xs", READ_THROUGH_STATUS_COLORS[readThrough.status])}>
+                  {tStatus(readThrough.status)}
+                </Badge>
               </p>
             </div>
           );

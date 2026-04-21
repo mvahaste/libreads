@@ -8,6 +8,7 @@ import {
   bookFormConflictsProcedure,
   bookFormOptionsProcedure,
   createBookProcedure,
+  deleteBookProcedure,
   updateBookProcedure,
 } from "./books/procedures/admin";
 import { importBookProcedure } from "./books/procedures/import";
@@ -59,6 +60,7 @@ export const booksRouter = router({
   import: importBookProcedure,
   createBook: createBookProcedure,
   updateBook: updateBookProcedure,
+  deleteBook: deleteBookProcedure,
   allBooks: allBooksProcedure,
   myBooks: myBooksProcedure,
   bookDetails: bookDetailsProcedure,

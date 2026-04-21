@@ -19,9 +19,16 @@ export function useBooksQueryInvalidation() {
     await invalidateByKeys([
       trpc.books.bookDetails.queryKey(),
       trpc.books.myBooks.queryKey(),
+      trpc.books.allBooks.queryKey(),
       trpc.books.getLibraryEntryStats.queryKey(),
     ]);
-  }, [invalidateByKeys, trpc.books.bookDetails, trpc.books.getLibraryEntryStats, trpc.books.myBooks]);
+  }, [
+    invalidateByKeys,
+    trpc.books.bookDetails,
+    trpc.books.getLibraryEntryStats,
+    trpc.books.myBooks,
+    trpc.books.allBooks,
+  ]);
 
   const invalidateLibraryOverview = useCallback(async () => {
     await invalidateByKeys([

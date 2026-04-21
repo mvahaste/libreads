@@ -1,4 +1,5 @@
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma, ReadThroughStatus } from "@/generated/prisma/client";
+import { getProgressPercent } from "@/lib/books/progress-display";
 import { READING_STATUS_VALUES } from "@/lib/books/reading-status";
 import { inferProgressType, isReadThroughActive } from "@/lib/books/status-transitions";
 import { prisma } from "@/lib/prisma";
@@ -62,9 +63,10 @@ export const allBooksProcedure = protectedProcedure
       format: z.string().default(""),
     }),
   )
-  .query(async ({ input }) =>
+  .query(async ({ input, ctx }) =>
     withBooksQueryError(
       async () => {
+        const userId = ctx.session.user.id;
         const { page, pageSize, search, sort, genre, author, publisher, series, format } = input;
 
         const where = buildBookWhereInput({
@@ -93,6 +95,7 @@ export const allBooksProcedure = protectedProcedure
                 subtitle: true,
                 coverId: true,
                 publishYear: true,
+                type: true,
                 format: true,
                 pageCount: true,
                 audioSeconds: true,
@@ -127,10 +130,56 @@ export const allBooksProcedure = protectedProcedure
                     position: true,
                   },
                 },
+                userBooks: {
+                  where: { userId },
+                  select: {
+                    status: true,
+                    readThroughs: {
+                      where: {
+                        status: {
+                          in: [ReadThroughStatus.READING, ReadThroughStatus.PAUSED],
+                        },
+                      },
+                      take: 1,
+                      orderBy: [{ startedAt: "desc" }, { createdAt: "desc" }],
+                      select: {
+                        progress: true,
+                        status: true,
+                      },
+                    },
+                  },
+                  take: 1,
+                },
               },
             }),
           count: () => prisma.book.count({ where }),
-          mapItem: mapBookListItem,
+          mapItem: (book) => {
+            const { userBooks: _userBooks, ...mappedBook } = mapBookListItem(book);
+            void _userBooks;
+            const userBook = book.userBooks[0] ?? null;
+            const activeReadThrough = userBook?.readThroughs.find((readThrough) =>
+              isReadThroughActive(readThrough.status),
+            );
+            const progressType = inferProgressType({
+              type: book.type,
+              pageCount: book.pageCount,
+              audioSeconds: book.audioSeconds,
+            });
+
+            return {
+              ...mappedBook,
+              userStatus: userBook?.status ?? null,
+              userProgressPercent:
+                userBook?.status === "READING"
+                  ? getProgressPercent({
+                      progress: activeReadThrough?.progress ?? 0,
+                      progressType,
+                      pageCount: book.pageCount,
+                      audioSeconds: book.audioSeconds,
+                    })
+                  : null,
+            };
+          },
         });
       },
       "Error in allBooks query",
@@ -230,10 +279,56 @@ export const myBooksProcedure = protectedProcedure
                     position: true,
                   },
                 },
+                userBooks: {
+                  where: { userId },
+                  select: {
+                    status: true,
+                    readThroughs: {
+                      where: {
+                        status: {
+                          in: [ReadThroughStatus.READING, ReadThroughStatus.PAUSED],
+                        },
+                      },
+                      take: 1,
+                      orderBy: [{ startedAt: "desc" }, { createdAt: "desc" }],
+                      select: {
+                        progress: true,
+                        status: true,
+                      },
+                    },
+                  },
+                  take: 1,
+                },
               },
             }),
           count: () => prisma.book.count({ where }),
-          mapItem: mapBookListItem,
+          mapItem: (book) => {
+            const { userBooks: _userBooks, ...mappedBook } = mapBookListItem(book);
+            void _userBooks;
+            const userBook = book.userBooks[0] ?? null;
+            const activeReadThrough = userBook?.readThroughs.find((readThrough) =>
+              isReadThroughActive(readThrough.status),
+            );
+            const progressType = inferProgressType({
+              type: book.type,
+              pageCount: book.pageCount,
+              audioSeconds: book.audioSeconds,
+            });
+
+            return {
+              ...mappedBook,
+              userStatus: userBook?.status ?? null,
+              userProgressPercent:
+                userBook?.status === "READING"
+                  ? getProgressPercent({
+                      progress: activeReadThrough?.progress ?? 0,
+                      progressType,
+                      pageCount: book.pageCount,
+                      audioSeconds: book.audioSeconds,
+                    })
+                  : null,
+            };
+          },
         });
       },
       "Error in myBooks query",
