@@ -487,20 +487,72 @@ export const deleteBookProcedure = adminProcedure
   .mutation(async ({ input }) => {
     return withProcedureErrorHandling(
       async () => {
-        const coverId = await prisma.book.findUnique({
+        const bookRelations = await prisma.book.findUnique({
           where: { id: input.bookId },
-          select: { coverId: true },
+          select: {
+            coverId: true,
+            publisherId: true,
+            authors: { select: { authorId: true } },
+            genres: { select: { genreId: true } },
+            series: { select: { seriesId: true } },
+          },
         });
+
+        if (!bookRelations) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "BOOK_NOT_FOUND" });
+        }
+
+        const authorIds = bookRelations.authors.map((a) => a.authorId);
+        const genreIds = bookRelations.genres.map((g) => g.genreId);
+        const seriesIds = bookRelations.series.map((s) => s.seriesId);
+        const publisherId = bookRelations.publisherId;
+        const coverId = bookRelations.coverId;
 
         await prisma.$transaction(async (tx) => {
           await tx.book.delete({
             where: { id: input.bookId },
           });
 
-          if (coverId?.coverId) {
+          if (authorIds.length > 0) {
+            await tx.author.deleteMany({
+              where: {
+                id: { in: authorIds },
+                books: { none: {} },
+              },
+            });
+          }
+
+          if (genreIds.length > 0) {
+            await tx.genre.deleteMany({
+              where: {
+                id: { in: genreIds },
+                books: { none: {} },
+              },
+            });
+          }
+
+          if (seriesIds.length > 0) {
+            await tx.series.deleteMany({
+              where: {
+                id: { in: seriesIds },
+                books: { none: {} },
+              },
+            });
+          }
+
+          if (publisherId) {
+            await tx.publisher.deleteMany({
+              where: {
+                id: publisherId,
+                books: { none: {} },
+              },
+            });
+          }
+
+          if (coverId) {
             await tx.image.deleteMany({
               where: {
-                id: coverId.coverId,
+                id: coverId,
                 books: { none: {} },
                 users: { none: {} },
               },

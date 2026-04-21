@@ -62,9 +62,13 @@ export function useBooksQueryInvalidation() {
       trpc.books.allBooks.queryKey(),
       trpc.books.getLibraryEntryStats.queryKey(),
       trpc.books.filterAuthors.queryKey(),
+      trpc.books.allAuthors.queryKey(),
       trpc.books.filterGenres.queryKey(),
+      trpc.books.allGenres.queryKey(),
       trpc.books.filterPublishers.queryKey(),
+      trpc.books.allPublishers.queryKey(),
       trpc.books.filterSeries.queryKey(),
+      trpc.books.allSeries.queryKey(),
       trpc.books.bookFormOptions.queryKey(),
     ]);
   }, [
@@ -73,9 +77,13 @@ export function useBooksQueryInvalidation() {
     trpc.books.bookDetails,
     trpc.books.bookFormOptions,
     trpc.books.filterAuthors,
+    trpc.books.allAuthors,
     trpc.books.filterGenres,
+    trpc.books.allGenres,
     trpc.books.filterPublishers,
+    trpc.books.allPublishers,
     trpc.books.filterSeries,
+    trpc.books.allSeries,
     trpc.books.getLibraryEntryStats,
     trpc.books.myBooks,
   ]);
