@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (session) redirect("/browse/my-books");
+  if (session) redirect("/dashboard");
 
   if (await getSignUpEnabled()) redirect("/auth/sign-up");
 

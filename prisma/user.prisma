@@ -1,35 +1,21 @@
 model User {
-  id            String        @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
   email         String
-  emailVerified Boolean       @default(false)
+  emailVerified Boolean    @default(false)
   avatarId      String?
-  avatar        Image?        @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  avatar        Image?     @relation(fields: [avatarId], references: [id], onDelete: SetNull)
   image         String?
-  isAdmin       Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  isAdmin       Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   sessions      Session[]
   accounts      Account[]
   userBooks     UserBook[]
   tags          Tag[]
-  readingGoals  ReadingGoal[]
 
   @@unique([email])
   @@map("user")
-}
-
-model ReadingGoal {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  year      Int
-  target    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, year])
-  @@map("reading_goal")
 }
 
 model Session {

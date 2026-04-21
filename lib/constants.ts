@@ -1,4 +1,4 @@
-import { LucideBookOpen, LucideChartColumn, LucideIcon, LucideSettings, LucideTarget } from "lucide-react";
+import { LucideBookOpen, LucideChartColumn, LucideIcon, LucideLayoutDashboard, LucideSettings } from "lucide-react";
 
 import nav from "../locales/en/nav.json";
 
@@ -48,6 +48,11 @@ export type NavLink = {
 
 export const NAV_LINKS: NavLink[] = [
   {
+    key: "dashboard",
+    icon: LucideLayoutDashboard,
+    url: "/dashboard",
+  },
+  {
     key: "browse",
     icon: LucideBookOpen,
     url: "/browse/my-books",
@@ -56,11 +61,6 @@ export const NAV_LINKS: NavLink[] = [
     key: "statistics",
     icon: LucideChartColumn,
     url: "/statistics",
-  },
-  {
-    key: "goals",
-    icon: LucideTarget,
-    url: "/goals",
   },
   {
     key: "settings",
