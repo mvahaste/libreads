@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/responsive-dialog";
 import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation";
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
+import { getMaxProgressForDisplay, getProgressPercent } from "@/lib/books/progress-display";
 import { useTRPC } from "@/lib/trpc/client";
 import {
   formatDurationForInput,
@@ -36,6 +37,7 @@ interface BookProgressDialogProps {
   currentProgress: number;
   pageCount: number | null;
   audioSeconds: number | null;
+  showProgressLabel?: boolean;
 }
 
 export default function BookProgressDialog({
@@ -44,11 +46,18 @@ export default function BookProgressDialog({
   currentProgress,
   pageCount,
   audioSeconds,
+  showProgressLabel = true,
 }: BookProgressDialogProps) {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const t = useTranslations("browse.detail");
   const tBrowse = useTranslations("browse");
+  const progressPercent = getProgressPercent({
+    progress: currentProgress,
+    progressType,
+    pageCount,
+    audioSeconds,
+  });
 
   const content = (
     <ProgressForm
@@ -67,7 +76,7 @@ export default function BookProgressDialog({
   const trigger = (
     <Button variant="outline">
       <LucideBookmark />
-      {t("update-progress")}
+      {showProgressLabel ? t("progress-percentage", { current: progressPercent }) : t("update-progress")}
     </Button>
   );
 
@@ -162,21 +171,16 @@ function ProgressForm({
     return Number(progress) || 0;
   }
 
-  function getMaxProgress(): number {
-    switch (progressType) {
-      case "PAGES":
-        return pageCount ?? 100;
-      case "TIME":
-        return audioSeconds ?? 100;
-      case "PERCENTAGE":
-        return 100;
-    }
-  }
-
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     const value = getProgressValue();
-    if (!Number.isFinite(value) || value < 0 || value > getMaxProgress()) return;
+    const maxProgress = getMaxProgressForDisplay({
+      progressType,
+      pageCount,
+      audioSeconds,
+    });
+
+    if (!Number.isFinite(value) || value < 0 || value > maxProgress) return;
 
     await submitSetProgress({
       bookId,
