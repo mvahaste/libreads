@@ -477,3 +477,42 @@ export const bookFormOptionsProcedure = protectedProcedure.query(async () => {
 export const bookEditOptionsProcedure = adminProcedure.query(async () => {
   return getBookFormOptions();
 });
+
+/**
+ * Delete a book and all related data.
+ * Admin only.
+ */
+export const deleteBookProcedure = adminProcedure
+  .input(z.object({ bookId: z.string().min(1) }))
+  .mutation(async ({ input }) => {
+    return withProcedureErrorHandling(
+      async () => {
+        const coverId = await prisma.book.findUnique({
+          where: { id: input.bookId },
+          select: { coverId: true },
+        });
+
+        await prisma.$transaction(async (tx) => {
+          await tx.book.delete({
+            where: { id: input.bookId },
+          });
+
+          if (coverId?.coverId) {
+            await tx.image.deleteMany({
+              where: {
+                id: coverId.coverId,
+                books: { none: {} },
+                users: { none: {} },
+              },
+            });
+          }
+        });
+
+        return { success: true };
+      },
+      {
+        logLabel: "Error in deleteBook mutation",
+        internalMessage: "DELETE_BOOK_FAILED",
+      },
+    );
+  });
