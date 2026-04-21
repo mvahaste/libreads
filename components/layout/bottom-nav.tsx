@@ -19,7 +19,7 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="bg-card supports-backdrop-filter:bg-card/80 sticky bottom-0 z-50 block border-t px-4 py-3 shadow-sm supports-backdrop-filter:backdrop-blur sm:hidden">
+    <div className="bg-card supports-backdrop-filter:bg-card/80 sticky bottom-0 z-50 block border-t px-6 py-3 shadow-sm supports-backdrop-filter:backdrop-blur sm:hidden">
       <nav className="flex flex-row items-center justify-between gap-2">
         {NAV_LINKS.map(({ key, icon: Icon, url }) => (
           <Link
