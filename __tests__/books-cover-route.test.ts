@@ -28,6 +28,10 @@ vi.mock("@/lib/prisma", () => ({
   prisma: prismaMock.prisma,
 }));
 
+vi.mock("@/lib/utils/process-image", () => ({
+  processBookCoverImage: vi.fn().mockResolvedValue(Buffer.from([1, 2, 3])),
+}));
+
 describe("books cover route", () => {
   beforeEach(() => {
     authMock.getSession.mockReset();

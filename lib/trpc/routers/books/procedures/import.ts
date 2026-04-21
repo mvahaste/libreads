@@ -4,6 +4,7 @@ import { protectedProcedure } from "@/lib/trpc/init";
 import { hardcoverRouter } from "@/lib/trpc/routers/hardcover";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { normalizeAndValidateIsbn10, normalizeAndValidateIsbn13 } from "@/lib/utils/isbn";
+import { processBookCoverImage } from "@/lib/utils/process-image";
 import { generateUniqueSlug } from "@/lib/utils/slug";
 import { importBookSchema } from "@/lib/validations";
 import { TRPCError } from "@trpc/server";
@@ -18,49 +19,6 @@ function normalizeContentType(rawContentType: string | null): string {
 
 function isAcceptedCoverMimeType(mimeType: string): mimeType is (typeof BOOK_COVER.ACCEPTED_TYPES)[number] {
   return (BOOK_COVER.ACCEPTED_TYPES as readonly string[]).includes(mimeType);
-}
-
-async function readResponseBufferWithLimit(response: Response, maxBytes: number): Promise<Buffer<ArrayBuffer>> {
-  const contentLengthHeader = response.headers.get("content-length");
-
-  if (contentLengthHeader) {
-    const contentLength = Number(contentLengthHeader);
-
-    if (Number.isFinite(contentLength) && contentLength > maxBytes) {
-      throw new Error(`Cover image exceeds max size (${maxBytes} bytes)`);
-    }
-  }
-
-  const reader = response.body?.getReader();
-
-  if (!reader) {
-    throw new Error("Cover image response has no readable body");
-  }
-
-  const chunks: Buffer[] = [];
-  let totalBytes = 0;
-
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) {
-      break;
-    }
-
-    if (!value) {
-      continue;
-    }
-
-    totalBytes += value.byteLength;
-
-    if (totalBytes > maxBytes) {
-      throw new Error(`Cover image exceeds max size (${maxBytes} bytes)`);
-    }
-
-    chunks.push(Buffer.from(value));
-  }
-
-  return Buffer.concat(chunks) as Buffer<ArrayBuffer>;
 }
 
 function normalizeImportedIsbn(
@@ -111,34 +69,46 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
       }
 
       // Download cover image if available
-      let coverImageData: { mime: string; data: Buffer<ArrayBuffer> } | undefined;
+      let coverImageData: { mime: string; data: Buffer } | undefined;
       if (editionData.image?.url) {
         try {
-          const imageResponse = await fetchWithTimeout(editionData.image.url, {}, 12000);
+          const response = await fetchWithTimeout(editionData.image.url, {}, 12000);
 
-          if (imageResponse.ok) {
-            const mimeType = normalizeContentType(imageResponse.headers.get("content-type"));
+          if (response.ok) {
+            const mimeType = normalizeContentType(response.headers.get("content-type"));
 
-            if (!isAcceptedCoverMimeType(mimeType)) {
+            if (isAcceptedCoverMimeType(mimeType)) {
+              const chunks: Buffer[] = [];
+              const reader = response.body?.getReader();
+
+              if (reader) {
+                while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+                  if (value) chunks.push(Buffer.from(value));
+                }
+
+                const originalBuffer = Buffer.concat(chunks);
+                const imageBuffer = await processBookCoverImage(originalBuffer);
+
+                coverImageData = {
+                  mime: "image/jpeg",
+                  data: imageBuffer,
+                };
+              }
+            } else {
               console.warn("Skipping cover image with unsupported content type:", {
                 hardcoverEditionId: editionData.id,
                 imageUrl: editionData.image.url,
                 mimeType,
               });
-            } else {
-              const imageBuffer = await readResponseBufferWithLimit(imageResponse, BOOK_COVER.MAX_SIZE);
-
-              coverImageData = {
-                mime: mimeType,
-                data: imageBuffer,
-              };
             }
           } else {
             console.warn("Failed to download cover image:", {
               hardcoverEditionId: editionData.id,
               imageUrl: editionData.image.url,
-              status: imageResponse.status,
-              statusText: imageResponse.statusText,
+              status: response.status,
+              statusText: response.statusText,
             });
           }
         } catch (error) {
@@ -244,7 +214,7 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
           const cover = await tx.image.create({
             data: {
               mime: coverImageData.mime,
-              data: coverImageData.data,
+              data: coverImageData.data as never,
             },
           });
           coverId = cover.id;

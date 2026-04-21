@@ -131,13 +131,6 @@ export async function parseImageUploadOrError<TCode extends string>(
   const arrayBuffer = await file.arrayBuffer();
   const bytes = new Uint8Array(arrayBuffer) as Uint8Array<ArrayBuffer>;
 
-  if (bytes.length > maxSize) {
-    return {
-      ok: false,
-      response: apiErrorResponse(fileTooLargeCode, 400),
-    };
-  }
-
   return {
     ok: true,
     value: {

@@ -34,6 +34,8 @@ export const AVATAR = {
 
 export const BOOK_COVER = {
   MAX_SIZE: 5_000_000, // 5 MB
+  MAX_WIDTH: 512,
+  MAX_HEIGHT: 512,
   ACCEPTED_TYPES: ["image/jpeg", "image/png", "image/webp"] as readonly string[],
   ACCEPTED_EXTENSIONS: "image/jpeg, image/png, image/webp",
 } as const;
