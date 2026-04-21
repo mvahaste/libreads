@@ -7,6 +7,7 @@ import {
   parseRequiredSearchParamOrError,
   requireSessionOrError,
 } from "@/lib/utils/api/route-helpers";
+import { processBookCoverImage } from "@/lib/utils/process-image";
 import { NextRequest, NextResponse } from "next/server";
 
 export type BookCoverPostResponse = {
@@ -46,19 +47,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const processed = await processBookCoverImage(Buffer.from(uploadResult.value.bytes));
     const image = await prisma.image.create({
       data: {
-        mime: uploadResult.value.mime,
-        data: uploadResult.value.bytes,
+        mime: "image/jpeg",
+        data: processed as never,
       },
       select: { id: true },
     });
 
-    const result: BookCoverPostResponse = {
-      imageId: image.id,
-    };
-
-    return NextResponse.json(result, { status: 201 });
+    return NextResponse.json({ imageId: image.id } satisfies BookCoverPostResponse, { status: 201 });
   } catch {
     return apiErrorResponse<BookCoverErrorCode>("UPLOAD_FAILED", 500);
   }
