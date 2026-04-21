@@ -6,6 +6,15 @@ import CoverImage from "@/components/ui/cover-image";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import FormField from "@/components/ui/form-field";
 import { LoadingSwap } from "@/components/ui/loading-swap";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -294,6 +303,20 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
     },
   });
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const deleteBook = useMutation(trpc.books.deleteBook.mutationOptions());
+
+  const { submit: submitDeleteBook, isPending: isDeletePending } = useSubmitMutation({
+    mutation: deleteBook,
+    defaultErrorMessage: t("delete-book-error"),
+    onSuccess: async () => {
+      await invalidateFormAndBrowse();
+      toast.success(t("delete-book-success"));
+      setDeleteDialogOpen(false);
+      router.replace("/browse/books");
+    },
+  });
+
   const { isSubmitting: isFormSubmitting } = form.formState;
   const isSubmitting = isFormSubmitting || isUpdatePending || isCreatePending;
   const isBusy = isSubmitting || isUploadingCover;
@@ -348,7 +371,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
     }
 
     return editBook?.title || t("unknown-title");
-  }, [editBook?.title, t, watchedTitle]);
+  }, [editBook, t, watchedTitle]);
 
   const previewSubtitle = useMemo(() => {
     const nextSubtitle = watchedSubtitle?.trim();
@@ -358,7 +381,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
     }
 
     return editBook?.subtitle || undefined;
-  }, [editBook?.subtitle, watchedSubtitle]);
+  }, [editBook, watchedSubtitle]);
 
   const previewMetaParts = useMemo(() => {
     const parts: string[] = [];
@@ -782,6 +805,11 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
         </div>
 
         <div className="flex flex-wrap items-center justify-end gap-2 border-t pt-4">
+          {isEditMode && (
+            <Button type="button" variant="destructive" disabled={isBusy} onClick={() => setDeleteDialogOpen(true)}>
+              {tActions("delete")}
+            </Button>
+          )}
           <Button asChild variant="outline" type="button" disabled={isBusy}>
             <Link href={cancelHref}>{tActions("cancel")}</Link>
           </Button>
@@ -792,6 +820,36 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
           </Button>
         </div>
       </form>
+
+      <ResponsiveDialog
+        open={deleteDialogOpen}
+        onOpenChange={(isOpen) => {
+          if (isDeletePending) return;
+          if (!isOpen) setDeleteDialogOpen(false);
+        }}
+      >
+        <ResponsiveDialogContent>
+          <ResponsiveDialogHeader>
+            <ResponsiveDialogTitle>{t("delete-book")}</ResponsiveDialogTitle>
+            <ResponsiveDialogDescription>{t("delete-book-confirmation")}</ResponsiveDialogDescription>
+          </ResponsiveDialogHeader>
+          <ResponsiveDialogFooter>
+            <ResponsiveDialogClose asChild>
+              <Button type="button" variant="outline" disabled={isDeletePending}>
+                {tActions("cancel")}
+              </Button>
+            </ResponsiveDialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={isDeletePending}
+              onClick={() => submitDeleteBook({ bookId: editBook!.id })}
+            >
+              <LoadingSwap isLoading={isDeletePending}>{tActions("delete")}</LoadingSwap>
+            </Button>
+          </ResponsiveDialogFooter>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }
