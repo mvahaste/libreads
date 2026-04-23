@@ -1,9 +1,7 @@
 "use client";
 
-import { EntityBrowseSection } from "@/components/browse/entity-browse-section";
-import { authClient } from "@/lib/auth/auth-client";
+import { ManagedEntityBrowseSection } from "@/components/browse/managed-entity-browse-section";
 import { entityNameSortOptions } from "@/lib/browse-params";
-import { useTranslations } from "next-intl";
 
 type SeriesBrowseItem = {
   id: string;
@@ -12,30 +10,17 @@ type SeriesBrowseItem = {
 };
 
 export default function SeriesPage() {
-  const { data: session } = authClient.useSession();
-  const tActions = useTranslations("common.actions");
-  const tEntities = useTranslations("common.entities");
-  const tEntityActions = useTranslations("browse.entity-actions");
-
-  const actions = session?.user.isAdmin
-    ? {
-        manageLabel: tEntityActions("manage", { entity: tEntities("series") }),
-        edit: { label: `${tActions("edit")} (${tEntityActions("coming-soon")})`, disabled: true },
-        delete: { label: `${tActions("delete")} (${tEntityActions("coming-soon")})`, disabled: true },
-      }
-    : undefined;
-
   return (
-    <EntityBrowseSection<SeriesBrowseItem>
+    <ManagedEntityBrowseSection<SeriesBrowseItem>
       sectionKey="series"
       sortOptions={entityNameSortOptions}
       getQueryOptions={(trpc, params) => trpc.books.allSeries.queryOptions(params)}
-      mapItem={(item) => ({
-        id: item.id,
-        name: item.name,
-        href: `/browse/series/${item.slug}`,
-        actions,
-      })}
+      mapItemHref={(item) => `/browse/series/${item.slug}`}
+      getUpdateMutationOptions={(trpc) => trpc.books.updateSeries.mutationOptions()}
+      getDeleteMutationOptions={(trpc) => trpc.books.deleteSeries.mutationOptions()}
+      getUpdateInput={(seriesId, name) => ({ seriesId, name })}
+      getDeleteInput={(seriesId) => ({ seriesId })}
+      duplicateErrorCode="SERIES_ALREADY_EXISTS"
     />
   );
 }

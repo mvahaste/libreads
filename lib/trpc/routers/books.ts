@@ -11,6 +11,16 @@ import {
   deleteBookProcedure,
   updateBookProcedure,
 } from "./books/procedures/admin";
+import {
+  deleteAuthorProcedure,
+  deleteGenreProcedure,
+  deletePublisherProcedure,
+  deleteSeriesProcedure,
+  updateAuthorProcedure,
+  updateGenreProcedure,
+  updatePublisherProcedure,
+  updateSeriesProcedure,
+} from "./books/procedures/entities";
 import { importBookProcedure } from "./books/procedures/import";
 import {
   clearBookRatingProcedure,
@@ -68,6 +78,14 @@ export const booksRouter = router({
   allGenres: allGenresProcedure,
   allPublishers: allPublishersProcedure,
   allSeries: allSeriesProcedure,
+  updateAuthor: updateAuthorProcedure,
+  deleteAuthor: deleteAuthorProcedure,
+  updateSeries: updateSeriesProcedure,
+  deleteSeries: deleteSeriesProcedure,
+  updateGenre: updateGenreProcedure,
+  deleteGenre: deleteGenreProcedure,
+  updatePublisher: updatePublisherProcedure,
+  deletePublisher: deletePublisherProcedure,
   allTags: allTagsProcedure,
   seriesDetails: seriesDetailsProcedure,
   filterGenres: filterGenresProcedure,
