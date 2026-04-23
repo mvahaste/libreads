@@ -1,9 +1,7 @@
 "use client";
 
-import { EntityBrowseSection } from "@/components/browse/entity-browse-section";
-import { authClient } from "@/lib/auth/auth-client";
+import { ManagedEntityBrowseSection } from "@/components/browse/managed-entity-browse-section";
 import { entityNameSortOptions } from "@/lib/browse-params";
-import { useTranslations } from "next-intl";
 
 type AuthorBrowseItem = {
   id: string;
@@ -12,30 +10,17 @@ type AuthorBrowseItem = {
 };
 
 export default function AuthorsPage() {
-  const { data: session } = authClient.useSession();
-  const tActions = useTranslations("common.actions");
-  const tEntities = useTranslations("common.entities");
-  const tEntityActions = useTranslations("browse.entity-actions");
-
-  const actions = session?.user.isAdmin
-    ? {
-        manageLabel: tEntityActions("manage", { entity: tEntities("authors") }),
-        edit: { label: `${tActions("edit")} (${tEntityActions("coming-soon")})`, disabled: true },
-        delete: { label: `${tActions("delete")} (${tEntityActions("coming-soon")})`, disabled: true },
-      }
-    : undefined;
-
   return (
-    <EntityBrowseSection<AuthorBrowseItem>
+    <ManagedEntityBrowseSection<AuthorBrowseItem>
       sectionKey="authors"
       sortOptions={entityNameSortOptions}
       getQueryOptions={(trpc, params) => trpc.books.allAuthors.queryOptions(params)}
-      mapItem={(item) => ({
-        id: item.id,
-        name: item.name,
-        href: `/browse/books?author=${item.slug}`,
-        actions,
-      })}
+      mapItemHref={(item) => `/browse/books?author=${item.slug}`}
+      getUpdateMutationOptions={(trpc) => trpc.books.updateAuthor.mutationOptions()}
+      getDeleteMutationOptions={(trpc) => trpc.books.deleteAuthor.mutationOptions()}
+      getUpdateInput={(authorId, name) => ({ authorId, name })}
+      getDeleteInput={(authorId) => ({ authorId })}
+      duplicateErrorCode="AUTHOR_ALREADY_EXISTS"
     />
   );
 }

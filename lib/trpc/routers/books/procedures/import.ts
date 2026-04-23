@@ -122,26 +122,25 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
 
       const result = await prisma.$transaction(async (tx) => {
         /**
-         * Create or find an entity. Primarily find by Hardcover ID but optionally by name as well.
-         * Some entities, e.g. genres, appear under multiple IDs.
+         * Create or find an entity.
          */
         async function findOrCreate<T extends { id: string }>(
           create: () => Promise<T>,
-          findByHardcoverId: () => Promise<T | null>,
-          findByName?: () => Promise<T | null>,
+          options?: {
+            findByHardcoverId?: () => Promise<T | null>;
+            findByName?: () => Promise<T | null>;
+          },
         ): Promise<T> {
-          const byHardcoverId = await findByHardcoverId();
+          const byHardcoverId = await options?.findByHardcoverId?.();
           if (byHardcoverId) return byHardcoverId;
 
-          if (findByName) {
-            const byName = await findByName();
-            if (byName) return byName;
-          }
+          const byName = await options?.findByName?.();
+          if (byName) return byName;
 
           return create();
         }
 
-        // 1. Find or create publisher (check hardcover ID and name)
+        // 1. Find or create publisher
         let publisherId: string | undefined;
         if (editionData.publisher) {
           const publisher = await findOrCreate(
@@ -150,16 +149,17 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
                 return !!(await tx.publisher.findUnique({ where: { slug: s } }));
               });
               return tx.publisher.create({
-                data: { hardcoverId: editionData.publisher!.id, name: editionData.publisher!.name, slug },
+                data: { name: editionData.publisher!.name, slug },
               });
             },
-            () => tx.publisher.findUnique({ where: { hardcoverId: editionData.publisher!.id } }),
-            () => tx.publisher.findUnique({ where: { name: editionData.publisher!.name } }),
+            {
+              findByName: () => tx.publisher.findUnique({ where: { name: editionData.publisher!.name } }),
+            },
           );
           publisherId = publisher.id;
         }
 
-        // 2. Find or create all authors (check hardcover ID, *not* name since different authors can have the same name)
+        // 2. Find or create all authors
         const authorMap = new Map<number, string>();
         for (const author of editionData.authors) {
           const dbAuthor = await findOrCreate(
@@ -167,14 +167,16 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
               const slug = await generateUniqueSlug(author.name, async (s) => {
                 return !!(await tx.author.findUnique({ where: { slug: s } }));
               });
-              return tx.author.create({ data: { hardcoverId: author.id, name: author.name, slug } });
+              return tx.author.create({ data: { name: author.name, slug } });
             },
-            () => tx.author.findUnique({ where: { hardcoverId: author.id } }),
+            {
+              findByName: () => tx.author.findUnique({ where: { name: author.name } }),
+            },
           );
           authorMap.set(author.id, dbAuthor.id);
         }
 
-        // 3. Find or create all genres (check hardcover ID and name)
+        // 3. Find or create all genres
         const genreMap = new Map<number, string>();
         for (const genre of editionData.genres) {
           const dbGenre = await findOrCreate(
@@ -182,15 +184,16 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
               const slug = await generateUniqueSlug(genre.name, async (s) => {
                 return !!(await tx.genre.findUnique({ where: { slug: s } }));
               });
-              return tx.genre.create({ data: { hardcoverId: genre.id, name: genre.name, slug } });
+              return tx.genre.create({ data: { name: genre.name, slug } });
             },
-            () => tx.genre.findUnique({ where: { hardcoverId: genre.id } }),
-            () => tx.genre.findUnique({ where: { name: genre.name } }),
+            {
+              findByName: () => tx.genre.findUnique({ where: { name: genre.name } }),
+            },
           );
           genreMap.set(genre.id, dbGenre.id);
         }
 
-        // 4. Find or create all series (check hardcover ID and name)
+        // 4. Find or create all series
         const seriesMap = new Map<number, string>();
         for (const series of editionData.series) {
           const dbSeries = await findOrCreate(
@@ -199,11 +202,12 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
                 return !!(await tx.series.findUnique({ where: { slug: sl } }));
               });
               return tx.series.create({
-                data: { hardcoverId: series.id, name: series.name, description: series.description, slug },
+                data: { name: series.name, description: series.description, slug },
               });
             },
-            () => tx.series.findUnique({ where: { hardcoverId: series.id } }),
-            () => tx.series.findUnique({ where: { name: series.name } }),
+            {
+              findByName: () => tx.series.findUnique({ where: { name: series.name } }),
+            },
           );
           seriesMap.set(series.id, dbSeries.id);
         }

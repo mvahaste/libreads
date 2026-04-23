@@ -67,7 +67,6 @@ model Book {
 
 model Series {
   id          String  @id @default(uuid())
-  hardcoverId Int?    @unique
   slug        String  @unique
   name        String  @unique
   description String?
@@ -95,10 +94,9 @@ model BookSeries {
 }
 
 model Author {
-  id          String @id @default(uuid())
-  hardcoverId Int?   @unique
-  slug        String @unique
-  name        String
+  id   String @id @default(uuid())
+  slug String @unique
+  name String @unique
 
   books BookAuthor[]
 
@@ -121,10 +119,9 @@ model BookAuthor {
 }
 
 model Genre {
-  id          String @id @default(uuid())
-  hardcoverId Int?   @unique
-  slug        String @unique
-  name        String @unique
+  id   String @id @default(uuid())
+  slug String @unique
+  name String @unique
 
   books BookGenre[]
 
@@ -147,10 +144,9 @@ model BookGenre {
 }
 
 model Publisher {
-  id          String @id @default(uuid())
-  hardcoverId Int?   @unique
-  slug        String @unique
-  name        String @unique
+  id   String @id @default(uuid())
+  slug String @unique
+  name String @unique
 
   books Book[]
 
