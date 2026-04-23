@@ -67,6 +67,18 @@
     "coming-soon": "Coming soon"
   },
 
+  "entity-management": {
+    "name": "Name",
+    "name-placeholder": "New name",
+    "edit-description": "Update the name.",
+    "delete-confirmation": "Are you sure you want to delete \"{name}\"?",
+    "update-success": "Saved.",
+    "delete-success": "Deleted.",
+    "save-failed": "Failed to save changes.",
+    "delete-failed": "Failed to delete.",
+    "duplicate": "An entity with this name already exists."
+  },
+
   "add-books": {
     "title": "Add Books",
     "description": "Import books from Hardcover, scan, or add them manually.",

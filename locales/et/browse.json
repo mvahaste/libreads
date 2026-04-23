@@ -67,6 +67,18 @@
     "coming-soon": "Peagi"
   },
 
+  "entity-management": {
+    "name": "Nimi",
+    "name-placeholder": "Uus nimi",
+    "edit-description": "Uuenda nime.",
+    "delete-confirmation": "Kas oled kindel, et soovid \"{name}\" kustutada?",
+    "update-success": "Salvestatud.",
+    "delete-success": "Kustutatud.",
+    "save-failed": "Muudatuste salvestamine ebaõnnestus.",
+    "delete-failed": "Kustutamine ebaõnnestus.",
+    "duplicate": "Sama nimega kirje on juba olemas."
+  },
+
   "add-books": {
     "title": "Lisa raamatuid",
     "description": "Impordi raamatuid Hardcoverist, skanneeri, või lisa käsitsi.",
