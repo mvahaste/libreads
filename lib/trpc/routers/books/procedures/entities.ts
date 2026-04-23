@@ -135,6 +135,18 @@ export const updateSeriesProcedure = adminProcedure
       throw new TRPCError({ code: "NOT_FOUND", message: "SERIES_NOT_FOUND" });
     }
 
+    const duplicate = await prisma.series.findFirst({
+      where: {
+        name: trimmedName,
+        id: { not: input.seriesId },
+      },
+      select: { id: true },
+    });
+
+    if (duplicate) {
+      throw new TRPCError({ code: "CONFLICT", message: "SERIES_ALREADY_EXISTS" });
+    }
+
     try {
       const slug = await generateUniqueSlug(trimmedName, async (candidate) => {
         const existingBySlug = await prisma.series.findFirst({
@@ -216,6 +228,18 @@ export const updateGenreProcedure = adminProcedure
       throw new TRPCError({ code: "NOT_FOUND", message: "GENRE_NOT_FOUND" });
     }
 
+    const duplicate = await prisma.genre.findFirst({
+      where: {
+        name: trimmedName,
+        id: { not: input.genreId },
+      },
+      select: { id: true },
+    });
+
+    if (duplicate) {
+      throw new TRPCError({ code: "CONFLICT", message: "GENRE_ALREADY_EXISTS" });
+    }
+
     try {
       const slug = await generateUniqueSlug(trimmedName, async (candidate) => {
         const existingBySlug = await prisma.genre.findFirst({
@@ -295,6 +319,18 @@ export const updatePublisherProcedure = adminProcedure
 
     if (!existing) {
       throw new TRPCError({ code: "NOT_FOUND", message: "PUBLISHER_NOT_FOUND" });
+    }
+
+    const duplicate = await prisma.publisher.findFirst({
+      where: {
+        name: trimmedName,
+        id: { not: input.publisherId },
+      },
+      select: { id: true },
+    });
+
+    if (duplicate) {
+      throw new TRPCError({ code: "CONFLICT", message: "PUBLISHER_ALREADY_EXISTS" });
     }
 
     try {
