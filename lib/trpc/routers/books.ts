@@ -52,6 +52,7 @@ import {
   resolveFilterLabelsProcedure,
   seriesDetailsProcedure,
 } from "./books/procedures/queries";
+import { overallUserStatsProcedure } from "./books/procedures/statistics";
 import { deleteTagProcedure, setBookTagsProcedure, updateTagProcedure } from "./books/procedures/tags";
 
 export { paginate, parseSort } from "./books/shared";
@@ -112,4 +113,5 @@ export const booksRouter = router({
   getLibraryEntryStats: getLibraryEntryStatsProcedure,
   removeBookFromLibrary: removeBookFromLibraryProcedure,
   deleteReadThrough: deleteReadThroughProcedure,
+  overallUserStats: overallUserStatsProcedure,
 });
