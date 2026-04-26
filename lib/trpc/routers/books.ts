@@ -67,6 +67,8 @@ export type BookDetailsOutput = RouterOutput["bookDetails"];
 export type SeriesDetailsInput = RouterInput["seriesDetails"];
 export type SeriesDetailsOutput = RouterOutput["seriesDetails"];
 
+export type OverallUserStatsOutput = RouterOutput["overallUserStats"];
+
 export const booksRouter = router({
   import: importBookProcedure,
   createBook: createBookProcedure,

@@ -1,3 +1,4 @@
+import StatisticsPage from "@/components/statistics/statistics-page";
 import { auth } from "@/lib/auth/auth";
 import { caller } from "@/lib/trpc/server";
 import { headers } from "next/headers";
@@ -10,9 +11,5 @@ export default async function Page() {
 
   const overallStats = await caller.books.overallUserStats();
 
-  return (
-    <pre className="bg-card text-muted-foreground rounded border p-4 font-mono text-sm">
-      {JSON.stringify(overallStats, null, "  ")}
-    </pre>
-  );
+  return <StatisticsPage overallStats={overallStats} />;
 }

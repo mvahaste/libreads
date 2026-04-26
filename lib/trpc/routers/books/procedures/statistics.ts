@@ -2,11 +2,7 @@ import { BookType, ReadingStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 import { protectedProcedure } from "@/lib/trpc/init";
 
-// TODO:
-// - [ ] Move all Prisma queries from procedure to separate functions
-// - [ ] Add option to filter by year (will probably require checking status from read-throughs not just user books)
-
-type TopItem = {
+export type StatisticsTopItem = {
   name: string;
   slug?: string;
   count: number;
@@ -15,7 +11,7 @@ type TopItem = {
 async function mergeTopRows<T extends { count: number }>(
   rows: T[],
   lookup: Array<{ id: string; name: string; slug?: string }>,
-): Promise<TopItem[]> {
+): Promise<StatisticsTopItem[]> {
   const map = new Map(lookup.map((item) => [item.id, item]));
 
   return (
@@ -23,18 +19,20 @@ async function mergeTopRows<T extends { count: number }>(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((row: any) => {
         const item = map.get(row.id);
+
         if (!item) return null;
+
         return {
           name: item.name,
           slug: item.slug,
           count: row.count,
         };
       })
-      .filter(Boolean) as TopItem[]
+      .filter(Boolean) as StatisticsTopItem[]
   );
 }
 
-export async function getTopAuthors(userId: string, limit = 5) {
+async function getTopAuthors(userId: string, limit = 10) {
   const rows = await prisma.bookAuthor.groupBy({
     by: ["authorId"],
     where: {
@@ -75,7 +73,7 @@ export async function getTopAuthors(userId: string, limit = 5) {
   );
 }
 
-export async function getTopGenres(userId: string, limit = 5) {
+async function getTopGenres(userId: string, limit = 10) {
   const rows = await prisma.bookGenre.groupBy({
     by: ["genreId"],
     where: {
@@ -116,7 +114,7 @@ export async function getTopGenres(userId: string, limit = 5) {
   );
 }
 
-export async function getTopSeries(userId: string, limit = 5) {
+async function getTopSeries(userId: string, limit = 10) {
   const rows = await prisma.bookSeries.groupBy({
     by: ["seriesId"],
     where: {
@@ -157,7 +155,7 @@ export async function getTopSeries(userId: string, limit = 5) {
   );
 }
 
-export async function getTopPublishers(userId: string, limit = 5) {
+async function getTopPublishers(userId: string, limit = 10) {
   const rows = await prisma.book.groupBy({
     by: ["publisherId"],
     where: {
@@ -197,7 +195,7 @@ export async function getTopPublishers(userId: string, limit = 5) {
   );
 }
 
-export async function getTopTags(userId: string, limit = 5) {
+async function getTopTags(userId: string, limit = 10) {
   const rows = await prisma.tagBook.groupBy({
     by: ["tagId"],
     where: {
@@ -240,30 +238,6 @@ export const overallUserStatsProcedure = protectedProcedure.query(async ({ ctx }
 
   const totalBooks = await prisma.userBook.count({ where: { userId: userId } });
 
-  const booksByStatus = await prisma.userBook.groupBy({
-    by: ["status"],
-    where: {
-      userId: userId,
-    },
-    _count: {
-      _all: true,
-    },
-  });
-
-  const booksByType = await prisma.book.groupBy({
-    by: ["type"],
-    where: {
-      userBooks: {
-        some: {
-          userId: userId,
-        },
-      },
-    },
-    _count: {
-      _all: true,
-    },
-  });
-
   const pagesRead = await prisma.book.aggregate({
     where: {
       type: {
@@ -296,12 +270,6 @@ export const overallUserStatsProcedure = protectedProcedure.query(async ({ ctx }
     },
   });
 
-  const topAuthors = await getTopAuthors(userId);
-  const topSeries = await getTopSeries(userId);
-  const topGenres = await getTopGenres(userId);
-  const topPublishers = await getTopPublishers(userId);
-  const topTags = await getTopTags(userId);
-
   const averageRating = await prisma.userBook.aggregate({
     where: {
       userId: userId,
@@ -314,11 +282,41 @@ export const overallUserStatsProcedure = protectedProcedure.query(async ({ ctx }
     },
   });
 
+  const booksByStatus = await prisma.userBook.groupBy({
+    by: ["status"],
+    where: {
+      userId: userId,
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  const booksByType = await prisma.book.groupBy({
+    by: ["type"],
+    where: {
+      userBooks: {
+        some: {
+          userId: userId,
+        },
+      },
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  const topAuthors = await getTopAuthors(userId);
+  const topSeries = await getTopSeries(userId);
+  const topGenres = await getTopGenres(userId);
+  const topPublishers = await getTopPublishers(userId);
+  const topTags = await getTopTags(userId);
+
   return {
     totalBooks,
     pagesRead: pagesRead._sum.pageCount,
     secondsListened: secondsListened._sum.audioSeconds,
-    averageRating: averageRating._avg.rating,
+    averageRating: averageRating._avg.rating ? Math.round(averageRating._avg.rating * 100) / 100 : null,
     booksByStatus: booksByStatus.map((b) => ({
       status: b.status,
       count: b._count._all,
