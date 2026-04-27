@@ -11,6 +11,7 @@ import {
   deleteBookProcedure,
   updateBookProcedure,
 } from "./books/procedures/admin";
+import { dashboardSummaryProcedure } from "./books/procedures/dashboard";
 import {
   deleteAuthorProcedure,
   deleteGenreProcedure,
@@ -68,6 +69,7 @@ export type SeriesDetailsInput = RouterInput["seriesDetails"];
 export type SeriesDetailsOutput = RouterOutput["seriesDetails"];
 
 export type OverallUserStatsOutput = RouterOutput["overallUserStats"];
+export type DashboardSummaryOutput = RouterOutput["dashboardSummary"];
 
 export const booksRouter = router({
   import: importBookProcedure,
@@ -116,4 +118,5 @@ export const booksRouter = router({
   removeBookFromLibrary: removeBookFromLibraryProcedure,
   deleteReadThrough: deleteReadThroughProcedure,
   overallUserStats: overallUserStatsProcedure,
+  dashboardSummary: dashboardSummaryProcedure,
 });
