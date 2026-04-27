@@ -1,5 +1,6 @@
 "use client";
 
+import PageHeader from "./page-header";
 import { type NavGroup, SectionNav } from "./section-nav";
 
 interface SectionPageProps<T extends string> {
@@ -14,12 +15,7 @@ export function SectionPage<T extends string>(props: SectionPageProps<T>) {
 
   return (
     <div>
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-foreground text-2xl font-bold tracking-tight text-balance">{title}</h1>
-          <p className="text-muted-foreground mt-1 text-sm">{description}</p>
-        </div>
-      </div>
+      <PageHeader title={title} description={description} />
 
       {/* Top nav (Mobile) */}
       <div className="mb-6 lg:hidden">

@@ -1,0 +1,39 @@
+{
+  "title": "Ülevaade",
+  "description": "Kiirpilk sinu praegusele lugemisele.",
+  "sections": {
+    "currentlyReading": {
+      "title": "Praegu loed",
+      "description": "Raamatud, mis on sul praegu pooleli.",
+      "empty": "Sul ei ole hetkel ühtegi raamatut pooleli."
+    },
+    "upNext": {
+      "title": "Järgmisena",
+      "description": "Raamatud, mis ootavad järjekorras.",
+      "empty": "Ühtegi \"Tahan lugeda\" raamatut pole.",
+      "addedOn": "Lisatud"
+    },
+    "awaitingRating": {
+      "title": "Ootavad hinnangut",
+      "description": "Hiljuti lõpetatud raamatud, mida sa pole veel hinnanud.",
+      "empty": "Praegu pole midagi hinnata.",
+      "finishedOn": "Lõpetatud"
+    },
+    "recentlyFinished": {
+      "title": "Hiljuti lõpetatud",
+      "description": "Sinu viimati lõpetatud raamatud.",
+      "empty": "Hiljuti lõpetatud raamatuid veel pole.",
+      "finishedOn": "Lõpetatud"
+    },
+    "recentActivity": {
+      "title": "Hiljutine tegevus",
+      "description": "Sinu viimased lugemistoimingud.",
+      "empty": "Hiljutine tegevus puudub."
+    },
+    "topTags": {
+      "title": "Populaarseimad sildid",
+      "description": "Sinu enim kasutatud sildid.",
+      "empty": "Silte pole veel kasutatud."
+    }
+  }
+}

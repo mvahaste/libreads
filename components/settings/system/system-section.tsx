@@ -1,26 +1,8 @@
-import { IconBox } from "@/components/ui/icon-box";
+import StatCard from "@/components/ui/stat-card";
 import { LucideBookOpen, LucideBuilding2, LucidePen, LucideShapes, LucideTag, LucideUsers } from "lucide-react";
 import { ReactNode } from "react";
 
 import { SettingsGroup } from "../settings-group";
-
-interface StatCardProps {
-  icon: ReactNode;
-  label: string;
-  value: string;
-}
-
-function StatCard({ icon, label, value }: StatCardProps) {
-  return (
-    <div className="border-border bg-card flex items-start gap-4 rounded-lg border p-4">
-      <IconBox>{icon}</IconBox>
-      <div className="min-w-0">
-        <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">{label}</p>
-        <p className="text-foreground -mb-4 text-lg font-bold tabular-nums">{value}</p>
-      </div>
-    </div>
-  );
-}
 
 export type SystemStatKey = "users" | "books" | "authors" | "genres" | "publishers" | "series";
 

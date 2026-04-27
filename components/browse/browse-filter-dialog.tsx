@@ -75,6 +75,7 @@ export function BrowseFilters({ filters, filterValues, onFilterChange, activeCou
 }
 
 type FilterOption = { value: string; label: string };
+type ReadingStatusFilterKey = "WANT_TO_READ" | "READING" | "COMPLETED" | "PAUSED" | "ABANDONED";
 
 function FilterCombobox({
   filter,
@@ -86,6 +87,7 @@ function FilterCombobox({
   onChange: (value: string) => void;
 }) {
   const t = useTranslations("browse");
+  const tReadingStatus = useTranslations("common.readingStatus");
   const trpc = useTRPC();
 
   const queryOptions = (() => {
@@ -110,8 +112,8 @@ function FilterCombobox({
   const { data: options } = useQuery(queryOptions as Parameters<typeof useQuery<unknown>>[0]);
 
   const normalizedOptions = useMemo(
-    () => normalizeFilterOptions(options, filter.optionsEndpoint, t),
-    [options, filter.optionsEndpoint, t],
+    () => normalizeFilterOptions(options, filter.optionsEndpoint, tReadingStatus),
+    [options, filter.optionsEndpoint, tReadingStatus],
   );
 
   const selectedOption = normalizedOptions.find((opt) => opt.value === value) ?? null;
@@ -145,7 +147,7 @@ function FilterCombobox({
 function normalizeFilterOptions(
   options: unknown,
   endpoint: FilterConfig["optionsEndpoint"],
-  t: ReturnType<typeof useTranslations>,
+  tReadingStatus: ReturnType<typeof useTranslations>,
 ): FilterOption[] {
   if (!options || !Array.isArray(options)) return [];
 
@@ -156,7 +158,7 @@ function normalizeFilterOptions(
   if (endpoint === "statuses") {
     return (options as { value: string }[]).map((o) => ({
       value: o.value,
-      label: t(`reading-status.${o.value}` as Parameters<typeof t>[0]),
+      label: tReadingStatus(o.value as ReadingStatusFilterKey),
     }));
   }
 

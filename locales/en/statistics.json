@@ -1,0 +1,42 @@
+{
+  "title": "Statistics",
+  "description": "A snapshot of your reading activity.",
+  "cards": {
+    "books": "Total books",
+    "pages": "Pages read",
+    "time": "Time listened",
+    "rating": "Average rating",
+    "ratingNoData": "Not enough data"
+  },
+  "charts": {
+    "seriesLabel": "Books",
+    "booksByStatus": {
+      "title": "Books by Status",
+      "description": "Your books by their statuses."
+    },
+    "booksByType": {
+      "title": "Books by Type",
+      "description": "Your books by their types."
+    },
+    "topAuthors": {
+      "title": "Top Authors",
+      "description": "Your most read authors."
+    },
+    "topGenres": {
+      "title": "Top Genres",
+      "description": "Your most read genres."
+    },
+    "topSeries": {
+      "title": "Top Series",
+      "description": "Your longest series."
+    },
+    "topPublishers": {
+      "title": "Top Publishers",
+      "description": "Your most read publishers."
+    },
+    "topTags": {
+      "title": "Top Tags",
+      "description": "Your most used tags."
+    }
+  }
+}

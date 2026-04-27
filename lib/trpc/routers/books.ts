@@ -11,6 +11,7 @@ import {
   deleteBookProcedure,
   updateBookProcedure,
 } from "./books/procedures/admin";
+import { dashboardSummaryProcedure } from "./books/procedures/dashboard";
 import {
   deleteAuthorProcedure,
   deleteGenreProcedure,
@@ -52,6 +53,7 @@ import {
   resolveFilterLabelsProcedure,
   seriesDetailsProcedure,
 } from "./books/procedures/queries";
+import { overallUserStatsProcedure } from "./books/procedures/statistics";
 import { deleteTagProcedure, setBookTagsProcedure, updateTagProcedure } from "./books/procedures/tags";
 
 export { paginate, parseSort } from "./books/shared";
@@ -65,6 +67,9 @@ export type BookDetailsOutput = RouterOutput["bookDetails"];
 
 export type SeriesDetailsInput = RouterInput["seriesDetails"];
 export type SeriesDetailsOutput = RouterOutput["seriesDetails"];
+
+export type OverallUserStatsOutput = RouterOutput["overallUserStats"];
+export type DashboardSummaryOutput = RouterOutput["dashboardSummary"];
 
 export const booksRouter = router({
   import: importBookProcedure,
@@ -112,4 +117,6 @@ export const booksRouter = router({
   getLibraryEntryStats: getLibraryEntryStatsProcedure,
   removeBookFromLibrary: removeBookFromLibraryProcedure,
   deleteReadThrough: deleteReadThroughProcedure,
+  overallUserStats: overallUserStatsProcedure,
+  dashboardSummary: dashboardSummaryProcedure,
 });

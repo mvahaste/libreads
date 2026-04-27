@@ -60,5 +60,17 @@
     "works": "Teosed",
     "editions": "Väljaanded",
     "system": "Süsteem"
+  },
+  "readingStatus": {
+    "WANT_TO_READ": "Soovin lugeda",
+    "READING": "Loen",
+    "COMPLETED": "Loetud",
+    "PAUSED": "Peatatud",
+    "ABANDONED": "Pooleli jäetud"
+  },
+  "bookTypes": {
+    "PHYSICAL": "Füüsiline",
+    "EBOOK": "E-raamat",
+    "AUDIOBOOK": "Audioraamat"
   }
 }
