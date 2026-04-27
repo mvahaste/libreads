@@ -25,7 +25,11 @@ export default function ImportPage() {
         <IconCard
           icon={<LucideDownload className="text-primary size-5" />}
           title={t("import.title")}
-          description={t("import.description")}
+          description={
+            isHardcoverConfigured
+              ? t("import.description")
+              : `${t("import.description")} ${t("import-flow.api-token-missing")}`
+          }
           action={
             isHardcoverConfigured ? (
               <Button asChild variant="secondary">
@@ -41,7 +45,11 @@ export default function ImportPage() {
         <IconCard
           icon={<LucideScanBarcode className="text-primary size-5" />}
           title={t("scan.title")}
-          description={t("scan.description")}
+          description={
+            isHardcoverConfigured
+              ? t("scan.description")
+              : `${t("scan.description")} ${t("scan-flow.api-token-missing")}`
+          }
           action={
             isHardcoverConfigured ? (
               <Button asChild variant="secondary">
