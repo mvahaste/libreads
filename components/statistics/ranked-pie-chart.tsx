@@ -73,18 +73,15 @@ export function RankedPieChart({ title, description, data, seriesLabel }: Ranked
               dataKey="value"
               nameKey="label"
               labelLine={false}
-              label={({ payload, ...props }) => {
+              label={({ payload, cx, cy, midAngle, innerRadius, outerRadius }) => {
+                if (midAngle == null) return null;
+                const RADIAN = Math.PI / 180;
+                const radius = innerRadius + (outerRadius - innerRadius) * 0.725;
+                const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
                 return (
-                  <text
-                    cx={props.cx}
-                    cy={props.cy}
-                    x={props.x}
-                    y={props.y}
-                    textAnchor={props.textAnchor}
-                    dominantBaseline={props.dominantBaseline}
-                    fill={props.fill}
-                    className="font-bold"
-                  >
+                  <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" className="fill-card font-bold">
                     {payload.value}
                   </text>
                 );
