@@ -20,6 +20,9 @@ const schema = z.object({
 
   /** TTL (in milliseconds) for cached external API responses. */
   LIBREADS_EXTERNAL_API_CACHE_TTL: z.coerce.number().int().nonnegative().default(3600000), // 1 hour
+
+  /** Disables all mutations (create, update, delete). */
+  LIBREADS_READ_ONLY_MODE: z.coerce.boolean().default(false),
 });
 
 export const env = schema.parse(process.env);
