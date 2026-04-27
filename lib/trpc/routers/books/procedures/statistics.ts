@@ -238,35 +238,33 @@ export const overallUserStatsProcedure = protectedProcedure.query(async ({ ctx }
 
   const totalBooks = await prisma.userBook.count({ where: { userId: userId } });
 
-  const pagesRead = await prisma.book.aggregate({
+  const pagesRead = await prisma.readThrough.aggregate({
     where: {
-      type: {
-        in: [BookType.PHYSICAL, BookType.EBOOK],
-      },
-      userBooks: {
-        some: {
-          userId: userId,
-          status: ReadingStatus.COMPLETED,
+      userBook: {
+        userId: userId,
+        book: {
+          type: {
+            in: [BookType.PHYSICAL, BookType.EBOOK],
+          },
         },
       },
     },
     _sum: {
-      pageCount: true,
+      progress: true,
     },
   });
 
-  const secondsListened = await prisma.book.aggregate({
+  const secondsListened = await prisma.readThrough.aggregate({
     where: {
-      type: BookType.AUDIOBOOK,
-      userBooks: {
-        some: {
-          userId: userId,
-          status: ReadingStatus.COMPLETED,
+      userBook: {
+        userId: userId,
+        book: {
+          type: BookType.AUDIOBOOK,
         },
       },
     },
     _sum: {
-      audioSeconds: true,
+      progress: true,
     },
   });
 
@@ -314,8 +312,8 @@ export const overallUserStatsProcedure = protectedProcedure.query(async ({ ctx }
 
   return {
     totalBooks,
-    pagesRead: pagesRead._sum.pageCount,
-    secondsListened: secondsListened._sum.audioSeconds,
+    pagesRead: pagesRead._sum.progress,
+    secondsListened: secondsListened._sum.progress,
     averageRating: averageRating._avg.rating ? Math.round(averageRating._avg.rating * 100) / 100 : null,
     booksByStatus: booksByStatus.map((b) => ({
       status: b.status,
