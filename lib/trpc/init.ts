@@ -1,6 +1,7 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 
 import { auth } from "../auth/auth";
+import { env } from "../env";
 
 export type TRPCContext = {
   headers: Headers;
@@ -19,7 +20,21 @@ export async function createTRPCContext(opts: { headers: Headers }): Promise<TRP
 const t = initTRPC.context<TRPCContext>().create();
 
 export const router = t.router;
-export const publicProcedure = t.procedure;
+
+/**
+ * Middleware that blocks all mutations when the app is in read-only mode.
+ */
+const enforceWriteable = t.middleware(({ type, next }) => {
+  if (type === "mutation" && env.LIBREADS_READ_ONLY_MODE) {
+    throw new TRPCError({
+      code: "METHOD_NOT_SUPPORTED",
+      message: "The application is in read-only mode. Mutations are disabled.",
+    });
+  }
+  return next();
+});
+
+export const publicProcedure = t.procedure.use(enforceWriteable);
 
 /**
  * Middleware that enforces the user is authenticated.
@@ -52,7 +67,7 @@ const enforceAdmin = t.middleware(({ ctx, next }) => {
 });
 
 /** Procedure that requires authentication. */
-export const protectedProcedure = t.procedure.use(enforceAuth);
+export const protectedProcedure = publicProcedure.use(enforceAuth);
 
 /** Procedure that requires admin privileges. */
 export const adminProcedure = protectedProcedure.use(enforceAdmin);
