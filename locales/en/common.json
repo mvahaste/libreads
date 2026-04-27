@@ -60,5 +60,17 @@
     "works": "Works",
     "editions": "Editions",
     "system": "System"
+  },
+  "readingStatus": {
+    "WANT_TO_READ": "Want to Read",
+    "READING": "Reading",
+    "COMPLETED": "Completed",
+    "PAUSED": "Paused",
+    "ABANDONED": "Abandoned"
+  },
+  "bookTypes": {
+    "PHYSICAL": "Physical",
+    "EBOOK": "Ebook",
+    "AUDIOBOOK": "Audiobook"
   }
 }

@@ -56,6 +56,7 @@ export function HardcoverImportFlow() {
   const t = useTranslations("browse.add-books.import-flow");
   const tBrowse = useTranslations("browse");
   const tDetail = useTranslations("browse.detail");
+  const tBookTypes = useTranslations("common.bookTypes");
   const tActions = useTranslations("common.actions");
 
   const trpc = useTRPC();
@@ -171,9 +172,9 @@ export function HardcoverImportFlow() {
   }
 
   function getTypeLabel(type: HardcoverEdition["bookType"] | undefined) {
-    if (type === "AUDIOBOOK") return tDetail("audiobook");
-    if (type === "EBOOK") return tDetail("ebook");
-    if (type === "PHYSICAL") return tDetail("physical");
+    if (type === "AUDIOBOOK") return tBookTypes("AUDIOBOOK");
+    if (type === "EBOOK") return tBookTypes("EBOOK");
+    if (type === "PHYSICAL") return tBookTypes("PHYSICAL");
     return t("unknown");
   }
 

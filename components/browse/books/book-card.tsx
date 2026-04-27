@@ -105,7 +105,7 @@ function BookStatusBadge({
   progressPercent?: number | null;
   className?: string;
 }) {
-  const tStatus = useTranslations("browse.reading-status");
+  const tStatus = useTranslations("common.readingStatus");
 
   const label = status === "READING" ? `${tStatus(status)} ${progressPercent ?? 0}%` : tStatus(status);
 

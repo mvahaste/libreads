@@ -20,6 +20,7 @@ export default getRequestConfig(async () => {
       nav: (await import(`../locales/${locale}/nav.json`)).default,
       books: (await import(`../locales/${locale}/books.json`)).default,
       browse: (await import(`../locales/${locale}/browse.json`)).default,
+      statistics: (await import(`../locales/${locale}/statistics.json`)).default,
       settings: (await import(`../locales/${locale}/settings.json`)).default,
       errors: (await import(`../locales/${locale}/errors.json`)).default,
       notFound: (await import(`../locales/${locale}/not-found.json`)).default,

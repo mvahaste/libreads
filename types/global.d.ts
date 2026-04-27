@@ -6,6 +6,7 @@ import errors from "../locales/en/errors.json";
 import nav from "../locales/en/nav.json";
 import notFound from "../locales/en/not-found.json";
 import settings from "../locales/en/settings.json";
+import statistics from "../locales/en/statistics.json";
 
 type Messages = {
   common: typeof common;
@@ -13,6 +14,7 @@ type Messages = {
   nav: typeof nav;
   books: typeof books;
   browse: typeof browse;
+  statistics: typeof statistics;
   settings: typeof settings;
   errors: typeof errors;
   notFound: typeof notFound;

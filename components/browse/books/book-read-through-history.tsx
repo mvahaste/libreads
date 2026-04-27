@@ -46,7 +46,7 @@ function canDeleteReadThrough(status: ReadThroughItem["status"]) {
 
 export default function BookReadThroughHistory({ readThroughs }: BookReadThroughHistoryProps) {
   const t = useTranslations("browse.detail");
-  const tStatus = useTranslations("browse.reading-status");
+  const tStatus = useTranslations("common.readingStatus");
   const tActions = useTranslations("common.actions");
 
   const trpc = useTRPC();

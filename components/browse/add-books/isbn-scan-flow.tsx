@@ -40,7 +40,7 @@ type HardcoverEdition = {
 
 export function IsbnScanFlow() {
   const t = useTranslations("browse.add-books.scan-flow");
-  const tDetail = useTranslations("browse.detail");
+  const tBookTypes = useTranslations("common.bookTypes");
   const tActions = useTranslations("common.actions");
 
   const trpc = useTRPC();
@@ -217,9 +217,9 @@ export function IsbnScanFlow() {
   }
 
   function getTypeLabel(type: HardcoverEdition["bookType"] | undefined) {
-    if (type === "AUDIOBOOK") return tDetail("audiobook");
-    if (type === "EBOOK") return tDetail("ebook");
-    if (type === "PHYSICAL") return tDetail("physical");
+    if (type === "AUDIOBOOK") return tBookTypes("AUDIOBOOK");
+    if (type === "EBOOK") return tBookTypes("EBOOK");
+    if (type === "PHYSICAL") return tBookTypes("PHYSICAL");
     return t("unknown");
   }
 

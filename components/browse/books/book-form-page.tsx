@@ -73,6 +73,7 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
   }
 
   const t = useTranslations("browse.detail");
+  const tBookTypes = useTranslations("common.bookTypes");
   const tActions = useTranslations("common.actions");
   const trpc = useTRPC();
   const { invalidateFormAndBrowse } = useBooksQueryInvalidation();
@@ -604,9 +605,9 @@ export function BookFormPage({ mode, cancelHref, book, initialValues, onSuccess 
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="PHYSICAL">{t("physical")}</SelectItem>
-                            <SelectItem value="EBOOK">{t("ebook")}</SelectItem>
-                            <SelectItem value="AUDIOBOOK">{t("audiobook")}</SelectItem>
+                            <SelectItem value="PHYSICAL">{tBookTypes("PHYSICAL")}</SelectItem>
+                            <SelectItem value="EBOOK">{tBookTypes("EBOOK")}</SelectItem>
+                            <SelectItem value="AUDIOBOOK">{tBookTypes("AUDIOBOOK")}</SelectItem>
                           </SelectContent>
                         </Select>
                         {fieldState.error && <FieldError id={typeErrorId} errors={[fieldState.error]} />}
