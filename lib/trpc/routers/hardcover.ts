@@ -331,6 +331,10 @@ function mapHardcoverEdition(edition: InternalHardcoverEditionRecord): Hardcover
 }
 
 export const hardcoverRouter = router({
+  status: protectedProcedure.query(() => ({
+    configured: !!env.HARDCOVER_API_TOKEN,
+  })),
+
   search: protectedProcedure
     .input(
       z.object({
