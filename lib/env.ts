@@ -13,7 +13,7 @@ const schema = z.object({
   LIBREADS_DATA_LOCATION: z.string().default("/data"),
 
   /** Hardcover API token. */
-  HARDCOVER_API_TOKEN: z.string().min(1).optional(),
+  LIBREADS_HARDCOVER_API_TOKEN: z.string().min(1).optional(),
 
   /** Max number of cached external API responses. */
   LIBREADS_EXTERNAL_API_CACHE_MAX: z.coerce.number().int().nonnegative().default(100),
