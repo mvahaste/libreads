@@ -263,7 +263,7 @@ query GetEditionDetails($editionId: Int!) {
 }`;
 
 async function hardcoverFetch<T>(query: string, variables: Record<string, unknown>): Promise<T> {
-  if (!env.HARDCOVER_API_TOKEN) {
+  if (!env.LIBREADS_HARDCOVER_API_TOKEN) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "HARDCOVER_API_TOKEN_NOT_CONFIGURED",
@@ -278,7 +278,7 @@ async function hardcoverFetch<T>(query: string, variables: Record<string, unknow
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${env.HARDCOVER_API_TOKEN}`,
+          Authorization: `Bearer ${env.LIBREADS_HARDCOVER_API_TOKEN}`,
         },
         body: JSON.stringify({ query, variables }),
       },
@@ -331,6 +331,10 @@ function mapHardcoverEdition(edition: InternalHardcoverEditionRecord): Hardcover
 }
 
 export const hardcoverRouter = router({
+  status: protectedProcedure.query(() => ({
+    configured: !!env.LIBREADS_HARDCOVER_API_TOKEN,
+  })),
+
   search: protectedProcedure
     .input(
       z.object({
