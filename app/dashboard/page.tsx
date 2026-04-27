@@ -10,7 +10,11 @@ export default async function Page() {
 
   if (!session) redirect("/auth/sign-in");
 
-  const [summary, tDashboard] = await Promise.all([caller.books.dashboardSummary(), getTranslations("dashboard")]);
+  const [summary, tDashboard, tCommon] = await Promise.all([
+    caller.books.dashboardSummary(),
+    getTranslations("dashboard"),
+    getTranslations("common"),
+  ]);
 
   return (
     <DashboardPage
@@ -45,17 +49,18 @@ export default async function Page() {
           title: tDashboard("sections.recentActivity.title"),
           description: tDashboard("sections.recentActivity.description"),
           empty: tDashboard("sections.recentActivity.empty"),
-          started: tDashboard("sections.recentActivity.started"),
-          finished: tDashboard("sections.recentActivity.finished"),
-          addedToWantToRead: tDashboard("sections.recentActivity.addedToWantToRead"),
+          statusLabels: {
+            WANT_TO_READ: tCommon("readingStatus.WANT_TO_READ"),
+            READING: tCommon("readingStatus.READING"),
+            COMPLETED: tCommon("readingStatus.COMPLETED"),
+            PAUSED: tCommon("readingStatus.PAUSED"),
+            ABANDONED: tCommon("readingStatus.ABANDONED"),
+          },
         },
         topTags: {
           title: tDashboard("sections.topTags.title"),
           description: tDashboard("sections.topTags.description"),
           empty: tDashboard("sections.topTags.empty"),
-        },
-        actions: {
-          openBook: tDashboard("actions.openBook"),
         },
       }}
     />

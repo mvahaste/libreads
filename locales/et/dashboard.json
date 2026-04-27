@@ -1,24 +1,21 @@
 {
   "title": "Ülevaade",
   "description": "Kiirpilk sinu praegusele lugemisele.",
-  "actions": {
-    "openBook": "Ava raamat"
-  },
   "sections": {
     "currentlyReading": {
       "title": "Praegu loed",
-      "description": "Aktiivse edenemisega raamatud.",
-      "empty": "Praegu pooleli raamatuid ei ole."
+      "description": "Raamatud, mis on sul praegu pooleli.",
+      "empty": "Sul ei ole hetkel ühtegi raamatut pooleli."
     },
     "upNext": {
       "title": "Järgmisena",
       "description": "Raamatud, mis ootavad järjekorras.",
-      "empty": "Ühtegi \"Want to Read\" raamatut pole.",
+      "empty": "Ühtegi \"Tahan lugeda\" raamatut pole.",
       "addedOn": "Lisatud"
     },
     "awaitingRating": {
       "title": "Ootavad hinnangut",
-      "description": "Hiljuti lõpetatud raamatud, mida sa pole hinnanud.",
+      "description": "Hiljuti lõpetatud raamatud, mida sa pole veel hinnanud.",
       "empty": "Praegu pole midagi hinnata.",
       "finishedOn": "Lõpetatud"
     },
@@ -31,16 +28,12 @@
     "recentActivity": {
       "title": "Hiljutine tegevus",
       "description": "Sinu viimased lugemistoimingud.",
-      "empty": "Hiljutine tegevus puudub.",
-      "started": "Alustas",
-      "finished": "Lõpetas",
-      "addedToWantToRead": "Lisatud \"Want to Read\" nimekirja"
+      "empty": "Hiljutine tegevus puudub."
     },
     "topTags": {
       "title": "Populaarseimad sildid",
       "description": "Sinu enim kasutatud sildid.",
-      "empty": "Silte pole veel kasutatud.",
-      "itemCountSuffix": "kirjet"
+      "empty": "Silte pole veel kasutatud."
     }
   }
 }

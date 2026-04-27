@@ -41,17 +41,12 @@ interface DashboardPageProps {
       title: string;
       description: string;
       empty: string;
-      started: string;
-      finished: string;
-      addedToWantToRead: string;
+      statusLabels: Record<string, string>;
     };
     topTags: {
       title: string;
       description: string;
       empty: string;
-    };
-    actions: {
-      openBook: string;
     };
   };
 }
@@ -61,6 +56,16 @@ function formatShortDate(iso: string) {
     year: "numeric",
     month: "short",
     day: "numeric",
+  });
+}
+
+function formatShortDateAndTime(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
   });
 }
 
@@ -101,12 +106,6 @@ function SectionCard({
 }
 
 export default function DashboardPage({ summary, labels }: DashboardPageProps) {
-  const activityStatusColors = {
-    STARTED: READING_STATUS_COLORS.READING,
-    FINISHED: READING_STATUS_COLORS.COMPLETED,
-    ADDED_TO_WANT_TO_READ: READING_STATUS_COLORS.WANT_TO_READ,
-  } as const;
-
   return (
     <div>
       <PageHeader title={labels.title} description={labels.description} />
@@ -264,34 +263,22 @@ export default function DashboardPage({ summary, labels }: DashboardPageProps) {
             <EmptyState text={labels.recentActivity.empty} />
           ) : (
             <div className="space-y-2">
-              {summary.recentActivity.map((entry) => {
-                let actionLabel = labels.recentActivity.started;
-
-                if (entry.type === "FINISHED") {
-                  actionLabel = labels.recentActivity.finished;
-                }
-
-                if (entry.type === "ADDED_TO_WANT_TO_READ") {
-                  actionLabel = labels.recentActivity.addedToWantToRead;
-                }
-
-                return (
-                  <div
-                    key={`${entry.type}:${entry.book.slug}:${entry.at}`}
-                    className="border-border/60 bg-muted/20 flex flex-col items-start justify-between gap-1.5 rounded-lg border p-3 md:flex-row md:items-center md:gap-3"
-                  >
-                    <div className="flex min-w-0 flex-col items-start gap-1.5 md:flex-row md:items-center md:gap-3">
-                      <Badge variant="ghost" className={cn("h-6 text-xs", activityStatusColors[entry.type])}>
-                        {actionLabel}
-                      </Badge>
-                      <Link href={`/browse/books/${entry.book.slug}`} className="min-w-0 text-sm font-medium">
-                        <span className="line-clamp-1">{entry.book.title}</span>
-                      </Link>
-                    </div>
-                    <p className="text-muted-foreground shrink-0 text-xs">{formatShortDate(entry.at)}</p>
+              {summary.recentActivity.map((entry) => (
+                <div
+                  key={`${entry.status}:${entry.book.slug}:${entry.at}`}
+                  className="border-border/60 bg-muted/20 flex flex-col items-start justify-between gap-1.5 rounded-lg border p-3 md:flex-row md:items-center md:gap-3"
+                >
+                  <div className="flex min-w-0 flex-col items-start gap-1.5 md:flex-row md:items-center md:gap-3">
+                    <Badge variant="ghost" className={cn("h-6 text-xs", READING_STATUS_COLORS[entry.status])}>
+                      {labels.recentActivity.statusLabels[entry.status] ?? entry.status}
+                    </Badge>
+                    <Link href={`/browse/books/${entry.book.slug}`} className="min-w-0 text-sm font-medium">
+                      <span className="line-clamp-1">{entry.book.title}</span>
+                    </Link>
                   </div>
-                );
-              })}
+                  <p className="text-muted-foreground shrink-0 text-xs">{formatShortDateAndTime(entry.at)}</p>
+                </div>
+              ))}
             </div>
           )}
         </SectionCard>

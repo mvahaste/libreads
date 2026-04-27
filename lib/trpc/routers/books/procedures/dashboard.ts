@@ -74,189 +74,206 @@ export const dashboardSummaryProcedure = protectedProcedure.query(async ({ ctx }
     async () => {
       const userId = ctx.session.user.id;
 
-      const [currentlyReadingRows, upNextRows, awaitingRatingRows, recentlyFinishedRows, topTagRows] =
-        await Promise.all([
-          prisma.userBook.findMany({
-            where: {
-              userId,
-              status: ReadingStatus.READING,
-            },
-            orderBy: { updatedAt: "desc" },
-            take: DASHBOARD_LIMITS.currentlyReading,
-            select: {
-              id: true,
-              book: {
-                select: selectedBookFields,
-              },
-              readThroughs: {
-                where: {
-                  status: {
-                    in: [ReadThroughStatus.READING, ReadThroughStatus.PAUSED],
-                  },
-                },
-                orderBy: latestReadThroughOrderBy,
-                take: 1,
-                select: {
-                  progress: true,
-                },
-              },
-            },
-          }),
-          prisma.userBook.findMany({
-            where: {
-              userId,
-              status: ReadingStatus.WANT_TO_READ,
-            },
-            orderBy: { createdAt: "desc" },
-            take: DASHBOARD_LIMITS.upNext,
-            select: {
-              id: true,
-              createdAt: true,
-              book: {
-                select: selectedBookFields,
-              },
-            },
-          }),
-          prisma.readThrough.findMany({
-            where: {
-              status: ReadThroughStatus.COMPLETED,
-              stoppedAt: { not: null },
-              userBook: {
-                userId,
-                status: ReadingStatus.COMPLETED,
-                rating: null,
-              },
-            },
-            orderBy: [{ stoppedAt: "desc" }, { createdAt: "desc" }],
-            distinct: ["userBookId"],
-            take: DASHBOARD_LIMITS.awaitingRating,
-            select: {
-              stoppedAt: true,
-              userBook: {
-                select: {
-                  book: {
-                    select: selectedBookFields,
-                  },
-                },
-              },
-            },
-          }),
-          prisma.readThrough.findMany({
-            where: {
-              status: ReadThroughStatus.COMPLETED,
-              stoppedAt: { not: null },
-              userBook: {
-                userId,
-                status: ReadingStatus.COMPLETED,
-              },
-            },
-            orderBy: [{ stoppedAt: "desc" }, { createdAt: "desc" }],
-            distinct: ["userBookId"],
-            take: DASHBOARD_LIMITS.recentlyFinished,
-            select: {
-              stoppedAt: true,
-              userBook: {
-                select: {
-                  book: {
-                    select: selectedBookFields,
-                  },
-                },
-              },
-            },
-          }),
-          prisma.tagBook.groupBy({
-            by: ["tagId"],
-            where: {
-              userBook: {
-                userId,
-              },
-            },
-            _count: {
-              tagId: true,
-            },
-            orderBy: {
-              _count: {
-                tagId: "desc",
-              },
-            },
-            take: DASHBOARD_LIMITS.topTags,
-          }),
-        ] as const);
-
-      const [recentlyStartedRows, topTags] = await Promise.all([
-        prisma.readThrough.findMany({
+      const [
+        currentlyReadingRows,
+        upNextRows,
+        awaitingRatingRows,
+        recentlyFinishedRows,
+        topTagRows,
+        recentActiveReadThroughs,
+        recentClosedReadThroughs,
+        recentWantToReadUserBooks,
+      ] = await Promise.all([
+        prisma.userBook.findMany({
           where: {
-            status: ReadThroughStatus.READING,
-            userBook: {
-              userId,
+            userId,
+            status: ReadingStatus.READING,
+          },
+          orderBy: { updatedAt: "desc" },
+          take: DASHBOARD_LIMITS.currentlyReading,
+          select: {
+            id: true,
+            book: {
+              select: selectedBookFields,
+            },
+            readThroughs: {
+              where: {
+                status: {
+                  in: [ReadThroughStatus.READING, ReadThroughStatus.PAUSED],
+                },
+              },
+              orderBy: latestReadThroughOrderBy,
+              take: 1,
+              select: {
+                progress: true,
+              },
             },
           },
-          orderBy: [{ startedAt: "desc" }, { createdAt: "desc" }],
-          take: DASHBOARD_LIMITS.recentActivity,
+        }),
+        prisma.userBook.findMany({
+          where: {
+            userId,
+            status: ReadingStatus.WANT_TO_READ,
+          },
+          orderBy: { createdAt: "desc" },
+          take: DASHBOARD_LIMITS.upNext,
           select: {
-            startedAt: true,
+            id: true,
+            createdAt: true,
+            book: {
+              select: selectedBookFields,
+            },
+          },
+        }),
+        prisma.readThrough.findMany({
+          where: {
+            status: ReadThroughStatus.COMPLETED,
+            stoppedAt: { not: null },
+            userBook: {
+              userId,
+              status: ReadingStatus.COMPLETED,
+              rating: null,
+            },
+          },
+          orderBy: [{ stoppedAt: "desc" }, { createdAt: "desc" }],
+          distinct: ["userBookId"],
+          take: DASHBOARD_LIMITS.awaitingRating,
+          select: {
+            stoppedAt: true,
             userBook: {
               select: {
                 book: {
-                  select: {
-                    slug: true,
-                    title: true,
-                  },
+                  select: selectedBookFields,
                 },
               },
             },
           },
         }),
-        prisma.tag.findMany({
+        prisma.readThrough.findMany({
           where: {
-            id: { in: topTagRows.map((row) => row.tagId) },
+            status: ReadThroughStatus.COMPLETED,
+            stoppedAt: { not: null },
+            userBook: {
+              userId,
+              status: ReadingStatus.COMPLETED,
+            },
           },
+          orderBy: [{ stoppedAt: "desc" }, { createdAt: "desc" }],
+          distinct: ["userBookId"],
+          take: DASHBOARD_LIMITS.recentlyFinished,
           select: {
-            id: true,
-            name: true,
+            stoppedAt: true,
+            userBook: {
+              select: {
+                book: {
+                  select: selectedBookFields,
+                },
+              },
+            },
           },
         }),
-      ]);
-
-      const recentCompletedRows = recentlyFinishedRows
-        .filter((row): row is typeof row & { stoppedAt: Date } => row.stoppedAt !== null)
-        .map((row) => ({
-          at: row.stoppedAt,
-          book: {
-            slug: row.userBook.book.slug,
-            title: row.userBook.book.title,
+        prisma.tagBook.groupBy({
+          by: ["tagId"],
+          where: {
+            userBook: {
+              userId,
+            },
           },
-        }));
+          _count: {
+            tagId: true,
+          },
+          orderBy: {
+            _count: {
+              tagId: "desc",
+            },
+          },
+          take: DASHBOARD_LIMITS.topTags,
+        }),
+        prisma.readThrough.findMany({
+          where: {
+            status: { in: [ReadThroughStatus.READING, ReadThroughStatus.PAUSED] },
+            userBook: { userId },
+          },
+          orderBy: { updatedAt: "desc" },
+          take: DASHBOARD_LIMITS.recentActivity,
+          select: {
+            status: true,
+            updatedAt: true,
+            userBook: {
+              select: {
+                book: { select: { slug: true, title: true } },
+              },
+            },
+          },
+        }),
+        prisma.readThrough.findMany({
+          where: {
+            status: { in: [ReadThroughStatus.COMPLETED, ReadThroughStatus.ABANDONED] },
+            stoppedAt: { not: null },
+            userBook: { userId },
+          },
+          orderBy: { stoppedAt: "desc" },
+          take: DASHBOARD_LIMITS.recentActivity,
+          select: {
+            status: true,
+            stoppedAt: true,
+            userBook: {
+              select: {
+                book: { select: { slug: true, title: true } },
+              },
+            },
+          },
+        }),
+        prisma.userBook.findMany({
+          where: {
+            userId,
+            status: ReadingStatus.WANT_TO_READ,
+          },
+          orderBy: { createdAt: "desc" },
+          take: DASHBOARD_LIMITS.recentActivity,
+          select: {
+            status: true,
+            createdAt: true,
+            book: { select: { slug: true, title: true } },
+          },
+        }),
+      ] as const);
 
-      const recentWantToReadRows = upNextRows.map((row) => ({
-        at: row.createdAt,
-        book: {
-          slug: row.book.slug,
-          title: row.book.title,
+      const topTags = await prisma.tag.findMany({
+        where: {
+          id: { in: topTagRows.map((row) => row.tagId) },
         },
-      }));
+        select: {
+          id: true,
+          name: true,
+        },
+      });
 
-      const recentActivity = [
-        ...recentlyStartedRows.map((row) => ({
-          type: "STARTED" as const,
-          at: row.startedAt,
+      const recentActivity: Array<{
+        status: ReadingStatus;
+        at: string;
+        book: { slug: string; title: string };
+      }> = [
+        ...recentActiveReadThroughs.map((row) => ({
+          status: row.status as ReadingStatus,
+          at: row.updatedAt,
           book: row.userBook.book,
         })),
-        ...recentCompletedRows.map((row) => ({
-          type: "FINISHED" as const,
-          at: row.at,
-          book: row.book,
+        ...recentClosedReadThroughs.map((row) => ({
+          status: row.status as ReadingStatus,
+          at: row.stoppedAt!,
+          book: row.userBook.book,
         })),
-        ...recentWantToReadRows.map((row) => ({
-          type: "ADDED_TO_WANT_TO_READ" as const,
-          at: row.at,
+        ...recentWantToReadUserBooks.map((row) => ({
+          status: row.status as ReadingStatus,
+          at: row.createdAt,
           book: row.book,
         })),
       ]
         .sort((a, b) => b.at.getTime() - a.at.getTime())
         .slice(0, DASHBOARD_LIMITS.recentActivity)
         .map((entry) => ({
-          type: entry.type,
+          status: entry.status,
           at: entry.at.toISOString(),
           book: entry.book,
         }));
