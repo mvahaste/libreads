@@ -1,0 +1,46 @@
+{
+  "title": "Dashboard",
+  "description": "A quick look at your reading right now.",
+  "actions": {
+    "openBook": "Open book"
+  },
+  "sections": {
+    "currentlyReading": {
+      "title": "Currently Reading",
+      "description": "Books with active reading progress.",
+      "empty": "No books are currently in progress."
+    },
+    "upNext": {
+      "title": "Up Next",
+      "description": "Books waiting in your queue.",
+      "empty": "No books are marked as Want to Read.",
+      "addedOn": "Added"
+    },
+    "awaitingRating": {
+      "title": "Awaiting Your Rating",
+      "description": "Recently finished books you have not rated yet.",
+      "empty": "Nothing to rate right now.",
+      "finishedOn": "Finished"
+    },
+    "recentlyFinished": {
+      "title": "Recently Finished",
+      "description": "Your latest completed books.",
+      "empty": "No recently finished books yet.",
+      "finishedOn": "Finished"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "description": "Your latest reading actions.",
+      "empty": "No recent activity yet.",
+      "started": "Started",
+      "finished": "Finished",
+      "addedToWantToRead": "Added to Want to Read"
+    },
+    "topTags": {
+      "title": "Top Tags",
+      "description": "Your most-used tags.",
+      "empty": "No tags used yet.",
+      "itemCountSuffix": "items"
+    }
+  }
+}

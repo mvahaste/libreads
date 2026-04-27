@@ -18,6 +18,7 @@ import {
 import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation";
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
 import { useTRPC } from "@/lib/trpc/client";
+import { cn } from "@/lib/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { LucideStar } from "lucide-react";
@@ -30,6 +31,7 @@ import z from "zod/v4";
 interface BookRatingDialogProps {
   bookId: string;
   initialRating: number | null;
+  className?: string;
 }
 
 function createRatingSchema() {
@@ -41,7 +43,7 @@ function createRatingSchema() {
 type RatingFormValues = z.infer<ReturnType<typeof createRatingSchema>>;
 type RatingFormInput = z.input<ReturnType<typeof createRatingSchema>>;
 
-export default function BookRatingDialog({ bookId, initialRating }: BookRatingDialogProps) {
+export default function BookRatingDialog({ bookId, initialRating, className }: BookRatingDialogProps) {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const t = useTranslations("browse.detail");
@@ -66,7 +68,7 @@ export default function BookRatingDialog({ bookId, initialRating }: BookRatingDi
   );
 
   const trigger = (
-    <Button variant="outline" className="gap-1">
+    <Button variant="outline" className={cn("gap-1", className)}>
       {Array.from({ length: fullStars }).map((_, i) => (
         <LucideStar key={`full-star-${i}`} className="h-4 w-4 fill-current text-yellow-400" />
       ))}
