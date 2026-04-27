@@ -81,14 +81,7 @@ export function RankedPieChart({ title, description, data, seriesLabel }: Ranked
                 const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
                 return (
-                  <text
-                    x={x}
-                    y={y}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fill="var(--background)"
-                    className="font-bold"
-                  >
+                  <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" className="fill-card font-bold">
                     {payload.value}
                   </text>
                 );
