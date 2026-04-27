@@ -32,7 +32,7 @@ async function mergeTopRows<T extends { count: number }>(
   );
 }
 
-async function getTopAuthors(userId: string, limit = 10) {
+async function getTopAuthors(userId: string, limit = 6) {
   const rows = await prisma.bookAuthor.groupBy({
     by: ["authorId"],
     where: {
@@ -73,7 +73,7 @@ async function getTopAuthors(userId: string, limit = 10) {
   );
 }
 
-async function getTopGenres(userId: string, limit = 10) {
+async function getTopGenres(userId: string, limit = 6) {
   const rows = await prisma.bookGenre.groupBy({
     by: ["genreId"],
     where: {
@@ -114,7 +114,7 @@ async function getTopGenres(userId: string, limit = 10) {
   );
 }
 
-async function getTopSeries(userId: string, limit = 10) {
+async function getTopSeries(userId: string, limit = 6) {
   const rows = await prisma.bookSeries.groupBy({
     by: ["seriesId"],
     where: {
@@ -155,7 +155,7 @@ async function getTopSeries(userId: string, limit = 10) {
   );
 }
 
-async function getTopPublishers(userId: string, limit = 10) {
+async function getTopPublishers(userId: string, limit = 6) {
   const rows = await prisma.book.groupBy({
     by: ["publisherId"],
     where: {
@@ -195,7 +195,7 @@ async function getTopPublishers(userId: string, limit = 10) {
   );
 }
 
-async function getTopTags(userId: string, limit = 10) {
+async function getTopTags(userId: string, limit = 6) {
   const rows = await prisma.tagBook.groupBy({
     by: ["tagId"],
     where: {

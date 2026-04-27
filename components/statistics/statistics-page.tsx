@@ -1,7 +1,6 @@
-"use client";
-
 import PageHeader from "@/components/ui/page-header";
 import StatCard from "@/components/ui/stat-card";
+import { BookType, ReadingStatus } from "@/generated/prisma/enums";
 import { OverallUserStatsOutput } from "@/lib/trpc/routers/books";
 import { StatisticsTopItem } from "@/lib/trpc/routers/books/procedures/statistics";
 import { formatDurationForDisplay } from "@/lib/utils/duration";
@@ -23,6 +22,44 @@ const statIcons: Record<UserStatKey, ReactNode> = {
 
 interface StatisticsPageProps {
   overallStats: OverallUserStatsOutput;
+  statusLabels: Record<ReadingStatus, string>;
+  typeLabels: Record<BookType, string>;
+  labels: {
+    pageTitle: string;
+    pageDescription: string;
+    cards: Record<UserStatKey, string> & { ratingNoData: string };
+    charts: {
+      seriesLabel: string;
+      booksByStatus: {
+        title: string;
+        description: string;
+      };
+      booksByType: {
+        title: string;
+        description: string;
+      };
+      topAuthors: {
+        title: string;
+        description: string;
+      };
+      topGenres: {
+        title: string;
+        description: string;
+      };
+      topSeries: {
+        title: string;
+        description: string;
+      };
+      topPublishers: {
+        title: string;
+        description: string;
+      };
+      topTags: {
+        title: string;
+        description: string;
+      };
+    };
+  };
 }
 
 type ChartData = {
@@ -49,23 +86,23 @@ function getChartsWithData(charts: unknown[][]) {
   return count;
 }
 
-// TODO:
-// - Localize
-// - Get better colors for `--chart-[n]` in globals.css
-export default function StatisticsPage({ overallStats }: StatisticsPageProps) {
-  // TODO: Move reading status keys from browse.json to some more general place, then use them here.
-  const booksByStatusData = overallStats.booksByStatus.map((b) => ({
-    key: b.status!.toString(),
-    label: b.status!.toString(),
-    value: b.count,
-  }));
+// TODO: Get better colors for `--chart-[n]` in globals.css
+export default function StatisticsPage({ overallStats, statusLabels, typeLabels, labels }: StatisticsPageProps) {
+  const booksByStatusData = overallStats.booksByStatus
+    .filter((b): b is { status: ReadingStatus; count: number } => b.status !== null)
+    .map((b) => ({
+      key: b.status,
+      label: statusLabels[b.status],
+      value: b.count,
+    }));
 
-  // TODO: Move book type keys from browse.json to some more general place, then use them here.
-  const booksByTypeData = overallStats.booksByType.map((b) => ({
-    key: b.type!.toString(),
-    label: b.type!.toString(),
-    value: b.count,
-  }));
+  const booksByTypeData = overallStats.booksByType
+    .filter((b): b is { type: BookType; count: number } => b.type !== null)
+    .map((b) => ({
+      key: b.type,
+      label: typeLabels[b.type],
+      value: b.count,
+    }));
 
   const authorsData = getBarChartData(overallStats.topAuthors);
   const seriesData = getBarChartData(overallStats.topSeries);
@@ -85,89 +122,98 @@ export default function StatisticsPage({ overallStats }: StatisticsPageProps) {
 
   return (
     <div>
-      <PageHeader title={"Statistics"} description={"I don't have a description for this yet."} />
+      <PageHeader title={labels.pageTitle} description={labels.pageDescription} />
 
       <div className="flex flex-col gap-4">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={statIcons["books"]} label={"Total books"} value={overallStats.totalBooks.toLocaleString()} />
+          <StatCard
+            icon={statIcons["books"]}
+            label={labels.cards.books}
+            value={overallStats.totalBooks.toLocaleString()}
+          />
           <StatCard
             icon={statIcons["pages"]}
-            label={"Pages read"}
+            label={labels.cards.pages}
             value={(overallStats.pagesRead || 0).toLocaleString()}
           />
           <StatCard
             icon={statIcons["time"]}
-            label={"Time listened"}
+            label={labels.cards.time}
             value={formatDurationForDisplay(overallStats.secondsListened || 0)}
           />
           <StatCard
             icon={statIcons["rating"]}
-            label={"Average rating"}
+            label={labels.cards.rating}
             value={overallStats.averageRating?.toLocaleString()}
-            noValueLabel="Not enough data"
+            noValueLabel={labels.cards.ratingNoData}
           />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
           {booksByStatusData.length > 0 && (
             <RankedPieChart
-              title="Books by Status"
-              description="Your books by their statuses."
+              title={labels.charts.booksByStatus.title}
+              description={labels.charts.booksByStatus.description}
               data={booksByStatusData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {booksByTypeData.length > 0 && (
             <RankedPieChart
-              title="Books by Type"
-              description="Your books by their types."
+              title={labels.charts.booksByType.title}
+              description={labels.charts.booksByType.description}
               data={booksByTypeData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {authorsData.length > 0 && (
             <RankedBarChart
-              title="Top Authors"
-              description="Your most read authors."
+              title={labels.charts.topAuthors.title}
+              description={labels.charts.topAuthors.description}
               data={authorsData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {genresData.length > 0 && (
             <RankedBarChart
-              title="Top Genres"
-              description="Your most read genres."
+              title={labels.charts.topGenres.title}
+              description={labels.charts.topGenres.description}
               data={genresData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {seriesData.length > 0 && (
             <RankedBarChart
-              title="Top Series"
-              description="Your longest series."
+              title={labels.charts.topSeries.title}
+              description={labels.charts.topSeries.description}
               data={seriesData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {publishersData.length > 0 && (
             <RankedBarChart
-              title="Top Publishers"
-              description="Your most read publishers."
+              title={labels.charts.topPublishers.title}
+              description={labels.charts.topPublishers.description}
               data={publishersData}
-              seriesLabel="Books"
+              seriesLabel={labels.charts.seriesLabel}
             />
           )}
 
           {tagsData.length > 0 && (
-            <RankedBarChart title="Top Tags" description="Your most used tags." data={tagsData} seriesLabel="Books" />
+            <RankedBarChart
+              title={labels.charts.topTags.title}
+              description={labels.charts.topTags.description}
+              data={tagsData}
+              seriesLabel={labels.charts.seriesLabel}
+            />
           )}
 
-          {chartsWithData % 2 != 0 && (
+          {chartsWithData % 2 !== 0 && (
             <div className="border-foreground/10 bg-card/50 text-card-foreground hidden items-center justify-center rounded-xl border border-dashed text-sm lg:grid">
               <p className="text-muted-foreground font-mono text-xl opacity-50">₍˄·͈༝·͈˄₎◞ ̑̑</p>
             </div>

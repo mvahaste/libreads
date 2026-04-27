@@ -23,6 +23,8 @@ const PARAM_KEY_TO_TYPE: Record<string, FilterConfig["optionsEndpoint"]> = {
   format: "formats",
 };
 
+type ReadingStatusFilterKey = "WANT_TO_READ" | "READING" | "COMPLETED" | "PAUSED" | "ABANDONED";
+
 interface BrowseToolbarProps {
   search: string;
   onSearchChange: (value: string) => void;
@@ -59,6 +61,7 @@ export function BrowseToolbar({
   onPageChange,
 }: BrowseToolbarProps) {
   const t = useTranslations("browse");
+  const tReadingStatus = useTranslations("common.readingStatus");
   const trpc = useTRPC();
 
   const activeFilterCount = filterValues ? Object.values(filterValues).filter((v) => v && v.length > 0).length : 0;
@@ -109,7 +112,7 @@ export function BrowseToolbar({
 
       const resolvedKey = `${type}:${value}`;
       if (type === "statuses") {
-        labels[key] = { [value]: t(`reading-status.${value}` as Parameters<typeof t>[0]) };
+        labels[key] = { [value]: tReadingStatus(value as ReadingStatusFilterKey) };
         continue;
       }
 
@@ -120,7 +123,7 @@ export function BrowseToolbar({
     }
 
     return labels;
-  }, [normalizedFilterValues, resolvedLabels, t]);
+  }, [normalizedFilterValues, resolvedLabels, tReadingStatus]);
 
   const handleClearAllFilters = useCallback(() => {
     if (filterValues && onFilterChange) {

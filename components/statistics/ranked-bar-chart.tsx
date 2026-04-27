@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 
 type RankedChartItem = {
   key: string;
@@ -18,7 +18,14 @@ type RankedBarChartProps = {
   seriesLabel: string;
 };
 
-const DEFAULT_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
+const DEFAULT_COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+];
 
 function buildChartConfig(data: RankedChartItem[], seriesLabel: string): ChartConfig {
   return {
@@ -36,7 +43,7 @@ function buildChartConfig(data: RankedChartItem[], seriesLabel: string): ChartCo
 }
 
 export function RankedBarChart({ title, description, data, seriesLabel }: RankedBarChartProps) {
-  const chartData = data.slice(0, 5).map((item, index) => ({
+  const chartData = data.slice(0, 6).map((item, index) => ({
     ...item,
     fill: item.fill ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length],
   }));
@@ -63,7 +70,9 @@ export function RankedBarChart({ title, description, data, seriesLabel }: Ranked
             />
             <YAxis dataKey="value" type="number" hide />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel={false} />} />
-            <Bar dataKey="value" radius={5} />
+            <Bar dataKey="value" radius={5}>
+              <LabelList dataKey="value" position="insideTop" offset={16} className="fill-card font-bold" />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>

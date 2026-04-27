@@ -75,7 +75,7 @@ interface BookStatusButtonProps {
 }
 
 export default function BookStatusButton({ bookId, initialStatus }: BookStatusButtonProps) {
-  const t = useTranslations("browse.reading-status");
+  const tStatus = useTranslations("common.readingStatus");
   const tDetail = useTranslations("browse.detail");
   const tActions = useTranslations("common.actions");
   const tErrors = useTranslations("errors");
@@ -164,7 +164,7 @@ export default function BookStatusButton({ bookId, initialStatus }: BookStatusBu
               disabled={isActionPending}
             >
               {CurrentIcon && <CurrentIcon />}
-              {t(status)}
+              {tStatus(status)}
               <LucideChevronDown />
             </button>
           </DropdownMenuTrigger>
@@ -193,7 +193,7 @@ export default function BookStatusButton({ bookId, initialStatus }: BookStatusBu
             }}
           >
             <LucideBookMarked />
-            {t("WANT_TO_READ")}
+            {tStatus("WANT_TO_READ")}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -232,7 +232,7 @@ function StatusItems({
   onSelect: (status: ReadingStatus) => void;
   disabled: boolean;
 }) {
-  const t = useTranslations("browse.reading-status");
+  const tStatus = useTranslations("common.readingStatus");
   const tDetail = useTranslations("browse.detail");
 
   return (
@@ -242,7 +242,7 @@ function StatusItems({
           s === ReadingStatus.READING &&
           (currentStatus === ReadingStatus.COMPLETED || currentStatus === ReadingStatus.ABANDONED);
         const Icon = isReadAgain ? LucideRefreshCw : STATUS_ICONS[s];
-        const label = isReadAgain ? tDetail("read-again") : t(s);
+        const label = isReadAgain ? tDetail("read-again") : tStatus(s);
         return (
           <DropdownMenuItem key={s} disabled={disabled} onSelect={() => void onSelect(s)}>
             <Icon />

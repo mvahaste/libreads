@@ -1,0 +1,42 @@
+{
+  "title": "Statistika",
+  "description": "Ülevaade sinu lugemisaktiivsusest.",
+  "cards": {
+    "books": "Raamatuid kokku",
+    "pages": "Loetud lehekülgi",
+    "time": "Kuulatud aega",
+    "rating": "Keskmine hinnang",
+    "ratingNoData": "Andmeid pole piisavalt"
+  },
+  "charts": {
+    "seriesLabel": "Raamatud",
+    "booksByStatus": {
+      "title": "Raamatud staatuse järgi",
+      "description": "Sinu raamatud staatuste kaupa."
+    },
+    "booksByType": {
+      "title": "Raamatud tüübi järgi",
+      "description": "Sinu raamatud tüüpide kaupa."
+    },
+    "topAuthors": {
+      "title": "Top autorid",
+      "description": "Sinu enim loetud autorid."
+    },
+    "topGenres": {
+      "title": "Top žanrid",
+      "description": "Sinu enim loetud žanrid."
+    },
+    "topSeries": {
+      "title": "Top sarjad",
+      "description": "Sinu pikimad sarjad."
+    },
+    "topPublishers": {
+      "title": "Top kirjastused",
+      "description": "Sinu enim loetud kirjastused."
+    },
+    "topTags": {
+      "title": "Top sildid",
+      "description": "Sinu enim kasutatud sildid."
+    }
+  }
+}

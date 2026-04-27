@@ -25,7 +25,14 @@ type RankedPieChartProps = {
   seriesLabel: string;
 };
 
-const DEFAULT_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
+const DEFAULT_COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+];
 
 function buildPieChartConfig(data: PieChartItem[], seriesLabel: string): ChartConfig {
   return {
@@ -43,7 +50,7 @@ function buildPieChartConfig(data: PieChartItem[], seriesLabel: string): ChartCo
 }
 
 export function RankedPieChart({ title, description, data, seriesLabel }: RankedPieChartProps) {
-  const chartData = data.slice(0, 5).map((item, index) => ({
+  const chartData = data.slice(0, 6).map((item, index) => ({
     ...item,
     fill: item.fill ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length],
   }));
@@ -61,7 +68,28 @@ export function RankedPieChart({ title, description, data, seriesLabel }: Ranked
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-62.5">
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel={false} />} />
-            <Pie data={chartData} dataKey="value" nameKey="label" />
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="label"
+              labelLine={false}
+              label={({ payload, ...props }) => {
+                return (
+                  <text
+                    cx={props.cx}
+                    cy={props.cy}
+                    x={props.x}
+                    y={props.y}
+                    textAnchor={props.textAnchor}
+                    dominantBaseline={props.dominantBaseline}
+                    fill={props.fill}
+                    className="font-bold"
+                  >
+                    {payload.value}
+                  </text>
+                );
+              }}
+            />
             <ChartLegend
               content={<ChartLegendContent nameKey="key" />}
               className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
