@@ -22,13 +22,13 @@ const schema = z.object({
   LIBREADS_EXTERNAL_API_CACHE_TTL: z.coerce.number().int().nonnegative().default(3600000), // 1 hour
 
   /** Disables all mutations (create, update, delete). */
-  LIBREADS_READ_ONLY_MODE: z.coerce.boolean().default(false),
+  LIBREADS_READ_ONLY_MODE: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((v) => v === "true"),
 });
 
 export const env = schema.parse(process.env);
 
 /** SQLite connection string expected by Prisma. */
 export const databaseUrl = `file:${path.join(env.LIBREADS_DATA_LOCATION, "libreads.db")}`;
-
-/** Directory where book cover images are stored. */
-export const coversDir = path.join(env.LIBREADS_DATA_LOCATION, "covers");
