@@ -2,6 +2,8 @@
 
 A self-hosted reading tracker.
 
+See demo at https://libdemo.mvahaste.dev, log in with email `admin@libdemo.local` and password `adminadmin`.
+
 ## Deployment
 
 Docker compose:
