@@ -117,7 +117,7 @@ export default function DashboardPage({ summary, labels }: DashboardPageProps) {
           ) : (
             <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
               {summary.currentlyReading.map((entry) => (
-                <div key={entry.id} className="bg-muted/10 border-border min-w-72 rounded-lg border p-3">
+                <div key={entry.id} className="bg-muted/10 border-border max-w-96 min-w-72 rounded-lg border p-3">
                   <div className="flex gap-3">
                     <Link href={`/browse/books/${entry.book.slug}`} className="shrink-0">
                       <CoverImage
@@ -231,7 +231,10 @@ export default function DashboardPage({ summary, labels }: DashboardPageProps) {
           ) : (
             <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
               {summary.recentlyFinished.map((entry) => (
-                <div key={entry.book.id} className="border-border/60 bg-muted/20 rounded-lg border p-3">
+                <div
+                  key={entry.book.id}
+                  className="border-border/60 bg-muted/20 max-w-96 min-w-72 rounded-lg border p-3"
+                >
                   <div className="flex min-w-0 items-start gap-3">
                     <Link href={`/browse/books/${entry.book.slug}`} className="shrink-0">
                       <CoverImage
