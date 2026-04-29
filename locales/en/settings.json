@@ -30,8 +30,8 @@
     "profileUpdateSuccess": "Profile updated successfully.",
     "appearance": "Appearance",
     "appearanceDescription": "Choose how the application looks to you.",
-    "languageAndRegion": "Language & Region",
-    "languageAndRegionDescription": "Choose your preferred language and regional format."
+    "languageAndRegion": "Language",
+    "languageAndRegionDescription": "Choose your preferred language."
   },
 
   "security": {
