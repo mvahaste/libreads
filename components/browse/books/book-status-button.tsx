@@ -25,7 +25,7 @@ import { useSubmitMutation } from "@/hooks/use-submit-mutation";
 import { READING_STATUS_COLORS } from "@/lib/books/status-colors";
 import { useTRPC } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils/cn";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   LucideBookCheck,
   LucideBookMarked,
@@ -90,11 +90,6 @@ export default function BookStatusButton({ bookId, initialStatus }: BookStatusBu
   useEffect(() => {
     setStatus(initialStatus);
   }, [initialStatus]);
-
-  const { data: libraryEntryStats } = useQuery({
-    ...trpc.books.getLibraryEntryStats.queryOptions({ bookId }),
-    enabled: removeDialogOpen && status !== null,
-  });
 
   const setBookStatus = useMutation(trpc.books.setBookStatus.mutationOptions());
 
@@ -215,7 +210,6 @@ export default function BookStatusButton({ bookId, initialStatus }: BookStatusBu
         onOpenChange={setRemoveDialogOpen}
         onConfirm={handleRemove}
         isPending={isRemovePending}
-        stats={libraryEntryStats}
         tDetail={tDetail}
         tActions={tActions}
       />
@@ -260,7 +254,6 @@ function RemoveConfirmation({
   onOpenChange,
   onConfirm,
   isPending,
-  stats,
   tDetail,
   tActions,
 }: {
@@ -268,29 +261,15 @@ function RemoveConfirmation({
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   isPending: boolean;
-  stats:
-    | {
-        tagCount: number;
-        hasRating: boolean;
-        hasNotes: boolean;
-      }
-    | null
-    | undefined;
   tDetail: ReturnType<typeof useTranslations>;
   tActions: ReturnType<typeof useTranslations>;
 }) {
-  const statsDescription = stats
-    ? `${tDetail("remove-from-library-description")} ${tDetail("remove-data-warning", {
-        tags: stats.tagCount,
-      })}`
-    : tDetail("remove-from-library-description");
-
   return (
     <ResponsiveDialog open={open} onOpenChange={(isOpen) => !isPending && onOpenChange(isOpen)}>
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>{tDetail("remove-from-library")}</ResponsiveDialogTitle>
-          <ResponsiveDialogDescription>{statsDescription}</ResponsiveDialogDescription>
+          <ResponsiveDialogDescription>{tDetail("remove-from-library-description")}</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
         <ResponsiveDialogFooter>
           <ResponsiveDialogClose asChild>
