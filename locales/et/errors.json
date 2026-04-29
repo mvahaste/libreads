@@ -17,6 +17,7 @@
     "PASSWORD_TOO_LONG": "Parool tohib olla kuni {max} tähemärki.",
     "PASSWORD_TOO_SHORT": "Parool peab olema vähemalt {min} tähemärki.",
     "USER_ALREADY_EXISTS": "Kasutaja on juba olemas.",
-    "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Kasutaja on juba olemas, kasuta teist e-posti aadressi."
+    "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Kasutaja on juba olemas, kasuta teist e-posti aadressi.",
+    "CANNOT_DELETE_LAST_ADMIN": "Ainukest admin kontot ei saa kustutada, kui on olemas teisi mitte-admin kontosid."
   }
 }

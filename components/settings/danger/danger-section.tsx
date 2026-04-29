@@ -89,6 +89,10 @@ export function DangerSection() {
             field: "password",
             message: tErrors("auth.INVALID_PASSWORD"),
           },
+          CANNOT_DELETE_LAST_ADMIN: {
+            field: "password",
+            message: tErrors("auth.CANNOT_DELETE_LAST_ADMIN"),
+          },
         },
         setFieldError: (field, message) =>
           form.setError(field, {
