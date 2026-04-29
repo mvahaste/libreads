@@ -54,7 +54,7 @@
   "system": {
     "description": "Platvormi statistika ja andmete ülevaade.",
     "overview": "Süsteemi ülevaade",
-    "overviewDescription": "Ülevaade platvormil salvestatud andmetest."
+    "overviewDescription": "Ülevaade andmebaasi salvestatud andmetest."
   },
 
   "users": {

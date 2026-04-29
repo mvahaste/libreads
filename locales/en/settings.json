@@ -54,7 +54,7 @@
   "system": {
     "description": "Platform-wide statistics and data overview.",
     "overview": "System Overview",
-    "overviewDescription": "A snapshot of the data stored across the platform."
+    "overviewDescription": "A snapshot of the data stored in the database."
   },
 
   "users": {
