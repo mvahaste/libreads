@@ -235,14 +235,6 @@
     "clear-all": "Clear all filters"
   },
 
-  "reading-status": {
-    "WANT_TO_READ": "Want to Read",
-    "READING": "Reading",
-    "COMPLETED": "Completed",
-    "PAUSED": "Paused",
-    "ABANDONED": "Abandoned"
-  },
-
   "display": {
     "label": "Display",
     "default": "Default",

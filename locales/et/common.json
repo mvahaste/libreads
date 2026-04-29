@@ -62,7 +62,7 @@
     "system": "Süsteem"
   },
   "readingStatus": {
-    "WANT_TO_READ": "Soovin lugeda",
+    "WANT_TO_READ": "Tahan lugeda",
     "READING": "Loen",
     "COMPLETED": "Loetud",
     "PAUSED": "Peatatud",

@@ -1,10 +1,10 @@
 {
   "title": "Ülevaade",
-  "description": "Kiirpilk sinu praegusele lugemisele.",
+  "description": "Kiirpilk sellele, mida sa parasjagu loed.",
   "sections": {
     "currentlyReading": {
       "title": "Praegu loed",
-      "description": "Raamatud, mis on sul praegu pooleli.",
+      "description": "Raamatud, mis on sul hetkel pooleli.",
       "empty": "Sul ei ole hetkel ühtegi raamatut pooleli."
     },
     "upNext": {
@@ -27,7 +27,7 @@
     },
     "recentActivity": {
       "title": "Hiljutine tegevus",
-      "description": "Sinu viimased lugemistoimingud.",
+      "description": "Sinu viimane lugemistegevus.",
       "empty": "Hiljutine tegevus puudub."
     },
     "topTags": {

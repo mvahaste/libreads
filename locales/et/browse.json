@@ -235,14 +235,6 @@
     "clear-all": "Tühjenda kõik filtrid"
   },
 
-  "reading-status": {
-    "WANT_TO_READ": "Soovin lugeda",
-    "READING": "Loen",
-    "COMPLETED": "Loetud",
-    "PAUSED": "Peatatud",
-    "ABANDONED": "Pooleli jäetud"
-  },
-
   "display": {
     "label": "Kuvamine",
     "default": "Vaikimisi",
