@@ -1,6 +1,6 @@
 {
   "title": "Statistics",
-  "description": "A snapshot of your reading activity.",
+  "description": "An overview of your reading.",
   "cards": {
     "books": "Total books",
     "pages": "Pages read",

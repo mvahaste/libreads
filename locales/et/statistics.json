@@ -1,6 +1,6 @@
 {
   "title": "Statistika",
-  "description": "Ülevaade sinu lugemisaktiivsusest.",
+  "description": "Ülevaade sinu lugemisest.",
   "cards": {
     "books": "Raamatuid kokku",
     "pages": "Loetud lehekülgi",

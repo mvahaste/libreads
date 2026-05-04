@@ -30,8 +30,8 @@
     "profileUpdateSuccess": "Profile updated successfully.",
     "appearance": "Appearance",
     "appearanceDescription": "Choose how the application looks to you.",
-    "languageAndRegion": "Language & Region",
-    "languageAndRegionDescription": "Choose your preferred language and regional format."
+    "languageAndRegion": "Language",
+    "languageAndRegionDescription": "Choose your preferred language."
   },
 
   "security": {
@@ -54,7 +54,7 @@
   "system": {
     "description": "Platform-wide statistics and data overview.",
     "overview": "System Overview",
-    "overviewDescription": "A snapshot of the data stored across the platform."
+    "overviewDescription": "A snapshot of the data stored in the database."
   },
 
   "users": {

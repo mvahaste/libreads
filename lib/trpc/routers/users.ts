@@ -154,6 +154,25 @@ export const usersRouter = router({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "UNAUTHORIZED" });
       }
 
+      // Prevent deleting the only admin user if there are normal users
+      const targetIsAdmin = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { isAdmin: true },
+      });
+
+      if (targetIsAdmin?.isAdmin) {
+        const userCount = await prisma.user.count();
+        const adminCount = await prisma.user.count({
+          where: {
+            isAdmin: true,
+          },
+        });
+
+        if (userCount > 1 && adminCount == 1) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "CANNOT_DELETE_LAST_ADMIN" });
+        }
+      }
+
       // Self-deletion requires password verification
       if (isSelf) {
         if (!password) {
@@ -174,16 +193,15 @@ export const usersRouter = router({
         }
       }
 
+      // Delete all data, ensure no leftovers
       await prisma.$transaction(async (tx) => {
         const user = await tx.user.findUnique({
           where: { id: userId },
           select: { avatarId: true, email: true },
         });
 
-        // Delete the user (cascading deletes apply)
         await tx.user.delete({ where: { id: userId } });
 
-        // Clean up orphaned avatar image
         if (user?.avatarId) {
           const avatar = await tx.image.findUnique({ where: { id: user.avatarId } });
 
@@ -192,7 +210,6 @@ export const usersRouter = router({
           }
         }
 
-        // Clean up any pending verifications
         if (user?.email) {
           const verifications = await tx.verification.findMany({ where: { identifier: user.email } });
 

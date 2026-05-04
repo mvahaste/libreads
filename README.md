@@ -2,6 +2,57 @@
 
 A self-hosted reading tracker.
 
+## Demo
+
+See the public read-only demo at [libdemo.mvahaste.dev](https://libdemo.mvahaste.dev).
+
+| Email                 | Password     |
+| --------------------- | ------------ |
+| `admin@libdemo.local` | `adminadmin` |
+| `user@libdemo.local`  | `useruser`   |
+
+## Features
+
+- Track reading status with progress, ratings, and dates
+- Browse, search, and filter your book collection
+- Organize books by authors, series, publishers, genres, and tags
+- View your reading statistics
+- Manual book and related entity creation
+- Search-based or ISBN barcode scanning import (requires Hardcover API key)
+- Multi-user support
+- Light and dark mode
+- Support for English and Estonian
+
+## Screenshots
+
+| Dashboard                        | Browse Books                           | Book Details                                   |
+| -------------------------------- | -------------------------------------- | ---------------------------------------------- |
+| ![Dashboard](docs/dashboard.png) | ![Browse Books](docs/browse-books.png) | ![Book Details](docs/browse-books-details.png) |
+
+| Books / Search                                  | Books / Filter                                   | Books / Edit                                        |
+| ----------------------------------------------- | ------------------------------------------------ | --------------------------------------------------- |
+| ![Books / Search](docs/browse-books-search.png) | ![Books / Filter](docs/browse-books-filters.png) | ![Books / Edit](docs/browse-books-details-edit.png) |
+
+| Books / Add                               | Books / Add / Manual                                      | My Books                              |
+| ----------------------------------------- | --------------------------------------------------------- | ------------------------------------- |
+| ![Books / Add](docs/browse-add-books.png) | ![Books / Add / Manual](docs/browse-add-books-manual.png) | ![My Books](docs/browse-my-books.png) |
+
+| Authors                             | Series                            | Publishers                                |
+| ----------------------------------- | --------------------------------- | ----------------------------------------- |
+| ![Authors](docs/browse-authors.png) | ![Series](docs/browse-series.png) | ![Publishers](docs/browse-publishers.png) |
+
+| Genres                            | Tags                          | Statistics                         |
+| --------------------------------- | ----------------------------- | ---------------------------------- |
+| ![Genres](docs/browse-genres.png) | ![Tags](docs/browse-tags.png) | ![Statistics](docs/statistics.png) |
+
+| Settings / Preferences                                   | Settings / Security                                | Settings / Users                             |
+| -------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------- |
+| ![Settings / Preferences](docs/settings-preferences.png) | ![Settings / Security](docs/settings-security.png) | ![Settings / Users](docs/settings-users.png) |
+
+| Settings / System                              | Settings / Danger Zone                                   |     |
+| ---------------------------------------------- | -------------------------------------------------------- | --- |
+| ![Settings / System](docs/settings-system.png) | ![Settings / Danger Zone](docs/settings-danger-zone.png) |     |
+
 ## Deployment
 
 Docker compose:
