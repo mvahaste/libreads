@@ -3,6 +3,15 @@ generator client {
   output   = "../generated/prisma"
 }
 
+generator erd {
+  provider                  = "prisma-erd-generator"
+  ignoreEnums               = true
+  disableEmoji              = true
+  includeRelationFromFields = false
+  ignorePattern             = "Session,Account,Verification"
+  theme                     = "neutral"
+}
+
 datasource db {
   provider = "sqlite"
 }
