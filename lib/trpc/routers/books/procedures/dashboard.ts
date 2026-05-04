@@ -9,8 +9,8 @@ import { withProcedureErrorHandling } from "../../shared";
 const DASHBOARD_LIMITS = {
   currentlyReading: 5,
   upNext: 5,
-  awaitingRating: 3,
-  recentlyFinished: 3,
+  awaitingRating: 5,
+  recentlyFinished: 5,
   recentActivity: 5,
   topTags: 8,
 } as const;

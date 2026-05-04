@@ -30,8 +30,8 @@
     "profileUpdateSuccess": "Profiil edukalt uuendatud.",
     "appearance": "Välimus",
     "appearanceDescription": "Vali, kuidas rakendus sinu jaoks välja näeb.",
-    "languageAndRegion": "Keel & piirkond",
-    "languageAndRegionDescription": "Vali oma eelistatud keel ja piirkondlik vorming."
+    "languageAndRegion": "Keel",
+    "languageAndRegionDescription": "Vali oma eelistatud keel."
   },
 
   "security": {
@@ -54,7 +54,7 @@
   "system": {
     "description": "Platvormi statistika ja andmete ülevaade.",
     "overview": "Süsteemi ülevaade",
-    "overviewDescription": "Ülevaade platvormil salvestatud andmetest."
+    "overviewDescription": "Ülevaade andmebaasi salvestatud andmetest."
   },
 
   "users": {

@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "description": "A quick look at your reading right now.",
+  "description": "A quick look at what you're reading right now.",
   "sections": {
     "currentlyReading": {
       "title": "Currently Reading",

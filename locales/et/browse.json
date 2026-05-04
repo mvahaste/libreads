@@ -235,14 +235,6 @@
     "clear-all": "Tühjenda kõik filtrid"
   },
 
-  "reading-status": {
-    "WANT_TO_READ": "Soovin lugeda",
-    "READING": "Loen",
-    "COMPLETED": "Loetud",
-    "PAUSED": "Peatatud",
-    "ABANDONED": "Pooleli jäetud"
-  },
-
   "display": {
     "label": "Kuvamine",
     "default": "Vaikimisi",
@@ -362,7 +354,6 @@
     "delete-read-through-description": "Kas oled kindel, et soovid selle lugemiskorra kustutada? Seda tegevust ei saa tagasi võtta.",
     "delete-read-through-success": "Lugemiskord kustutatud.",
     "delete-read-through-error": "Lugemiskorra kustutamine ebaõnnestus.",
-    "remove-data-warning": "See kustutab {tags, plural, one {# sildi} other {# silti}} ja sinu isiklikud märkmed.",
     "physical": "Füüsiline",
     "ebook": "E-raamat",
     "audiobook": "Audioraamat",

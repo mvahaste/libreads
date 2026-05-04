@@ -235,14 +235,6 @@
     "clear-all": "Clear all filters"
   },
 
-  "reading-status": {
-    "WANT_TO_READ": "Want to Read",
-    "READING": "Reading",
-    "COMPLETED": "Completed",
-    "PAUSED": "Paused",
-    "ABANDONED": "Abandoned"
-  },
-
   "display": {
     "label": "Display",
     "default": "Default",
@@ -362,7 +354,6 @@
     "delete-read-through-description": "Are you sure you want to delete this read-through? This action cannot be undone.",
     "delete-read-through-success": "Read-through deleted.",
     "delete-read-through-error": "Failed to delete read-through.",
-    "remove-data-warning": "This will delete {tags, plural, one {# tag} other {# tags}} and your personal notes.",
     "physical": "Physical",
     "ebook": "Ebook",
     "audiobook": "Audiobook",
