@@ -5,10 +5,10 @@ generator client {
 
 generator erd {
   provider                  = "prisma-erd-generator"
+  disabled                  = true
   ignoreEnums               = true
   disableEmoji              = true
   includeRelationFromFields = true
-  ignorePattern             = "Session,Account,Verification"
   theme                     = "neutral"
 }
 
