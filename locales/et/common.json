@@ -65,7 +65,7 @@
     "WANT_TO_READ": "Tahan lugeda",
     "READING": "Loen",
     "COMPLETED": "Loetud",
-    "PAUSED": "Peatatud",
+    "PAUSED": "Pausil",
     "ABANDONED": "Pooleli jäetud"
   },
   "bookTypes": {
