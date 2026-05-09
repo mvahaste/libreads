@@ -81,16 +81,16 @@
 
   "add-books": {
     "title": "Lisa raamatuid",
-    "description": "Impordi raamatuid Hardcoverist, skanneeri, või lisa käsitsi.",
+    "description": "Impordi raamatuid Hardcoverist, skaneeri, või lisa käsitsi.",
     "import": {
       "title": "Impordi",
       "description": "Impordi raamat Hardcoverist.",
       "action": "Impordi"
     },
     "scan": {
-      "title": "Skanneeri",
+      "title": "Skaneeri",
       "description": "Lisa raamat tagakaanel olevat ISBN-koodi skaneerides.",
-      "action": "Skanneeri"
+      "action": "Skaneeri"
     },
     "manual": {
       "title": "Manuaalne",
@@ -149,11 +149,11 @@
       "api-token-missing": "Hardcoveri API token ei ole seadistatud."
     },
     "scan-flow": {
-      "title": "Skanneeri ISBN",
+      "title": "Skaneeri ISBN",
       "description": "Kasuta kaamerat raamatu ISBN-i skaneerimiseks ja sobiva väljaande importimiseks.",
-      "step-scan": "Samm 1 / 2: Skanneeri ISBN",
+      "step-scan": "Samm 1 / 2: Skaneeri ISBN",
       "step-confirm": "Samm 2 / 2: Kinnita import",
-      "camera-title": "Skanneeri triipkood",
+      "camera-title": "Skaneeri triipkood",
       "camera-description": "Suunake kaamera raamatu tagakaanel oleva ISBN-i triipkoodi peale.",
       "camera-loading": "Kaamera käivitamine...",
       "camera-active": "Kaamera on aktiivne. Hoia triipkoodi kaadris.",
@@ -169,7 +169,7 @@
       "alert-details-title": "Andmed pole saadaval",
       "alert-no-editions-title": "Vastet ei leitud",
       "scanned-isbn": "Skaneeritud ISBN",
-      "scan-again": "Skanneeri uuesti",
+      "scan-again": "Skaneeri uuesti",
       "looking-up-isbn": "Otsin ISBN-i järgi väljaannet...",
       "loading-details": "Väljaande andmete laadimine...",
       "no-editions": "Selle ISBN-i jaoks ei leitud Hardcoveri väljaandeid.",
