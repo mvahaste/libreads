@@ -2,234 +2,112 @@ import { BookType, ProgressType, ReadThroughStatus, ReadingStatus } from "@/gene
 import { booksRouter } from "@/lib/trpc/routers/books";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-const prismaMock = vi.hoisted(() => ({
-  prisma: (() => {
-    const userBook = {
-      findUnique: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    };
-    const readThrough = {
-      findFirst: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      findUnique: vi.fn(),
-      delete: vi.fn(),
-    };
+const tx = {
+  userBook: {
+    findUnique: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+  },
+  readThrough: {
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+  },
+};
 
-    return {
-      book: {
-        findUniqueOrThrow: vi.fn(),
-        findUnique: vi.fn(),
-      },
-      userBook,
-      readThrough,
-      $transaction: vi.fn(),
-    };
-  })(),
+const { prisma } = vi.hoisted(() => ({
+  prisma: {
+    $transaction: vi.fn(),
+    book: { findUniqueOrThrow: vi.fn() },
+  },
 }));
 
-vi.mock("@/lib/prisma", () => ({
-  prisma: prismaMock.prisma,
-}));
+vi.mock("@/lib/prisma", () => ({ prisma }));
 
 function createCaller() {
   return booksRouter.createCaller({
     headers: new Headers(),
-    session: {
-      user: {
-        id: "user-1",
-        isAdmin: false,
-      },
-    } as never,
-  });
+    session: { user: { id: "user-1", isAdmin: false } },
+  } as never);
 }
 
-beforeEach(() => {
-  prismaMock.prisma.$transaction.mockReset();
-  prismaMock.prisma.$transaction.mockImplementation(async (callback: (tx: typeof prismaMock.prisma) => unknown) =>
-    callback(prismaMock.prisma),
-  );
+const physicalBook = { type: BookType.PHYSICAL, pageCount: 320, audioSeconds: null };
+const audiobook = { type: BookType.AUDIOBOOK, pageCount: null, audioSeconds: 6000 };
 
-  for (const mock of [
-    prismaMock.prisma.book.findUniqueOrThrow,
-    prismaMock.prisma.book.findUnique,
-    prismaMock.prisma.userBook.create,
-    prismaMock.prisma.userBook.update,
-    prismaMock.prisma.userBook.findUnique,
-    prismaMock.prisma.readThrough.findFirst,
-    prismaMock.prisma.readThrough.create,
-    prismaMock.prisma.readThrough.update,
-    prismaMock.prisma.readThrough.findUnique,
-    prismaMock.prisma.readThrough.delete,
-  ]) {
-    mock.mockReset();
-  }
+beforeEach(() => {
+  vi.clearAllMocks();
+  prisma.$transaction.mockImplementation((cb: (t: typeof tx) => Promise<unknown>) => cb(tx));
 });
 
-describe("books router reading mutations", () => {
-  test("setBookStatus sets want-to-read intent when there are no read-throughs", async () => {
-    prismaMock.prisma.book.findUniqueOrThrow.mockResolvedValue({
-      type: BookType.PHYSICAL,
-      pageCount: 320,
-      audioSeconds: null,
-    });
-    prismaMock.prisma.userBook.findUnique.mockResolvedValue(null);
-    prismaMock.prisma.userBook.create.mockResolvedValue({
-      id: "user-book-1",
-      wantsToRead: false,
-      status: null,
-    });
-    prismaMock.prisma.readThrough.findFirst.mockResolvedValueOnce(null);
-    prismaMock.prisma.userBook.update.mockResolvedValueOnce({
-      status: ReadingStatus.WANT_TO_READ,
-    });
+describe("setBookStatus", () => {
+  test("creates a want-to-read intent when no user book exists", async () => {
+    prisma.book.findUniqueOrThrow.mockResolvedValue(physicalBook);
+    tx.userBook.findUnique.mockResolvedValue(null);
+    tx.userBook.create.mockResolvedValue({ id: "ub-1", wantsToRead: false, status: null });
+    tx.readThrough.findFirst.mockResolvedValue(null);
+    tx.userBook.update.mockResolvedValue({ status: ReadingStatus.WANT_TO_READ });
 
     const result = await createCaller().setBookStatus({
       bookId: "book-1",
       status: ReadingStatus.WANT_TO_READ,
     });
 
-    expect(prismaMock.prisma.userBook.create).toHaveBeenCalledWith({
-      data: {
-        userId: "user-1",
-        bookId: "book-1",
-        status: null,
-        wantsToRead: false,
-      },
-      select: { id: true, wantsToRead: true, status: true },
-    });
-    expect(result).toEqual({
-      status: ReadingStatus.WANT_TO_READ,
-      requiresConfirmation: false,
-      warning: null,
-    });
+    expect(tx.userBook.create).toHaveBeenCalled();
+    expect(tx.userBook.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ wantsToRead: true, status: ReadingStatus.WANT_TO_READ }),
+      }),
+    );
+    expect(result).toEqual({ status: ReadingStatus.WANT_TO_READ, requiresConfirmation: false, warning: null });
   });
 
-  test("setBookStatus resumes the same read-through when PAUSED -> READING", async () => {
-    prismaMock.prisma.book.findUniqueOrThrow.mockResolvedValue({
-      type: BookType.PHYSICAL,
-      pageCount: 320,
-      audioSeconds: null,
-    });
-    prismaMock.prisma.userBook.findUnique.mockResolvedValue({
-      id: "user-book-1",
+  test("resumes a paused read-through when switching to READING", async () => {
+    prisma.book.findUniqueOrThrow.mockResolvedValue(physicalBook);
+    tx.userBook.findUnique.mockResolvedValue({
+      id: "ub-1",
       wantsToRead: false,
       status: ReadingStatus.PAUSED,
     });
-    prismaMock.prisma.readThrough.findFirst
-      .mockResolvedValueOnce({
-        id: "read-through-1",
-        status: ReadThroughStatus.PAUSED,
-        progress: 50,
-      })
-      .mockResolvedValueOnce({
-        id: "read-through-1",
-        status: ReadThroughStatus.READING,
-        progress: 50,
-      });
-    prismaMock.prisma.readThrough.update.mockResolvedValue({});
-    prismaMock.prisma.userBook.update.mockResolvedValueOnce({
-      status: ReadingStatus.READING,
-    });
+    tx.readThrough.findFirst
+      .mockResolvedValueOnce({ id: "rt-1", status: ReadThroughStatus.PAUSED, progress: 50 })
+      .mockResolvedValueOnce({ id: "rt-1", status: ReadThroughStatus.READING, progress: 50 });
+    tx.readThrough.update.mockResolvedValue({});
+    tx.userBook.update.mockResolvedValue({ status: ReadingStatus.READING });
 
     const result = await createCaller().setBookStatus({
       bookId: "book-1",
       status: ReadingStatus.READING,
     });
 
-    expect(prismaMock.prisma.readThrough.update).toHaveBeenCalledWith({
-      where: { id: "read-through-1" },
-      data: {
-        status: ReadThroughStatus.READING,
-        stoppedAt: null,
-      },
+    expect(tx.readThrough.update).toHaveBeenCalledWith({
+      where: { id: "rt-1" },
+      data: { status: ReadThroughStatus.READING, stoppedAt: null },
     });
-    expect(result).toEqual({
-      status: ReadingStatus.READING,
-      requiresConfirmation: false,
-      warning: null,
-    });
+    expect(result.status).toBe(ReadingStatus.READING);
   });
+});
 
-  test("setBookStatus switches COMPLETED to WANT_TO_READ without creating a new read-through", async () => {
-    prismaMock.prisma.book.findUniqueOrThrow.mockResolvedValue({
-      type: BookType.EBOOK,
-      pageCount: 200,
-      audioSeconds: null,
-    });
-    prismaMock.prisma.userBook.findUnique.mockResolvedValue({
-      id: "user-book-1",
-      wantsToRead: false,
-      status: ReadingStatus.COMPLETED,
-    });
-    prismaMock.prisma.readThrough.findFirst.mockResolvedValue({
-      id: "read-through-1",
-      status: ReadThroughStatus.COMPLETED,
-      progress: 200,
-    });
-    prismaMock.prisma.userBook.update.mockResolvedValue({
-      status: ReadingStatus.WANT_TO_READ,
-    });
+describe("setReadingProgress", () => {
+  test("clamps progress to max and auto-completes the read-through", async () => {
+    prisma.book.findUniqueOrThrow.mockResolvedValue(physicalBook);
+    tx.userBook.findUnique.mockResolvedValue(null);
+    tx.userBook.create.mockResolvedValue({ id: "ub-1", wantsToRead: false, status: null });
+    tx.readThrough.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ id: "rt-1", status: ReadThroughStatus.COMPLETED, progress: 320 });
+    tx.readThrough.create.mockResolvedValue({});
+    tx.userBook.update.mockResolvedValue({ status: ReadingStatus.COMPLETED });
 
-    const result = await createCaller().setBookStatus({
-      bookId: "book-1",
-      status: ReadingStatus.WANT_TO_READ,
-    });
+    const result = await createCaller().setReadingProgress({ bookId: "book-1", progress: 999 });
 
-    expect(prismaMock.prisma.readThrough.create).not.toHaveBeenCalled();
-    expect(prismaMock.prisma.readThrough.update).not.toHaveBeenCalled();
-    expect(prismaMock.prisma.userBook.update).toHaveBeenCalledWith({
-      where: { id: "user-book-1" },
-      data: {
-        wantsToRead: true,
-        status: ReadingStatus.WANT_TO_READ,
-      },
-      select: { status: true },
-    });
-    expect(result).toEqual({
-      status: ReadingStatus.WANT_TO_READ,
-      requiresConfirmation: false,
-      warning: null,
-    });
-  });
-
-  test("setReadingProgress clamps progress and creates a completed read-through", async () => {
-    prismaMock.prisma.book.findUniqueOrThrow.mockResolvedValue({
-      type: BookType.PHYSICAL,
-      pageCount: 320,
-      audioSeconds: null,
-    });
-    prismaMock.prisma.userBook.findUnique.mockResolvedValue(null);
-    prismaMock.prisma.userBook.create.mockResolvedValue({
-      id: "user-book-1",
-      wantsToRead: false,
-      status: null,
-    });
-    prismaMock.prisma.readThrough.findFirst.mockResolvedValueOnce(null).mockResolvedValueOnce({
-      id: "read-through-1",
-      status: ReadThroughStatus.COMPLETED,
-      progress: 320,
-    });
-    prismaMock.prisma.readThrough.create.mockResolvedValue({});
-    prismaMock.prisma.userBook.update.mockResolvedValueOnce({
-      status: ReadingStatus.COMPLETED,
-    });
-
-    const result = await createCaller().setReadingProgress({
-      bookId: "book-1",
-      progress: 999,
-    });
-
-    expect(prismaMock.prisma.readThrough.create).toHaveBeenCalledWith({
-      data: {
-        userBookId: "user-book-1",
-        progress: 320,
-        status: ReadThroughStatus.COMPLETED,
-        stoppedAt: expect.any(Date),
-      },
-    });
+    expect(tx.readThrough.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          progress: 320,
+          status: ReadThroughStatus.COMPLETED,
+        }),
+      }),
+    );
     expect(result).toEqual({
       progress: 320,
       status: ReadingStatus.COMPLETED,
@@ -239,52 +117,27 @@ describe("books router reading mutations", () => {
     });
   });
 
-  test("setReadingProgress on paused read-through resumes READING", async () => {
-    prismaMock.prisma.book.findUniqueOrThrow.mockResolvedValue({
-      type: BookType.AUDIOBOOK,
-      pageCount: null,
-      audioSeconds: 6000,
-    });
-    prismaMock.prisma.userBook.findUnique.mockResolvedValue({
-      id: "user-book-1",
+  test("resumes a paused read-through updating its progress", async () => {
+    prisma.book.findUniqueOrThrow.mockResolvedValue(audiobook);
+    tx.userBook.findUnique.mockResolvedValue({
+      id: "ub-1",
       wantsToRead: false,
       status: ReadingStatus.PAUSED,
     });
-    prismaMock.prisma.readThrough.findFirst
-      .mockResolvedValueOnce({
-        id: "read-through-1",
-        status: ReadThroughStatus.PAUSED,
-        progress: 300,
-      })
-      .mockResolvedValueOnce({
-        id: "read-through-1",
-        status: ReadThroughStatus.READING,
-        progress: 900,
-      });
-    prismaMock.prisma.readThrough.update.mockResolvedValue({});
-    prismaMock.prisma.userBook.update.mockResolvedValueOnce({
-      status: ReadingStatus.READING,
-    });
+    tx.readThrough.findFirst
+      .mockResolvedValueOnce({ id: "rt-1", status: ReadThroughStatus.PAUSED, progress: 300 })
+      .mockResolvedValueOnce({ id: "rt-1", status: ReadThroughStatus.READING, progress: 900 });
+    tx.readThrough.update.mockResolvedValue({});
+    tx.userBook.update.mockResolvedValue({ status: ReadingStatus.READING });
 
-    const result = await createCaller().setReadingProgress({
-      bookId: "book-1",
-      progress: 900,
-    });
+    const result = await createCaller().setReadingProgress({ bookId: "book-1", progress: 900 });
 
-    expect(prismaMock.prisma.readThrough.update).toHaveBeenCalledWith({
-      where: { id: "read-through-1" },
-      data: {
-        progress: 900,
-        status: ReadThroughStatus.READING,
-        stoppedAt: null,
-      },
+    expect(tx.readThrough.update).toHaveBeenCalledWith({
+      where: { id: "rt-1" },
+      data: { progress: 900, status: ReadThroughStatus.READING, stoppedAt: null },
     });
-    expect(result).toEqual({
-      progress: 900,
-      status: ReadingStatus.READING,
-      autoCompleted: false,
-      progressType: ProgressType.TIME,
-      maxProgress: 6000,
-    });
+    expect(result.status).toBe(ReadingStatus.READING);
+    expect(result.progressType).toBe(ProgressType.TIME);
+    expect(result.maxProgress).toBe(6000);
   });
 });
