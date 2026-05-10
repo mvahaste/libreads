@@ -35,9 +35,7 @@ vi.mock("@/lib/prisma", () => ({ prisma }));
 function createCaller(isAdmin: boolean) {
   return booksRouter.createCaller({
     headers: new Headers(),
-    session: isAdmin
-      ? { user: { id: "user-1", isAdmin: true } }
-      : { user: { id: "user-1", isAdmin: false } },
+    session: isAdmin ? { user: { id: "user-1", isAdmin: true } } : { user: { id: "user-1", isAdmin: false } },
   } as never);
 }
 
