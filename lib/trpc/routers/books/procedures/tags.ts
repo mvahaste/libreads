@@ -7,9 +7,6 @@ import z from "zod/v4";
 
 import { setBookTagRefSchema, tagNameSchema } from "../shared";
 
-/**
- * Update an existing tag of the current user.
- */
 export const updateTagProcedure = protectedProcedure
   .input(
     z.object({
@@ -55,9 +52,6 @@ export const updateTagProcedure = protectedProcedure
     }
   });
 
-/**
- * Delete a tag of the current user.
- */
 export const deleteTagProcedure = protectedProcedure
   .input(z.object({ tagId: z.string() }))
   .mutation(async ({ input, ctx }) => {
@@ -77,9 +71,6 @@ export const deleteTagProcedure = protectedProcedure
     return { success: true };
   });
 
-/**
- * Replace tags assigned to a book in the current user's library.
- */
 export const setBookTagsProcedure = protectedProcedure
   .input(
     z.object({

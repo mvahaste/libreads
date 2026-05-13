@@ -19,10 +19,6 @@ function mapEntityDuplicateError(error: unknown, message: string) {
   });
 }
 
-/**
- * Update an author.
- * Admin only.
- */
 export const updateAuthorProcedure = adminProcedure
   .input(
     z.object({
@@ -90,10 +86,6 @@ export const updateAuthorProcedure = adminProcedure
     }
   });
 
-/**
- * Delete an author.
- * Admin only.
- */
 export const deleteAuthorProcedure = adminProcedure
   .input(
     z.object({
@@ -112,10 +104,6 @@ export const deleteAuthorProcedure = adminProcedure
     return { success: true };
   });
 
-/**
- * Update a series.
- * Admin only.
- */
 export const updateSeriesProcedure = adminProcedure
   .input(
     z.object({
@@ -183,10 +171,6 @@ export const updateSeriesProcedure = adminProcedure
     }
   });
 
-/**
- * Delete a series.
- * Admin only.
- */
 export const deleteSeriesProcedure = adminProcedure
   .input(
     z.object({
@@ -205,10 +189,6 @@ export const deleteSeriesProcedure = adminProcedure
     return { success: true };
   });
 
-/**
- * Update a genre.
- * Admin only.
- */
 export const updateGenreProcedure = adminProcedure
   .input(
     z.object({
@@ -276,10 +256,6 @@ export const updateGenreProcedure = adminProcedure
     }
   });
 
-/**
- * Delete a genre.
- * Admin only.
- */
 export const deleteGenreProcedure = adminProcedure
   .input(
     z.object({
@@ -298,10 +274,6 @@ export const deleteGenreProcedure = adminProcedure
     return { success: true };
   });
 
-/**
- * Update a publisher.
- * Admin only.
- */
 export const updatePublisherProcedure = adminProcedure
   .input(
     z.object({
@@ -369,10 +341,6 @@ export const updatePublisherProcedure = adminProcedure
     }
   });
 
-/**
- * Delete a publisher.
- * Admin only.
- */
 export const deletePublisherProcedure = adminProcedure
   .input(
     z.object({

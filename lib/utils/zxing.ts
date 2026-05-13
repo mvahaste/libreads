@@ -16,10 +16,6 @@ function toNonEmptyString(value: unknown): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
-/**
- * Errors get minified in production builds, so previous name-based checks failed (instant camera error in production because no code was detected).
- * So far a combination of name and message checks seems to be working.
- */
 export function isExpectedZxingDecodeError(error: unknown): boolean {
   const stringError = toNonEmptyString(error);
 

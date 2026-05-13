@@ -34,7 +34,3 @@ export function parseDurationInputToSeconds(value: string): number | null {
 
   return Number(hoursPart) * 3600 + Number(minutesPart) * 60 + Number(secondsPart);
 }
-
-export function secondsToHoursMinutesSeconds(seconds: number) {
-  return formatDurationForDisplay(seconds);
-}

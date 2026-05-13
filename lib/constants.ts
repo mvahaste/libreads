@@ -23,7 +23,6 @@ export const API = {
   HARDCOVER_GENRE_TAG_CATEGORY_ID: 1,
 };
 
-/** Default page size for paginated browse views */
 export const DEFAULT_PAGE_SIZE = 24;
 
 export const AVATAR = {

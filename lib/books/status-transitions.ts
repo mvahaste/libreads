@@ -1,6 +1,5 @@
 import { BookType, ProgressType, ReadThroughStatus, ReadingStatus } from "@/generated/prisma/client";
 
-/** Minimal book info needed for progress type inference */
 export interface BookForTransition {
   type: BookType;
   pageCount: number | null;
@@ -58,14 +57,12 @@ export function recomputeBookStatus(params: {
   return null;
 }
 
-/** Infer the progress type from book metadata */
 export function inferProgressType(book: BookForTransition): ProgressType {
   if (book.type === BookType.AUDIOBOOK && book.audioSeconds) return ProgressType.TIME;
   if (book.pageCount) return ProgressType.PAGES;
   return ProgressType.PERCENTAGE;
 }
 
-/** Get max progress value for a given progress type and book */
 export function getMaxProgress(progressType: ProgressType, book: BookForTransition): number {
   switch (progressType) {
     case ProgressType.PAGES:
