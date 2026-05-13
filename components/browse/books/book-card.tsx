@@ -6,7 +6,7 @@ import type { ReadingStatus } from "@/generated/prisma/enums";
 import type { DisplayMode } from "@/hooks/use-display-preferences";
 import { READING_STATUS_COLORS } from "@/lib/books/status-colors";
 import { cn } from "@/lib/utils/cn";
-import { secondsToHoursMinutesSeconds } from "@/lib/utils/duration";
+import { formatDurationForDisplay } from "@/lib/utils/duration";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -46,7 +46,7 @@ function useDerivedBookFields(book: BookCardData) {
       book.publishYear,
       book.format,
       book.pageCount ? `${book.pageCount}p` : null,
-      book.audioSeconds != null ? secondsToHoursMinutesSeconds(book.audioSeconds) : null,
+      book.audioSeconds != null ? formatDurationForDisplay(book.audioSeconds) : null,
     ].filter(Boolean);
 
     const meta = metaParts.length ? metaParts.join(" · ") : null;

@@ -73,10 +73,6 @@ async function persistRecomputedStatus(tx: TxClient, userBookId: string, wantsTo
   return updated.status;
 }
 
-/**
- * Set or update a book's reading status for the current user.
- * Persists reading attempts on read-through rows and keeps an aggregate status on UserBook.
- */
 export const setBookStatusProcedure = protectedProcedure
   .input(
     z.object({
@@ -216,10 +212,6 @@ export const setBookStatusProcedure = protectedProcedure
     };
   });
 
-/**
- * Update reading progress for a book.
- * Persists progress on the active read-through.
- */
 export const setReadingProgressProcedure = protectedProcedure
   .input(
     z.object({
@@ -285,9 +277,6 @@ export const setReadingProgressProcedure = protectedProcedure
     };
   });
 
-/**
- * Delete a closed read-through and recompute the aggregate book status.
- */
 export const deleteReadThroughProcedure = protectedProcedure
   .input(
     z.object({
@@ -332,10 +321,6 @@ export const deleteReadThroughProcedure = protectedProcedure
     };
   });
 
-/**
- * Rate a book.
- * Requires the book to be in the user's library (UserBook exists)
- */
 export const rateBookProcedure = protectedProcedure
   .input(
     z.object({
@@ -366,10 +351,6 @@ export const rateBookProcedure = protectedProcedure
     return { rating };
   });
 
-/**
- * Clear a book rating.
- * Requires the book to be in the user's library (UserBook exists)
- */
 export const clearBookRatingProcedure = protectedProcedure
   .input(
     z.object({
@@ -399,10 +380,6 @@ export const clearBookRatingProcedure = protectedProcedure
     return { rating: null };
   });
 
-/**
- * Set or clear a per-book user note.
- * Requires the book to be in the user's library (UserBook exists)
- */
 export const setBookNotesProcedure = protectedProcedure
   .input(
     z.object({
@@ -437,9 +414,6 @@ export const setBookNotesProcedure = protectedProcedure
     return { notes: updated.notes };
   });
 
-/**
- * Get data counts for the remove-from-library confirmation dialog.
- */
 export const getLibraryEntryStatsProcedure = protectedProcedure
   .input(z.object({ bookId: z.string() }))
   .query(async ({ input, ctx }) => {
@@ -467,10 +441,6 @@ export const getLibraryEntryStatsProcedure = protectedProcedure
     };
   });
 
-/**
- * Remove a book from the current user's library.
- * Deletes the UserBook record (cascades to tags).
- */
 export const removeBookFromLibraryProcedure = protectedProcedure
   .input(z.object({ bookId: z.string() }))
   .mutation(async ({ input, ctx }) => {

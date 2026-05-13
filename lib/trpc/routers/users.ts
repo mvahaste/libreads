@@ -12,9 +12,6 @@ import { adminProcedure, protectedProcedure, router } from "../init";
 import { withProcedureErrorHandling } from "./shared";
 
 export const usersRouter = router({
-  /**
-   * List all users. Admin only.
-   */
   list: adminProcedure.query(async () => {
     const users = await prisma.user.findMany({
       select: {
@@ -38,9 +35,6 @@ export const usersRouter = router({
     }));
   }),
 
-  /**
-   * Create a new user. Admin only.
-   */
   create: adminProcedure.input(createUserSchema).mutation(async ({ input }) => {
     const { email, name, password } = input;
 
@@ -80,9 +74,6 @@ export const usersRouter = router({
     return { message: "USER_CREATED" };
   }),
 
-  /**
-   * Update user profile. User can only update their own profile.
-   */
   update: protectedProcedure
     .input(
       z.object({
@@ -133,9 +124,6 @@ export const usersRouter = router({
       );
     }),
 
-  /**
-   * Delete a user. Users can delete themselves (requires password), admins can delete anyone.
-   */
   delete: protectedProcedure
     .input(
       z.object({

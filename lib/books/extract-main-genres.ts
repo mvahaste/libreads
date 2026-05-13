@@ -9,16 +9,6 @@ type TaggableCount = {
   };
 };
 
-/**
- * Extracts the most representative genres from a list of Hardcover taggable counts.
- *
- * 1. Filters to only genre tags
- * 2. Merges duplicates (count is summed, ID and name is that of the highest count instance)
- * 3. Sorts by count descending.
- * 4. Normalizes counts into proportions of the total genre weight.
- * 5. Greedily picks the top genres until their cumulative weight reaches the threshold,
- *    ensuring the result set is compact but representative.
- */
 export function extractMainGenres(
   taggableCounts: TaggableCount[],
   threshold: number = 0.8,

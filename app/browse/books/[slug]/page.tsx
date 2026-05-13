@@ -13,7 +13,7 @@ import CoverImage from "@/components/ui/cover-image";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/lib/auth/auth";
 import { caller } from "@/lib/trpc/server";
-import { secondsToHoursMinutesSeconds } from "@/lib/utils/duration";
+import { formatDurationForDisplay } from "@/lib/utils/duration";
 import { TRPCError } from "@trpc/server";
 import { LucidePencil } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     book.publishYear,
     book.format,
     book.pageCount ? `${book.pageCount} ${t("pages").toLowerCase()}` : null,
-    book.audioSeconds != null ? secondsToHoursMinutesSeconds(book.audioSeconds) : null,
+    book.audioSeconds != null ? formatDurationForDisplay(book.audioSeconds) : null,
   ].filter(Boolean);
   const hasUserNotes = Boolean(book.userNotes?.trim());
   const hasReadThroughs = book.userReadThroughs.length > 0;
@@ -133,7 +133,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <MetaLabel label={t("pages")} value={book.pageCount} />
           <MetaLabel
             label={t("duration")}
-            value={book.audioSeconds != null ? secondsToHoursMinutesSeconds(book.audioSeconds) : null}
+            value={book.audioSeconds != null ? formatDurationForDisplay(book.audioSeconds) : null}
           />
           <MetaLabel label={t("isbn13")} value={book.isbn13} />
           <MetaLabel label={t("isbn10")} value={book.isbn10} />

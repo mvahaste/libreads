@@ -44,10 +44,6 @@ function emitChange(entityType: DisplayEntityType) {
   listeners.get(entityType)?.forEach((listener) => listener());
 }
 
-/**
- * Hook to read and write display mode preferences per entity type.
- * Persists to localStorage and syncs across components using the same entity type.
- */
 export function useDisplayPreferences(entityType: DisplayEntityType) {
   const displayMode = useSyncExternalStore(
     (listener) => subscribe(entityType, listener),

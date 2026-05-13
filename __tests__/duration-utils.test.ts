@@ -1,19 +1,15 @@
-import {
-  formatDurationForInput,
-  parseDurationInputToSeconds,
-  secondsToHoursMinutesSeconds,
-} from "@/lib/utils/duration";
+import { formatDurationForDisplay, formatDurationForInput, parseDurationInputToSeconds } from "@/lib/utils/duration";
 import { describe, expect, test } from "vitest";
 
-describe("secondsToHoursMinutesSeconds", () => {
+describe("formatDurationForDisplay", () => {
   test("always renders h/m/s for user-facing output", () => {
-    expect(secondsToHoursMinutesSeconds(0)).toBe("0h 0m 0s");
-    expect(secondsToHoursMinutesSeconds(65)).toBe("0h 1m 5s");
-    expect(secondsToHoursMinutesSeconds(3661)).toBe("1h 1m 1s");
+    expect(formatDurationForDisplay(0)).toBe("0h 0m 0s");
+    expect(formatDurationForDisplay(65)).toBe("0h 1m 5s");
+    expect(formatDurationForDisplay(3661)).toBe("1h 1m 1s");
   });
 
   test("handles very large hour values", () => {
-    expect(secondsToHoursMinutesSeconds(3600 * 123 + 10)).toBe("123h 0m 10s");
+    expect(formatDurationForDisplay(3600 * 123 + 10)).toBe("123h 0m 10s");
   });
 });
 

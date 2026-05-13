@@ -43,16 +43,6 @@ function mapBookListItem<TBook extends MappedBookListItem>(book: TBook) {
   };
 }
 
-function withBooksQueryError<T>(execute: () => Promise<T>, logLabel: string, internalMessage: string) {
-  return withProcedureErrorHandling(execute, {
-    logLabel,
-    internalMessage,
-  });
-}
-
-/**
- * Get books with search, filter, sort, and pagination.
- */
 export const allBooksProcedure = protectedProcedure
   .input(
     listInput.extend({
@@ -64,7 +54,7 @@ export const allBooksProcedure = protectedProcedure
     }),
   )
   .query(async ({ input, ctx }) =>
-    withBooksQueryError(
+    withProcedureErrorHandling(
       async () => {
         const userId = ctx.session.user.id;
         const { page, pageSize, search, sort, genre, author, publisher, series, format } = input;
@@ -182,14 +172,13 @@ export const allBooksProcedure = protectedProcedure
           },
         });
       },
-      "Error in allBooks query",
-      "FETCH_BOOKS_FAILED",
+      {
+        logLabel: "Error in allBooks query",
+        internalMessage: "FETCH_BOOKS_FAILED",
+      },
     ),
   );
 
-/**
- * Get current user's books with search, filter, sort, and pagination.
- */
 export const myBooksProcedure = protectedProcedure
   .input(
     listInput.extend({
@@ -203,7 +192,7 @@ export const myBooksProcedure = protectedProcedure
     }),
   )
   .query(async ({ input, ctx }) =>
-    withBooksQueryError(
+    withProcedureErrorHandling(
       async () => {
         const userId = ctx.session.user.id;
 
@@ -331,14 +320,13 @@ export const myBooksProcedure = protectedProcedure
           },
         });
       },
-      "Error in myBooks query",
-      "FETCH_USER_BOOKS_FAILED",
+      {
+        logLabel: "Error in myBooks query",
+        internalMessage: "FETCH_USER_BOOKS_FAILED",
+      },
     ),
   );
 
-/**
- * Get a book's details by slug.
- */
 export const bookDetailsProcedure = protectedProcedure
   .input(z.object({ slug: z.string() }))
   .query(async ({ input, ctx }) => {
@@ -505,11 +493,8 @@ export const bookDetailsProcedure = protectedProcedure
     }
   });
 
-/**
- * Get authors with search, sort, and pagination.
- */
 export const allAuthorsProcedure = protectedProcedure.input(listInput).query(async ({ input }) => {
-  return withBooksQueryError(
+  return withProcedureErrorHandling(
     async () => {
       const { page, pageSize, search, sort } = input;
 
@@ -543,16 +528,15 @@ export const allAuthorsProcedure = protectedProcedure.input(listInput).query(asy
         count: () => prisma.author.count({ where }),
       });
     },
-    "Error in allAuthors query",
-    "FETCH_AUTHORS_FAILED",
+    {
+      logLabel: "Error in allAuthors query",
+      internalMessage: "FETCH_AUTHORS_FAILED",
+    },
   );
 });
 
-/**
- * Get genres with search, sort, and pagination.
- */
 export const allGenresProcedure = protectedProcedure.input(listInput).query(async ({ input }) => {
-  return withBooksQueryError(
+  return withProcedureErrorHandling(
     async () => {
       const { page, pageSize, search, sort } = input;
 
@@ -586,16 +570,15 @@ export const allGenresProcedure = protectedProcedure.input(listInput).query(asyn
         count: () => prisma.genre.count({ where }),
       });
     },
-    "Error in allGenres query",
-    "FETCH_GENRES_FAILED",
+    {
+      logLabel: "Error in allGenres query",
+      internalMessage: "FETCH_GENRES_FAILED",
+    },
   );
 });
 
-/**
- * Get publishers with search, sort, and pagination.
- */
 export const allPublishersProcedure = protectedProcedure.input(listInput).query(async ({ input }) => {
-  return withBooksQueryError(
+  return withProcedureErrorHandling(
     async () => {
       const { page, pageSize, search, sort } = input;
 
@@ -629,16 +612,15 @@ export const allPublishersProcedure = protectedProcedure.input(listInput).query(
         count: () => prisma.publisher.count({ where }),
       });
     },
-    "Error in allPublishers query",
-    "FETCH_PUBLISHERS_FAILED",
+    {
+      logLabel: "Error in allPublishers query",
+      internalMessage: "FETCH_PUBLISHERS_FAILED",
+    },
   );
 });
 
-/**
- * Get series with search, sort, and pagination.
- */
 export const allSeriesProcedure = protectedProcedure.input(listInput).query(async ({ input }) => {
-  return withBooksQueryError(
+  return withProcedureErrorHandling(
     async () => {
       const { page, pageSize, search, sort } = input;
 
@@ -672,16 +654,15 @@ export const allSeriesProcedure = protectedProcedure.input(listInput).query(asyn
         count: () => prisma.series.count({ where }),
       });
     },
-    "Error in allSeries query",
-    "FETCH_SERIES_FAILED",
+    {
+      logLabel: "Error in allSeries query",
+      internalMessage: "FETCH_SERIES_FAILED",
+    },
   );
 });
 
-/**
- * Get current user's tags with search, sort, and pagination.
- */
 export const allTagsProcedure = protectedProcedure.input(listInput).query(async ({ input, ctx }) => {
-  return withBooksQueryError(
+  return withProcedureErrorHandling(
     async () => {
       const userId = ctx.session.user.id;
       const { page, pageSize, search, sort } = input;
@@ -719,14 +700,13 @@ export const allTagsProcedure = protectedProcedure.input(listInput).query(async 
         count: () => prisma.tag.count({ where }),
       });
     },
-    "Error in allTags query",
-    "FETCH_TAGS_FAILED",
+    {
+      logLabel: "Error in allTags query",
+      internalMessage: "FETCH_TAGS_FAILED",
+    },
   );
 });
 
-/**
- * Get series details by slug.
- */
 export const seriesDetailsProcedure = protectedProcedure
   .input(z.object({ slug: z.string() }))
   .query(async ({ input }) => {
@@ -803,7 +783,6 @@ export const seriesDetailsProcedure = protectedProcedure
     }
   });
 
-/** All genres as filter options */
 export const filterGenresProcedure = protectedProcedure.query(async () => {
   return prisma.genre.findMany({
     select: { slug: true, name: true },
@@ -811,7 +790,6 @@ export const filterGenresProcedure = protectedProcedure.query(async () => {
   });
 });
 
-/** All authors as filter options */
 export const filterAuthorsProcedure = protectedProcedure.query(async () => {
   return prisma.author.findMany({
     select: { slug: true, name: true },
@@ -819,7 +797,6 @@ export const filterAuthorsProcedure = protectedProcedure.query(async () => {
   });
 });
 
-/** All publishers as filter options */
 export const filterPublishersProcedure = protectedProcedure.query(async () => {
   return prisma.publisher.findMany({
     select: { slug: true, name: true },
@@ -827,7 +804,6 @@ export const filterPublishersProcedure = protectedProcedure.query(async () => {
   });
 });
 
-/** All series as filter options */
 export const filterSeriesProcedure = protectedProcedure.query(async () => {
   return prisma.series.findMany({
     select: { slug: true, name: true },
@@ -835,12 +811,10 @@ export const filterSeriesProcedure = protectedProcedure.query(async () => {
   });
 });
 
-/** Current user's statuses as filter options */
 export const filterStatusesProcedure = protectedProcedure.query(async () => {
   return READING_STATUS_VALUES.map((value) => ({ value }));
 });
 
-/** Current user's tags as filter options */
 export const filterTagsProcedure = protectedProcedure.query(async ({ ctx }) => {
   const userId = ctx.session.user.id;
   return prisma.tag.findMany({
@@ -850,9 +824,6 @@ export const filterTagsProcedure = protectedProcedure.query(async ({ ctx }) => {
   });
 });
 
-/**
- * All tags of current user for assignment UI.
- */
 export const myTagsProcedure = protectedProcedure.query(async ({ ctx }) => {
   const userId = ctx.session.user.id;
 
@@ -863,7 +834,6 @@ export const myTagsProcedure = protectedProcedure.query(async ({ ctx }) => {
   });
 });
 
-/** Distinct edition formats */
 export const filterFormatsProcedure = protectedProcedure.query(async () => {
   const results = await prisma.book.findMany({
     where: { format: { not: null } },
@@ -874,11 +844,6 @@ export const filterFormatsProcedure = protectedProcedure.query(async () => {
   return results.map((r) => r.format!).filter(Boolean);
 });
 
-/**
- * Resolve filter slugs/values to human-readable labels.
- * Used by active filter badges to show names instead of slugs,
- * even on direct URL navigation (without opening the filter dialog).
- */
 export const resolveFilterLabelsProcedure = protectedProcedure
   .input(
     z.object({

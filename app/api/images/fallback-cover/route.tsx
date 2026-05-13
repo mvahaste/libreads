@@ -1,4 +1,3 @@
-import { parseQueryParams } from "@/lib/utils/query-params";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { readFile } from "node:fs/promises";
@@ -46,21 +45,9 @@ async function loadFonts() {
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
 
-  const { title, subtitle, theme } = parseQueryParams(searchParams, {
-    title: {
-      type: "string",
-      default: "",
-    },
-    subtitle: {
-      type: "string",
-      default: "",
-    },
-    theme: {
-      type: "string",
-      default: "light",
-      validate: (value: string) => ["light", "dark"].includes(value),
-    },
-  });
+  const title = searchParams.get("title") ?? "";
+  const subtitle = searchParams.get("subtitle") ?? "";
+  const theme = searchParams.get("theme") ?? "light";
 
   await loadFonts();
 

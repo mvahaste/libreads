@@ -1,4 +1,3 @@
-/** Get the published year from a number or date string */
 export function extractPublishedYear(input: string | number | null | undefined) {
   if (!input) return undefined;
 

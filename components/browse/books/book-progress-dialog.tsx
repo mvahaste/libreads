@@ -19,11 +19,7 @@ import { useBooksQueryInvalidation } from "@/hooks/use-books-query-invalidation"
 import { useSubmitMutation } from "@/hooks/use-submit-mutation";
 import { getMaxProgressForDisplay, getProgressPercent } from "@/lib/books/progress-display";
 import { useTRPC } from "@/lib/trpc/client";
-import {
-  formatDurationForInput,
-  parseDurationInputToSeconds,
-  secondsToHoursMinutesSeconds,
-} from "@/lib/utils/duration";
+import { formatDurationForDisplay, formatDurationForInput, parseDurationInputToSeconds } from "@/lib/utils/duration";
 import { useMutation } from "@tanstack/react-query";
 import { LucideBookmark } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -228,7 +224,7 @@ function ProgressForm({
                 />
                 {audioSeconds != null && (
                   <span className="text-muted-foreground text-sm whitespace-nowrap">
-                    / {secondsToHoursMinutesSeconds(audioSeconds)}
+                    / {formatDurationForDisplay(audioSeconds)}
                   </span>
                 )}
               </div>

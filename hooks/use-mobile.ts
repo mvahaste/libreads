@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
-/**
- * Tracks whether the current viewport width is below the mobile breakpoint.
- */
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;

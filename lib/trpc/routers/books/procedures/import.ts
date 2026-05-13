@@ -40,9 +40,6 @@ function normalizeImportedIsbn(
   return normalized;
 }
 
-/**
- * Import a Hardcover edition into the local database as a book.
- */
 export const importBookProcedure = protectedProcedure.input(importBookSchema).mutation(async ({ ctx, input }) => {
   return withProcedureErrorHandling(
     async () => {
@@ -121,9 +118,6 @@ export const importBookProcedure = protectedProcedure.input(importBookSchema).mu
       }
 
       const result = await prisma.$transaction(async (tx) => {
-        /**
-         * Create or find an entity.
-         */
         async function findOrCreate<T extends { id: string }>(
           create: () => Promise<T>,
           options?: {

@@ -120,10 +120,6 @@ function mapBookMutationConflictError(error: unknown): TRPCError | null {
   return null;
 }
 
-/**
- * Create a new book and linked entities.
- * Authenticated users only.
- */
 export const createBookProcedure = protectedProcedure.input(createBookSchema).mutation(async ({ input }) => {
   return withProcedureErrorHandling(
     async () => {
@@ -218,10 +214,6 @@ export const createBookProcedure = protectedProcedure.input(createBookSchema).mu
   );
 });
 
-/**
- * Update a book's metadata and linked entities.
- * Admin only.
- */
 export const updateBookProcedure = adminProcedure.input(updateBookSchema).mutation(async ({ input }) => {
   return withProcedureErrorHandling(
     async () => {
@@ -449,14 +441,12 @@ export const updateBookProcedure = adminProcedure.input(updateBookSchema).mutati
   );
 });
 
-/** Live uniqueness checks for the shared book form (create/edit/import confirmation). */
 export const bookFormConflictsProcedure = protectedProcedure
   .input(bookUniqueConflictSchema)
   .query(async ({ input }) => {
     return getBookUniqueConflicts(input);
   });
 
-/** Live uniqueness checks for admin-only edit usage (legacy route shape). */
 export const bookEditConflictsProcedure = adminProcedure
   .input(bookUniqueConflictSchema.extend({ bookId: z.string().min(1) }))
   .query(async ({ input }) => {
@@ -468,20 +458,14 @@ export const bookEditConflictsProcedure = adminProcedure
     });
   });
 
-/** Relation options for the shared book form (create/edit/import confirmation). */
 export const bookFormOptionsProcedure = protectedProcedure.query(async () => {
   return getBookFormOptions();
 });
 
-/** Relation options for admin-only edit usage (legacy endpoint). */
 export const bookEditOptionsProcedure = adminProcedure.query(async () => {
   return getBookFormOptions();
 });
 
-/**
- * Delete a book and all related data.
- * Admin only.
- */
 export const deleteBookProcedure = adminProcedure
   .input(z.object({ bookId: z.string().min(1) }))
   .mutation(async ({ input }) => {

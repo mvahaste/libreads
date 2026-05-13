@@ -7,13 +7,6 @@ function normalize(str: string): string {
   return str.toLowerCase().trim();
 }
 
-/**
- * Maps a Hardcover edition_format string to one of the three BookType values.
- *
- * - Matches audiobook keywords -> AUDIOBOOK
- * - Matches ebook keywords -> EBOOK
- * - Else -> PHYSICAL
- */
 export function mapEditionFormat(format: string | null | undefined): BookType {
   if (!format || format.trim() === "") {
     return "PHYSICAL";
