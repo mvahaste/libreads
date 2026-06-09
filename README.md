@@ -2,15 +2,6 @@
 
 A self-hosted reading tracker.
 
-## Demo
-
-See the public read-only demo at [libdemo.mvahaste.dev](https://libdemo.mvahaste.dev).
-
-| Email                 | Password     |
-| --------------------- | ------------ |
-| `admin@libdemo.local` | `adminadmin` |
-| `user@libdemo.local`  | `useruser`   |
-
 ## Features
 
 - Track reading status with progress, ratings, and dates
